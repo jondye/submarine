@@ -1,0 +1,7933 @@
+%!PS-Adobe-3.0
+%%BoundingBox: 24 24 571 818
+%%Title: Enscript Output
+%%For: Jon Dye,,,
+%%Creator: GNU enscript 1.6.3
+%%CreationDate: Sun May 11 17:43:23 2003
+%%Orientation: Landscape
+%%Pages: (atend)
+%%DocumentMedia: a4 595 842 0 () ()
+%%DocumentNeededResources: (atend)
+%%EndComments
+%%BeginProlog
+%%BeginResource: procset Enscript-Prolog 1.6 3
+%
+% Procedures.
+%
+
+/_S {	% save current state
+  /_s save def
+} def
+/_R {	% restore from saved state
+  _s restore
+} def
+
+/S {	% showpage protecting gstate
+  gsave
+  showpage
+  grestore
+} bind def
+
+/MF {	% fontname newfontname -> -	make a new encoded font
+  /newfontname exch def
+  /fontname exch def
+
+  /fontdict fontname findfont def
+  /newfont fontdict maxlength dict def
+
+  fontdict {
+    exch
+    dup /FID eq {
+      % skip FID pair
+      pop pop
+    } {
+      % copy to the new font dictionary
+      exch newfont 3 1 roll put
+    } ifelse
+  } forall
+
+  newfont /FontName newfontname put
+
+  % insert only valid encoding vectors
+  encoding_vector length 256 eq {
+    newfont /Encoding encoding_vector put
+  } if
+
+  newfontname newfont definefont pop
+} def
+
+/MF_PS { % fontname newfontname -> -	make a new font preserving its enc
+  /newfontname exch def
+  /fontname exch def
+
+  /fontdict fontname findfont def
+  /newfont fontdict maxlength dict def
+
+  fontdict {
+    exch
+    dup /FID eq {
+      % skip FID pair
+      pop pop
+    } {
+      % copy to the new font dictionary
+      exch newfont 3 1 roll put
+    } ifelse
+  } forall
+
+  newfont /FontName newfontname put
+
+  newfontname newfont definefont pop
+} def
+
+/SF { % fontname width height -> -	set a new font
+  /height exch def
+  /width exch def
+
+  findfont
+  [width 0 0 height 0 0] makefont setfont
+} def
+
+/SUF { % fontname width height -> -	set a new user font
+  /height exch def
+  /width exch def
+
+  /F-gs-user-font MF
+  /F-gs-user-font width height SF
+} def
+
+/SUF_PS { % fontname width height -> -	set a new user font preserving its enc
+  /height exch def
+  /width exch def
+
+  /F-gs-user-font MF_PS
+  /F-gs-user-font width height SF
+} def
+
+/M {moveto} bind def
+/s {show} bind def
+
+/Box {	% x y w h -> -			define box path
+  /d_h exch def /d_w exch def /d_y exch def /d_x exch def
+  d_x d_y  moveto
+  d_w 0 rlineto
+  0 d_h rlineto
+  d_w neg 0 rlineto
+  closepath
+} def
+
+/bgs {	% x y height blskip gray str -> -	show string with bg color
+  /str exch def
+  /gray exch def
+  /blskip exch def
+  /height exch def
+  /y exch def
+  /x exch def
+
+  gsave
+    x y blskip sub str stringwidth pop height Box
+    gray setgray
+    fill
+  grestore
+  x y M str s
+} def
+
+/bgcs { % x y height blskip red green blue str -> -  show string with bg color
+  /str exch def
+  /blue exch def
+  /green exch def
+  /red exch def
+  /blskip exch def
+  /height exch def
+  /y exch def
+  /x exch def
+
+  gsave
+    x y blskip sub str stringwidth pop height Box
+    red green blue setrgbcolor
+    fill
+  grestore
+  x y M str s
+} def
+
+% Highlight bars.
+/highlight_bars {	% nlines lineheight output_y_margin gray -> -
+  gsave
+    setgray
+    /ymarg exch def
+    /lineheight exch def
+    /nlines exch def
+
+    % This 2 is just a magic number to sync highlight lines to text.
+    0 d_header_y ymarg sub 2 sub translate
+
+    /cw d_output_w cols div def
+    /nrows d_output_h ymarg 2 mul sub lineheight div cvi def
+
+    % for each column
+    0 1 cols 1 sub {
+      cw mul /xp exch def
+
+      % for each rows
+      0 1 nrows 1 sub {
+        /rn exch def
+        rn lineheight mul neg /yp exch def
+        rn nlines idiv 2 mod 0 eq {
+	  % Draw highlight bar.  4 is just a magic indentation.
+	  xp 4 add yp cw 8 sub lineheight neg Box fill
+	} if
+      } for
+    } for
+
+  grestore
+} def
+
+% Line highlight bar.
+/line_highlight {	% x y width height gray -> -
+  gsave
+    /gray exch def
+    Box gray setgray fill
+  grestore
+} def
+
+% Column separator lines.
+/column_lines {
+  gsave
+    .1 setlinewidth
+    0 d_footer_h translate
+    /cw d_output_w cols div def
+    1 1 cols 1 sub {
+      cw mul 0 moveto
+      0 d_output_h rlineto stroke
+    } for
+  grestore
+} def
+
+% Column borders.
+/column_borders {
+  gsave
+    .1 setlinewidth
+    0 d_footer_h moveto
+    0 d_output_h rlineto
+    d_output_w 0 rlineto
+    0 d_output_h neg rlineto
+    closepath stroke
+  grestore
+} def
+
+% Do the actual underlay drawing
+/draw_underlay {
+  ul_style 0 eq {
+    ul_str true charpath stroke
+  } {
+    ul_str show
+  } ifelse
+} def
+
+% Underlay
+/underlay {	% - -> -
+  gsave
+    0 d_page_h translate
+    d_page_h neg d_page_w atan rotate
+
+    ul_gray setgray
+    ul_font setfont
+    /dw d_page_h dup mul d_page_w dup mul add sqrt def
+    ul_str stringwidth pop dw exch sub 2 div ul_h_ptsize -2 div moveto
+    draw_underlay
+  grestore
+} def
+
+/user_underlay {	% - -> -
+  gsave
+    ul_x ul_y translate
+    ul_angle rotate
+    ul_gray setgray
+    ul_font setfont
+    0 0 ul_h_ptsize 2 div sub moveto
+    draw_underlay
+  grestore
+} def
+
+% Page prefeed
+/page_prefeed {		% bool -> -
+  statusdict /prefeed known {
+    statusdict exch /prefeed exch put
+  } {
+    pop
+  } ifelse
+} def
+
+% Wrapped line markers
+/wrapped_line_mark {	% x y charwith charheight type -> -
+  /type exch def
+  /h exch def
+  /w exch def
+  /y exch def
+  /x exch def
+
+  type 2 eq {
+    % Black boxes (like TeX does)
+    gsave
+      0 setlinewidth
+      x w 4 div add y M
+      0 h rlineto w 2 div 0 rlineto 0 h neg rlineto
+      closepath fill
+    grestore
+  } {
+    type 3 eq {
+      % Small arrows
+      gsave
+        .2 setlinewidth
+        x w 2 div add y h 2 div add M
+        w 4 div 0 rlineto
+        x w 4 div add y lineto stroke
+
+        x w 4 div add w 8 div add y h 4 div add M
+        x w 4 div add y lineto
+	w 4 div h 8 div rlineto stroke
+      grestore
+    } {
+      % do nothing
+    } ifelse
+  } ifelse
+} def
+
+% EPSF import.
+
+/BeginEPSF {
+  /b4_Inc_state save def    		% Save state for cleanup
+  /dict_count countdictstack def	% Count objects on dict stack
+  /op_count count 1 sub def		% Count objects on operand stack
+  userdict begin
+  /showpage { } def
+  0 setgray 0 setlinecap
+  1 setlinewidth 0 setlinejoin
+  10 setmiterlimit [ ] 0 setdash newpath
+  /languagelevel where {
+    pop languagelevel
+    1 ne {
+      false setstrokeadjust false setoverprint
+    } if
+  } if
+} bind def
+
+/EndEPSF {
+  count op_count sub { pos } repeat	% Clean up stacks
+  countdictstack dict_count sub { end } repeat
+  b4_Inc_state restore
+} bind def
+
+% Check PostScript language level.
+/languagelevel where {
+  pop /gs_languagelevel languagelevel def
+} {
+  /gs_languagelevel 1 def
+} ifelse
+%%EndResource
+%%BeginResource: procset Enscript-Encoding-88591 1.6 3
+/encoding_vector [
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/space        	/exclam       	/quotedbl     	/numbersign   	
+/dollar       	/percent      	/ampersand    	/quoteright   	
+/parenleft    	/parenright   	/asterisk     	/plus         	
+/comma        	/hyphen       	/period       	/slash        	
+/zero         	/one          	/two          	/three        	
+/four         	/five         	/six          	/seven        	
+/eight        	/nine         	/colon        	/semicolon    	
+/less         	/equal        	/greater      	/question     	
+/at           	/A            	/B            	/C            	
+/D            	/E            	/F            	/G            	
+/H            	/I            	/J            	/K            	
+/L            	/M            	/N            	/O            	
+/P            	/Q            	/R            	/S            	
+/T            	/U            	/V            	/W            	
+/X            	/Y            	/Z            	/bracketleft  	
+/backslash    	/bracketright 	/asciicircum  	/underscore   	
+/quoteleft    	/a            	/b            	/c            	
+/d            	/e            	/f            	/g            	
+/h            	/i            	/j            	/k            	
+/l            	/m            	/n            	/o            	
+/p            	/q            	/r            	/s            	
+/t            	/u            	/v            	/w            	
+/x            	/y            	/z            	/braceleft    	
+/bar          	/braceright   	/tilde        	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/space        	/exclamdown   	/cent         	/sterling     	
+/currency     	/yen          	/brokenbar    	/section      	
+/dieresis     	/copyright    	/ordfeminine  	/guillemotleft	
+/logicalnot   	/hyphen       	/registered   	/macron       	
+/degree       	/plusminus    	/twosuperior  	/threesuperior	
+/acute        	/mu           	/paragraph    	/bullet       	
+/cedilla      	/onesuperior  	/ordmasculine 	/guillemotright	
+/onequarter   	/onehalf      	/threequarters	/questiondown 	
+/Agrave       	/Aacute       	/Acircumflex  	/Atilde       	
+/Adieresis    	/Aring        	/AE           	/Ccedilla     	
+/Egrave       	/Eacute       	/Ecircumflex  	/Edieresis    	
+/Igrave       	/Iacute       	/Icircumflex  	/Idieresis    	
+/Eth          	/Ntilde       	/Ograve       	/Oacute       	
+/Ocircumflex  	/Otilde       	/Odieresis    	/multiply     	
+/Oslash       	/Ugrave       	/Uacute       	/Ucircumflex  	
+/Udieresis    	/Yacute       	/Thorn        	/germandbls   	
+/agrave       	/aacute       	/acircumflex  	/atilde       	
+/adieresis    	/aring        	/ae           	/ccedilla     	
+/egrave       	/eacute       	/ecircumflex  	/edieresis    	
+/igrave       	/iacute       	/icircumflex  	/idieresis    	
+/eth          	/ntilde       	/ograve       	/oacute       	
+/ocircumflex  	/otilde       	/odieresis    	/divide       	
+/oslash       	/ugrave       	/uacute       	/ucircumflex  	
+/udieresis    	/yacute       	/thorn        	/ydieresis    	
+] def
+%%EndResource
+%%EndProlog
+%%BeginSetup
+%%IncludeResource: font Courier-Bold
+%%IncludeResource: font Courier
+/HFpt_w 10 def
+/HFpt_h 10 def
+/Courier-Bold /HF-gs-font MF
+/HF /HF-gs-font findfont [HFpt_w 0 0 HFpt_h 0 0] makefont def
+/Courier /F-gs-font MF
+/F-gs-font 10 10 SF
+/#copies 1 def
+% Pagedevice definitions:
+gs_languagelevel 1 gt {
+  <<
+    /PageSize [595 842] 
+  >> setpagedevice
+} if
+%%BeginResource: procset Enscript-Header-simple 1.6 3
+
+/do_header {	% print default simple header
+  gsave
+    d_header_x d_header_y HFpt_h 3 div add translate
+
+    HF setfont
+    user_header_p {
+      5 0 moveto user_header_left_str show
+
+      d_header_w user_header_center_str stringwidth pop sub 2 div
+      0 moveto user_header_center_str show
+
+      d_header_w user_header_right_str stringwidth pop sub 5 sub
+      0 moveto user_header_right_str show
+    } {
+      5 0 moveto fname show
+      45 0 rmoveto fmodstr show
+      45 0 rmoveto pagenumstr show
+    } ifelse
+
+  grestore
+} def
+%%EndResource
+/d_page_w 547 def
+/d_page_h 794 def
+/d_header_x 0 def
+/d_header_y 779 def
+/d_header_w 547 def
+/d_header_h 15 def
+/d_footer_x 0 def
+/d_footer_y 0 def
+/d_footer_w 547 def
+/d_footer_h 0 def
+/d_output_w 547 def
+/d_output_h 779 def
+/cols 1 def
+%%EndSetup
+%%Page: (1-2) 1
+%%BeginPageSetup
+_S
+90 rotate
+24 -24 translate
+%Page: (1) 1
+%BeginPageSetup
+_S
+% N-up sub-page 1/2
+0 -547 translate
+0.688917 dup scale
+/pagenum 1 def
+/fname (main.c) def
+/fdir () def
+/ftail (main.c) def
+% User defined strings:
+/fmodstr (Thu May 24 16:54:19 2001) def
+/pagenumstr (1) def
+/user_header_p false def
+/user_footer_p false def
+%%EndPageSetup
+do_header
+5 766 M
+(#) s
+/Courier-Bold 10 10 SUF
+0.372549 0.619608 0.627451 setrgbcolor
+11 766 M
+(include) s
+/F-gs-font 10 10 SF
+0 setgray
+53 766 M
+( ) s
+/Courier-Bold 10 10 SUF
+0.737255 0.560784 0.560784 setrgbcolor
+59 766 M
+(<GL/glut.h>) s
+/F-gs-font 10 10 SF
+0 setgray
+5 755 M
+(#) s
+/Courier-Bold 10 10 SUF
+0.372549 0.619608 0.627451 setrgbcolor
+11 755 M
+(include) s
+/F-gs-font 10 10 SF
+0 setgray
+53 755 M
+( ) s
+/Courier-Bold 10 10 SUF
+0.737255 0.560784 0.560784 setrgbcolor
+59 755 M
+(<stdio.h>) s
+/F-gs-font 10 10 SF
+0 setgray
+5 744 M
+(#) s
+/Courier-Bold 10 10 SUF
+0.372549 0.619608 0.627451 setrgbcolor
+11 744 M
+(include) s
+/F-gs-font 10 10 SF
+0 setgray
+53 744 M
+( ) s
+/Courier-Bold 10 10 SUF
+0.737255 0.560784 0.560784 setrgbcolor
+59 744 M
+(<stdlib.h>) s
+/F-gs-font 10 10 SF
+0 setgray
+5 733 M
+(#) s
+/Courier-Bold 10 10 SUF
+0.372549 0.619608 0.627451 setrgbcolor
+11 733 M
+(include) s
+/F-gs-font 10 10 SF
+0 setgray
+53 733 M
+( ) s
+/Courier-Bold 10 10 SUF
+0.737255 0.560784 0.560784 setrgbcolor
+59 733 M
+(<math.h>) s
+/F-gs-font 10 10 SF
+0 setgray
+5 722 M
+(#) s
+/Courier-Bold 10 10 SUF
+0.372549 0.619608 0.627451 setrgbcolor
+11 722 M
+(include) s
+/F-gs-font 10 10 SF
+0 setgray
+53 722 M
+( ) s
+/Courier-Bold 10 10 SUF
+0.737255 0.560784 0.560784 setrgbcolor
+59 722 M
+(<time.h>) s
+/F-gs-font 10 10 SF
+0 setgray
+5 711 M
+(#) s
+/Courier-Bold 10 10 SUF
+0.372549 0.619608 0.627451 setrgbcolor
+11 711 M
+(include) s
+/F-gs-font 10 10 SF
+0 setgray
+53 711 M
+( ) s
+/Courier-Bold 10 10 SUF
+0.737255 0.560784 0.560784 setrgbcolor
+59 711 M
+(<string.h>) s
+/F-gs-font 10 10 SF
+0 setgray
+5 689 M
+(#) s
+/Courier-Bold 10 10 SUF
+0.372549 0.619608 0.627451 setrgbcolor
+11 689 M
+(ifdef) s
+/F-gs-font 10 10 SF
+0 setgray
+41 689 M
+( ) s
+/Courier 10 10 SUF
+0.721569 0.52549 0.043137 setrgbcolor
+47 689 M
+(WIN32) s
+/F-gs-font 10 10 SF
+0 setgray
+5 678 M
+(#) s
+/Courier-Bold 10 10 SUF
+0.372549 0.619608 0.627451 setrgbcolor
+11 678 M
+(include) s
+/F-gs-font 10 10 SF
+0 setgray
+53 678 M
+( ) s
+/Courier-Bold 10 10 SUF
+0.737255 0.560784 0.560784 setrgbcolor
+59 678 M
+(<windows.h>) s
+/F-gs-font 10 10 SF
+0 setgray
+5 667 M
+(#) s
+/Courier-Bold 10 10 SUF
+0.372549 0.619608 0.627451 setrgbcolor
+11 667 M
+(endif) s
+/F-gs-font 10 10 SF
+0 setgray
+5 645 M
+(#) s
+/Courier-Bold 10 10 SUF
+0.372549 0.619608 0.627451 setrgbcolor
+11 645 M
+(include) s
+/F-gs-font 10 10 SF
+0 setgray
+53 645 M
+( ) s
+/Courier-Bold 10 10 SUF
+0.737255 0.560784 0.560784 setrgbcolor
+59 645 M
+("textureLoad.c") s
+/F-gs-font 10 10 SF
+0 setgray
+5 623 M
+(#) s
+/Courier-Bold 10 10 SUF
+0.372549 0.619608 0.627451 setrgbcolor
+11 623 M
+(define) s
+/F-gs-font 10 10 SF
+0 setgray
+47 623 M
+( ) s
+/Courier 10 10 SUF
+0.721569 0.52549 0.043137 setrgbcolor
+53 623 M
+(WIN_X) s
+/F-gs-font 10 10 SF
+0 setgray
+83 623 M
+( 400) s
+5 612 M
+(#) s
+/Courier-Bold 10 10 SUF
+0.372549 0.619608 0.627451 setrgbcolor
+11 612 M
+(define) s
+/F-gs-font 10 10 SF
+0 setgray
+47 612 M
+( ) s
+/Courier 10 10 SUF
+0.721569 0.52549 0.043137 setrgbcolor
+53 612 M
+(WIN_Y) s
+/F-gs-font 10 10 SF
+0 setgray
+83 612 M
+( 400) s
+/Courier-Oblique 10 10 SUF
+0.698039 0.133333 0.133333 setrgbcolor
+5 590 M
+(/* in case math.h does not define PI */) s
+/F-gs-font 10 10 SF
+0 setgray
+5 579 M
+(#) s
+/Courier-Bold 10 10 SUF
+0.372549 0.619608 0.627451 setrgbcolor
+11 579 M
+(ifndef) s
+/F-gs-font 10 10 SF
+0 setgray
+47 579 M
+( ) s
+/Courier 10 10 SUF
+0.721569 0.52549 0.043137 setrgbcolor
+53 579 M
+(PI) s
+/F-gs-font 10 10 SF
+0 setgray
+5 568 M
+(#) s
+/Courier-Bold 10 10 SUF
+0.372549 0.619608 0.627451 setrgbcolor
+11 568 M
+(define) s
+/F-gs-font 10 10 SF
+0 setgray
+47 568 M
+( ) s
+/Courier 10 10 SUF
+0.721569 0.52549 0.043137 setrgbcolor
+53 568 M
+(PI) s
+/F-gs-font 10 10 SF
+0 setgray
+65 568 M
+( 3.141593) s
+5 557 M
+(#) s
+/Courier-Bold 10 10 SUF
+0.372549 0.619608 0.627451 setrgbcolor
+11 557 M
+(endif) s
+/F-gs-font 10 10 SF
+0 setgray
+/Courier-Oblique 10 10 SUF
+0.698039 0.133333 0.133333 setrgbcolor
+5 535 M
+(/* types */) s
+/F-gs-font 10 10 SF
+0 setgray
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+5 524 M
+(typedef) s
+/F-gs-font 10 10 SF
+0 setgray
+47 524 M
+( ) s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+53 524 M
+(struct) s
+/F-gs-font 10 10 SF
+0 setgray
+89 524 M
+( {) s
+5 513 M
+(  GLfloat position[3];) s
+5 502 M
+(  GLfloat xVelocity, yVelocity, zVelocity;) s
+5 491 M
+(  ) s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+17 491 M
+(int) s
+/F-gs-font 10 10 SF
+0 setgray
+35 491 M
+( active;) s
+5 480 M
+(} bubble;) s
+/Courier-Oblique 10 10 SUF
+0.698039 0.133333 0.133333 setrgbcolor
+5 458 M
+(/* Constants */) s
+/F-gs-font 10 10 SF
+0 setgray
+5 447 M
+(#) s
+/Courier-Bold 10 10 SUF
+0.372549 0.619608 0.627451 setrgbcolor
+11 447 M
+(define) s
+/F-gs-font 10 10 SF
+0 setgray
+47 447 M
+( ) s
+/Courier 10 10 SUF
+0.721569 0.52549 0.043137 setrgbcolor
+53 447 M
+(NUMBER_OF_TEXTURES) s
+/F-gs-font 10 10 SF
+0 setgray
+161 447 M
+( 3) s
+5 436 M
+(#) s
+/Courier-Bold 10 10 SUF
+0.372549 0.619608 0.627451 setrgbcolor
+11 436 M
+(define) s
+/F-gs-font 10 10 SF
+0 setgray
+47 436 M
+( ) s
+/Courier 10 10 SUF
+0.721569 0.52549 0.043137 setrgbcolor
+53 436 M
+(SAND) s
+/F-gs-font 10 10 SF
+0 setgray
+77 436 M
+( 0) s
+5 425 M
+(#) s
+/Courier-Bold 10 10 SUF
+0.372549 0.619608 0.627451 setrgbcolor
+11 425 M
+(define) s
+/F-gs-font 10 10 SF
+0 setgray
+47 425 M
+( ) s
+/Courier 10 10 SUF
+0.721569 0.52549 0.043137 setrgbcolor
+53 425 M
+(GROUND) s
+/F-gs-font 10 10 SF
+0 setgray
+89 425 M
+( 1) s
+5 414 M
+(#) s
+/Courier-Bold 10 10 SUF
+0.372549 0.619608 0.627451 setrgbcolor
+11 414 M
+(define) s
+/F-gs-font 10 10 SF
+0 setgray
+47 414 M
+( ) s
+/Courier 10 10 SUF
+0.721569 0.52549 0.043137 setrgbcolor
+53 414 M
+(WOOD) s
+/F-gs-font 10 10 SF
+0 setgray
+77 414 M
+( 2) s
+5 403 M
+(#) s
+/Courier-Bold 10 10 SUF
+0.372549 0.619608 0.627451 setrgbcolor
+11 403 M
+(define) s
+/F-gs-font 10 10 SF
+0 setgray
+47 403 M
+( ) s
+/Courier 10 10 SUF
+0.721569 0.52549 0.043137 setrgbcolor
+53 403 M
+(CONE_SEGMENTS) s
+/F-gs-font 10 10 SF
+0 setgray
+131 403 M
+( 10) s
+5 392 M
+(#) s
+/Courier-Bold 10 10 SUF
+0.372549 0.619608 0.627451 setrgbcolor
+11 392 M
+(define) s
+/F-gs-font 10 10 SF
+0 setgray
+47 392 M
+( ) s
+/Courier 10 10 SUF
+0.721569 0.52549 0.043137 setrgbcolor
+53 392 M
+(MAX_BUBBLES) s
+/F-gs-font 10 10 SF
+0 setgray
+119 392 M
+( 60) s
+5 381 M
+(#) s
+/Courier-Bold 10 10 SUF
+0.372549 0.619608 0.627451 setrgbcolor
+11 381 M
+(define) s
+/F-gs-font 10 10 SF
+0 setgray
+47 381 M
+( ) s
+/Courier 10 10 SUF
+0.721569 0.52549 0.043137 setrgbcolor
+53 381 M
+(TIME_BETWEEN_BUBBLES) s
+/F-gs-font 10 10 SF
+0 setgray
+173 381 M
+( 0.3) s
+5 370 M
+(#) s
+/Courier-Bold 10 10 SUF
+0.372549 0.619608 0.627451 setrgbcolor
+11 370 M
+(define) s
+/F-gs-font 10 10 SF
+0 setgray
+47 370 M
+( ) s
+/Courier 10 10 SUF
+0.721569 0.52549 0.043137 setrgbcolor
+53 370 M
+(BOUYANCY) s
+/F-gs-font 10 10 SF
+0 setgray
+101 370 M
+( 10) s
+5 359 M
+(#) s
+/Courier-Bold 10 10 SUF
+0.372549 0.619608 0.627451 setrgbcolor
+11 359 M
+(define) s
+/F-gs-font 10 10 SF
+0 setgray
+47 359 M
+( ) s
+/Courier 10 10 SUF
+0.721569 0.52549 0.043137 setrgbcolor
+53 359 M
+(BUBBLE_BOUNCE) s
+/F-gs-font 10 10 SF
+0 setgray
+131 359 M
+( 0.3) s
+5 348 M
+(#) s
+/Courier-Bold 10 10 SUF
+0.372549 0.619608 0.627451 setrgbcolor
+11 348 M
+(define) s
+/F-gs-font 10 10 SF
+0 setgray
+47 348 M
+( ) s
+/Courier 10 10 SUF
+0.721569 0.52549 0.043137 setrgbcolor
+53 348 M
+(SUBMARINE_SEGMENTS) s
+/F-gs-font 10 10 SF
+0 setgray
+161 348 M
+( 16) s
+5 337 M
+(#) s
+/Courier-Bold 10 10 SUF
+0.372549 0.619608 0.627451 setrgbcolor
+11 337 M
+(define) s
+/F-gs-font 10 10 SF
+0 setgray
+47 337 M
+( ) s
+/Courier 10 10 SUF
+0.721569 0.52549 0.043137 setrgbcolor
+53 337 M
+(OUTSIDE) s
+/F-gs-font 10 10 SF
+0 setgray
+95 337 M
+( 0) s
+5 326 M
+(#) s
+/Courier-Bold 10 10 SUF
+0.372549 0.619608 0.627451 setrgbcolor
+11 326 M
+(define) s
+/F-gs-font 10 10 SF
+0 setgray
+47 326 M
+( ) s
+/Courier 10 10 SUF
+0.721569 0.52549 0.043137 setrgbcolor
+53 326 M
+(IN_SUB) s
+/F-gs-font 10 10 SF
+0 setgray
+89 326 M
+( 1) s
+5 315 M
+(#) s
+/Courier-Bold 10 10 SUF
+0.372549 0.619608 0.627451 setrgbcolor
+11 315 M
+(define) s
+/F-gs-font 10 10 SF
+0 setgray
+47 315 M
+( ) s
+/Courier 10 10 SUF
+0.721569 0.52549 0.043137 setrgbcolor
+53 315 M
+(SUB_ACCELERATION) s
+/F-gs-font 10 10 SF
+0 setgray
+149 315 M
+( 0.4) s
+5 304 M
+(#) s
+/Courier-Bold 10 10 SUF
+0.372549 0.619608 0.627451 setrgbcolor
+11 304 M
+(define) s
+/F-gs-font 10 10 SF
+0 setgray
+47 304 M
+( ) s
+/Courier 10 10 SUF
+0.721569 0.52549 0.043137 setrgbcolor
+53 304 M
+(WATER_RESISTANCE) s
+/F-gs-font 10 10 SF
+0 setgray
+149 304 M
+( 0.7) s
+5 293 M
+(#) s
+/Courier-Bold 10 10 SUF
+0.372549 0.619608 0.627451 setrgbcolor
+11 293 M
+(define) s
+/F-gs-font 10 10 SF
+0 setgray
+47 293 M
+( ) s
+/Courier 10 10 SUF
+0.721569 0.52549 0.043137 setrgbcolor
+53 293 M
+(SUB_BOUNCE) s
+/F-gs-font 10 10 SF
+0 setgray
+113 293 M
+( 0.5) s
+5 282 M
+(#) s
+/Courier-Bold 10 10 SUF
+0.372549 0.619608 0.627451 setrgbcolor
+11 282 M
+(define) s
+/F-gs-font 10 10 SF
+0 setgray
+47 282 M
+( ) s
+/Courier 10 10 SUF
+0.721569 0.52549 0.043137 setrgbcolor
+53 282 M
+(WATER_SIDES_SUBDIVISION) s
+/F-gs-font 10 10 SF
+0 setgray
+191 282 M
+( 3) s
+5 271 M
+(#) s
+/Courier-Bold 10 10 SUF
+0.372549 0.619608 0.627451 setrgbcolor
+11 271 M
+(define) s
+/F-gs-font 10 10 SF
+0 setgray
+47 271 M
+( ) s
+/Courier 10 10 SUF
+0.721569 0.52549 0.043137 setrgbcolor
+53 271 M
+(WATER_TOP_SUBDIVISION) s
+/F-gs-font 10 10 SF
+0 setgray
+179 271 M
+( 10) s
+5 260 M
+(#) s
+/Courier-Bold 10 10 SUF
+0.372549 0.619608 0.627451 setrgbcolor
+11 260 M
+(define) s
+/F-gs-font 10 10 SF
+0 setgray
+47 260 M
+( ) s
+/Courier 10 10 SUF
+0.721569 0.52549 0.043137 setrgbcolor
+53 260 M
+(SPOTLIGHT_WIDTH) s
+/F-gs-font 10 10 SF
+0 setgray
+143 260 M
+( 30) s
+/Courier-Oblique 10 10 SUF
+0.698039 0.133333 0.133333 setrgbcolor
+5 238 M
+(/* Variables */) s
+/F-gs-font 10 10 SF
+0 setgray
+5 227 M
+(GLuint textures[NUMBER_OF_TEXTURES];) s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+5 216 M
+(char) s
+/F-gs-font 10 10 SF
+0 setgray
+29 216 M
+( textureFiles[NUMBER_OF_TEXTURES][20] = {) s
+/Courier-Bold 10 10 SUF
+0.737255 0.560784 0.560784 setrgbcolor
+275 216 M
+("sand.rgb") s
+/F-gs-font 10 10 SF
+0 setgray
+335 216 M
+(, ) s
+/Courier-Bold 10 10 SUF
+0.737255 0.560784 0.560784 setrgbcolor
+347 216 M
+("surface.rgb") s
+/F-gs-font 10 10 SF
+0 setgray
+425 216 M
+(, ) s
+/Courier-Bold 10 10 SUF
+0.737255 0.560784 0.560784 setrgbcolor
+437 216 M
+("tex0-28420") s
+/F-gs-font 10 10 SF
+0 setgray
+509 216 M
+(};) s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+5 205 M
+(int) s
+/F-gs-font 10 10 SF
+0 setgray
+23 205 M
+( light0 = 1;) s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+5 194 M
+(int) s
+/F-gs-font 10 10 SF
+0 setgray
+23 194 M
+( light1 = 1;) s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+5 183 M
+(int) s
+/F-gs-font 10 10 SF
+0 setgray
+23 183 M
+( light2 = 1;) s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+5 172 M
+(int) s
+/F-gs-font 10 10 SF
+0 setgray
+23 172 M
+( light3 = 1;) s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+5 161 M
+(int) s
+/F-gs-font 10 10 SF
+0 setgray
+23 161 M
+( light4 = 1;) s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+5 150 M
+(int) s
+/F-gs-font 10 10 SF
+0 setgray
+23 150 M
+( light5 = 1;) s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+5 139 M
+(int) s
+/F-gs-font 10 10 SF
+0 setgray
+23 139 M
+( light6 = 1;) s
+5 128 M
+(bubble bubbles[MAX_BUBBLES];) s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+5 117 M
+(int) s
+/F-gs-font 10 10 SF
+0 setgray
+23 117 M
+( viewPosition = OUTSIDE;) s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+5 106 M
+(struct) s
+/F-gs-font 10 10 SF
+0 setgray
+41 106 M
+( {) s
+5 95 M
+(  GLfloat x, y, z;) s
+5 84 M
+(  GLfloat xVelocity, yVelocity, zVelocity;) s
+5 73 M
+(  GLfloat dive;) s
+5 62 M
+(  GLfloat turn;) s
+5 51 M
+(} sub;) s
+/Courier-Oblique 10 10 SUF
+0.698039 0.133333 0.133333 setrgbcolor
+5 18 M
+(/* Display lists */) s
+/F-gs-font 10 10 SF
+0 setgray
+5 7 M
+(GLuint ground;) s
+_R
+%Page: (2) 2
+%BeginPageSetup
+_S
+% N-up sub-page 2/2
+402 -547 translate
+0.688917 dup scale
+/pagenum 2 def
+/fname (main.c) def
+/fdir () def
+/ftail (main.c) def
+% User defined strings:
+/fmodstr (Thu May 24 16:54:19 2001) def
+/pagenumstr (2) def
+/user_header_p false def
+/user_footer_p false def
+%%EndPageSetup
+do_header
+5 766 M
+(GLuint tank;) s
+5 755 M
+(GLuint waterBack;) s
+5 744 M
+(GLuint waterFront;) s
+5 733 M
+(GLuint lights;) s
+5 722 M
+(GLuint aerator;) s
+5 711 M
+(GLuint submarine;) s
+/Courier-Oblique 10 10 SUF
+0.698039 0.133333 0.133333 setrgbcolor
+5 689 M
+(/* Callbacks */) s
+/F-gs-font 10 10 SF
+0 setgray
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+5 678 M
+(void) s
+/F-gs-font 10 10 SF
+0 setgray
+29 678 M
+( ) s
+/Courier-Bold 10 10 SUF
+0 0 1 setrgbcolor
+35 678 M
+(Display) s
+/F-gs-font 10 10 SF
+0 setgray
+77 678 M
+(\() s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+83 678 M
+(void) s
+/F-gs-font 10 10 SF
+0 setgray
+107 678 M
+(\);) s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+5 667 M
+(void) s
+/F-gs-font 10 10 SF
+0 setgray
+29 667 M
+( ) s
+/Courier-Bold 10 10 SUF
+0 0 1 setrgbcolor
+35 667 M
+(Reshape) s
+/F-gs-font 10 10 SF
+0 setgray
+77 667 M
+(\() s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+83 667 M
+(int) s
+/F-gs-font 10 10 SF
+0 setgray
+101 667 M
+(, ) s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+113 667 M
+(int) s
+/F-gs-font 10 10 SF
+0 setgray
+131 667 M
+(\);) s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+5 656 M
+(void) s
+/F-gs-font 10 10 SF
+0 setgray
+29 656 M
+( ) s
+/Courier-Bold 10 10 SUF
+0 0 1 setrgbcolor
+35 656 M
+(Special) s
+/F-gs-font 10 10 SF
+0 setgray
+77 656 M
+(\() s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+83 656 M
+(int) s
+/F-gs-font 10 10 SF
+0 setgray
+101 656 M
+(, ) s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+113 656 M
+(int) s
+/F-gs-font 10 10 SF
+0 setgray
+131 656 M
+(, ) s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+143 656 M
+(int) s
+/F-gs-font 10 10 SF
+0 setgray
+161 656 M
+(\);) s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+5 645 M
+(void) s
+/F-gs-font 10 10 SF
+0 setgray
+29 645 M
+( ) s
+/Courier-Bold 10 10 SUF
+0 0 1 setrgbcolor
+35 645 M
+(Keyboard) s
+/F-gs-font 10 10 SF
+0 setgray
+83 645 M
+(\() s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+89 645 M
+(unsigned) s
+/F-gs-font 10 10 SF
+0 setgray
+137 645 M
+( ) s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+143 645 M
+(char) s
+/F-gs-font 10 10 SF
+0 setgray
+167 645 M
+(, ) s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+179 645 M
+(int) s
+/F-gs-font 10 10 SF
+0 setgray
+197 645 M
+(, ) s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+209 645 M
+(int) s
+/F-gs-font 10 10 SF
+0 setgray
+227 645 M
+(\);) s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+5 634 M
+(void) s
+/F-gs-font 10 10 SF
+0 setgray
+29 634 M
+( ) s
+/Courier-Bold 10 10 SUF
+0 0 1 setrgbcolor
+35 634 M
+(Idle) s
+/F-gs-font 10 10 SF
+0 setgray
+59 634 M
+(\() s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+65 634 M
+(void) s
+/F-gs-font 10 10 SF
+0 setgray
+89 634 M
+(\);) s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+5 623 M
+(void) s
+/F-gs-font 10 10 SF
+0 setgray
+29 623 M
+( ) s
+/Courier-Bold 10 10 SUF
+0 0 1 setrgbcolor
+35 623 M
+(Menu) s
+/F-gs-font 10 10 SF
+0 setgray
+59 623 M
+(\() s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+65 623 M
+(int) s
+/F-gs-font 10 10 SF
+0 setgray
+83 623 M
+(\);) s
+/Courier-Oblique 10 10 SUF
+0.698039 0.133333 0.133333 setrgbcolor
+5 601 M
+(/* Initialisation */) s
+/F-gs-font 10 10 SF
+0 setgray
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+5 590 M
+(void) s
+/F-gs-font 10 10 SF
+0 setgray
+29 590 M
+( ) s
+/Courier-Bold 10 10 SUF
+0 0 1 setrgbcolor
+35 590 M
+(InitMenu) s
+/F-gs-font 10 10 SF
+0 setgray
+83 590 M
+(\() s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+89 590 M
+(void) s
+/F-gs-font 10 10 SF
+0 setgray
+113 590 M
+(\);) s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+5 579 M
+(void) s
+/F-gs-font 10 10 SF
+0 setgray
+29 579 M
+( ) s
+/Courier-Bold 10 10 SUF
+0 0 1 setrgbcolor
+35 579 M
+(InitGround) s
+/F-gs-font 10 10 SF
+0 setgray
+95 579 M
+(\() s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+101 579 M
+(void) s
+/F-gs-font 10 10 SF
+0 setgray
+125 579 M
+(\);) s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+5 568 M
+(void) s
+/F-gs-font 10 10 SF
+0 setgray
+29 568 M
+( ) s
+/Courier-Bold 10 10 SUF
+0 0 1 setrgbcolor
+35 568 M
+(InitTank) s
+/F-gs-font 10 10 SF
+0 setgray
+83 568 M
+(\() s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+89 568 M
+(void) s
+/F-gs-font 10 10 SF
+0 setgray
+113 568 M
+(\);) s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+5 557 M
+(void) s
+/F-gs-font 10 10 SF
+0 setgray
+29 557 M
+( ) s
+/Courier-Bold 10 10 SUF
+0 0 1 setrgbcolor
+35 557 M
+(InitTextures) s
+/F-gs-font 10 10 SF
+0 setgray
+107 557 M
+(\() s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+113 557 M
+(void) s
+/F-gs-font 10 10 SF
+0 setgray
+137 557 M
+(\);) s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+5 546 M
+(void) s
+/F-gs-font 10 10 SF
+0 setgray
+29 546 M
+( ) s
+/Courier-Bold 10 10 SUF
+0 0 1 setrgbcolor
+35 546 M
+(InitWater) s
+/F-gs-font 10 10 SF
+0 setgray
+89 546 M
+(\() s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+95 546 M
+(void) s
+/F-gs-font 10 10 SF
+0 setgray
+119 546 M
+(\);) s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+5 535 M
+(void) s
+/F-gs-font 10 10 SF
+0 setgray
+29 535 M
+( ) s
+/Courier-Bold 10 10 SUF
+0 0 1 setrgbcolor
+35 535 M
+(InitLights) s
+/F-gs-font 10 10 SF
+0 setgray
+95 535 M
+(\() s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+101 535 M
+(void) s
+/F-gs-font 10 10 SF
+0 setgray
+125 535 M
+(\);) s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+5 524 M
+(void) s
+/F-gs-font 10 10 SF
+0 setgray
+29 524 M
+( ) s
+/Courier-Bold 10 10 SUF
+0 0 1 setrgbcolor
+35 524 M
+(InitAerator) s
+/F-gs-font 10 10 SF
+0 setgray
+101 524 M
+(\() s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+107 524 M
+(void) s
+/F-gs-font 10 10 SF
+0 setgray
+131 524 M
+(\);) s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+5 513 M
+(void) s
+/F-gs-font 10 10 SF
+0 setgray
+29 513 M
+( ) s
+/Courier-Bold 10 10 SUF
+0 0 1 setrgbcolor
+35 513 M
+(InitBubbles) s
+/F-gs-font 10 10 SF
+0 setgray
+101 513 M
+(\() s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+107 513 M
+(void) s
+/F-gs-font 10 10 SF
+0 setgray
+131 513 M
+(\);) s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+5 502 M
+(void) s
+/F-gs-font 10 10 SF
+0 setgray
+29 502 M
+( ) s
+/Courier-Bold 10 10 SUF
+0 0 1 setrgbcolor
+35 502 M
+(InitSubmarine) s
+/F-gs-font 10 10 SF
+0 setgray
+113 502 M
+(\() s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+119 502 M
+(void) s
+/F-gs-font 10 10 SF
+0 setgray
+143 502 M
+(\);) s
+/Courier-Oblique 10 10 SUF
+0.698039 0.133333 0.133333 setrgbcolor
+5 480 M
+(/* Drawing functions */) s
+/F-gs-font 10 10 SF
+0 setgray
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+5 469 M
+(void) s
+/F-gs-font 10 10 SF
+0 setgray
+29 469 M
+( ) s
+/Courier-Bold 10 10 SUF
+0 0 1 setrgbcolor
+35 469 M
+(DrawLights) s
+/F-gs-font 10 10 SF
+0 setgray
+95 469 M
+(\() s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+101 469 M
+(void) s
+/F-gs-font 10 10 SF
+0 setgray
+125 469 M
+(\);) s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+5 458 M
+(void) s
+/F-gs-font 10 10 SF
+0 setgray
+29 458 M
+( ) s
+/Courier-Bold 10 10 SUF
+0 0 1 setrgbcolor
+35 458 M
+(DrawBubbles) s
+/F-gs-font 10 10 SF
+0 setgray
+101 458 M
+(\() s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+107 458 M
+(void) s
+/F-gs-font 10 10 SF
+0 setgray
+131 458 M
+(\);) s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+5 447 M
+(void) s
+/F-gs-font 10 10 SF
+0 setgray
+29 447 M
+( ) s
+/Courier-Bold 10 10 SUF
+0 0 1 setrgbcolor
+35 447 M
+(DrawSubmarine) s
+/F-gs-font 10 10 SF
+0 setgray
+113 447 M
+(\() s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+119 447 M
+(void) s
+/F-gs-font 10 10 SF
+0 setgray
+143 447 M
+(\);) s
+/Courier-Oblique 10 10 SUF
+0.698039 0.133333 0.133333 setrgbcolor
+5 425 M
+(/* Helper functions */) s
+/F-gs-font 10 10 SF
+0 setgray
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+5 414 M
+(int) s
+/F-gs-font 10 10 SF
+0 setgray
+23 414 M
+( ) s
+/Courier-Bold 10 10 SUF
+0 0 1 setrgbcolor
+29 414 M
+(HitShelf) s
+/F-gs-font 10 10 SF
+0 setgray
+77 414 M
+(\(bubble\);) s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+5 403 M
+(int) s
+/F-gs-font 10 10 SF
+0 setgray
+23 403 M
+( ) s
+/Courier-Bold 10 10 SUF
+0 0 1 setrgbcolor
+29 403 M
+(HitWall) s
+/F-gs-font 10 10 SF
+0 setgray
+71 403 M
+(\(bubble\);) s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+5 392 M
+(void) s
+/F-gs-font 10 10 SF
+0 setgray
+29 392 M
+( ) s
+/Courier-Bold 10 10 SUF
+0 0 1 setrgbcolor
+35 392 M
+(AccelerateSubmarine) s
+/F-gs-font 10 10 SF
+0 setgray
+149 392 M
+(\(GLfloat\);) s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+5 381 M
+(void) s
+/F-gs-font 10 10 SF
+0 setgray
+29 381 M
+( ) s
+/Courier-Bold 10 10 SUF
+0 0 1 setrgbcolor
+35 381 M
+(CollisionDetection) s
+/F-gs-font 10 10 SF
+0 setgray
+143 381 M
+(\() s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+149 381 M
+(void) s
+/F-gs-font 10 10 SF
+0 setgray
+173 381 M
+(\);) s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+5 370 M
+(void) s
+/F-gs-font 10 10 SF
+0 setgray
+29 370 M
+( ) s
+/Courier-Bold 10 10 SUF
+0 0 1 setrgbcolor
+35 370 M
+(SubdivideXY) s
+/F-gs-font 10 10 SF
+0 setgray
+101 370 M
+(\(GLfloat[3], GLfloat[3], GLfloat*, ) s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+311 370 M
+(int) s
+/F-gs-font 10 10 SF
+0 setgray
+329 370 M
+(\);) s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+5 359 M
+(void) s
+/F-gs-font 10 10 SF
+0 setgray
+29 359 M
+( ) s
+/Courier-Bold 10 10 SUF
+0 0 1 setrgbcolor
+35 359 M
+(SubdivideYZ) s
+/F-gs-font 10 10 SF
+0 setgray
+101 359 M
+(\(GLfloat[3], GLfloat[3], GLfloat*, ) s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+311 359 M
+(int) s
+/F-gs-font 10 10 SF
+0 setgray
+329 359 M
+(\);) s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+5 348 M
+(void) s
+/F-gs-font 10 10 SF
+0 setgray
+29 348 M
+( ) s
+/Courier-Bold 10 10 SUF
+0 0 1 setrgbcolor
+35 348 M
+(SubdivideXZ) s
+/F-gs-font 10 10 SF
+0 setgray
+101 348 M
+(\(GLfloat[3], GLfloat[3], GLfloat*, ) s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+311 348 M
+(int) s
+/F-gs-font 10 10 SF
+0 setgray
+329 348 M
+(\);) s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+5 337 M
+(float) s
+/F-gs-font 10 10 SF
+0 setgray
+35 337 M
+( ) s
+/Courier-Bold 10 10 SUF
+0 0 1 setrgbcolor
+41 337 M
+(RandF) s
+/F-gs-font 10 10 SF
+0 setgray
+71 337 M
+(\() s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+77 337 M
+(void) s
+/F-gs-font 10 10 SF
+0 setgray
+101 337 M
+(\);) s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+5 326 M
+(void) s
+/F-gs-font 10 10 SF
+0 setgray
+29 326 M
+( ) s
+/Courier-Bold 10 10 SUF
+0 0 1 setrgbcolor
+35 326 M
+(Normalise) s
+/F-gs-font 10 10 SF
+0 setgray
+89 326 M
+(\(GLfloat[3]\);) s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+5 304 M
+(int) s
+/F-gs-font 10 10 SF
+0 setgray
+23 304 M
+( ) s
+/Courier-Bold 10 10 SUF
+0 0 1 setrgbcolor
+29 304 M
+(main) s
+/F-gs-font 10 10 SF
+0 setgray
+53 304 M
+(\() s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+59 304 M
+(int) s
+/F-gs-font 10 10 SF
+0 setgray
+77 304 M
+( argc, ) s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+119 304 M
+(char) s
+/F-gs-font 10 10 SF
+0 setgray
+143 304 M
+( *argv[]\) {) s
+5 293 M
+(  glutInit\(&argc, argv\);) s
+5 282 M
+(  glutInitDisplayMode\(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH\);) s
+5 271 M
+(  glutInitWindowSize\(WIN_X, WIN_Y\);) s
+5 260 M
+(  glutCreateWindow\() s
+/Courier-Bold 10 10 SUF
+0.737255 0.560784 0.560784 setrgbcolor
+119 260 M
+("CGV Assessment 2001 - Candidate 28420") s
+/F-gs-font 10 10 SF
+0 setgray
+353 260 M
+(\);) s
+5 238 M
+(  printf\() s
+/Courier-Bold 10 10 SUF
+0.737255 0.560784 0.560784 setrgbcolor
+59 238 M
+("\\n\\n**************************************************\\n") s
+/F-gs-font 10 10 SF
+0 setgray
+407 238 M
+(\);) s
+5 227 M
+(  printf\() s
+/Courier-Bold 10 10 SUF
+0.737255 0.560784 0.560784 setrgbcolor
+59 227 M
+("*     CGV Assessment 2001 - Candidate 28420      *\\n") s
+/F-gs-font 10 10 SF
+0 setgray
+383 227 M
+(\);) s
+5 216 M
+(  printf\() s
+/Courier-Bold 10 10 SUF
+0.737255 0.560784 0.560784 setrgbcolor
+59 216 M
+("**************************************************\\n") s
+/F-gs-font 10 10 SF
+0 setgray
+383 216 M
+(\);) s
+5 205 M
+(  printf\() s
+/Courier-Bold 10 10 SUF
+0.737255 0.560784 0.560784 setrgbcolor
+59 205 M
+("\\nKEYS:\\n\\n") s
+/F-gs-font 10 10 SF
+0 setgray
+137 205 M
+(\);) s
+5 194 M
+(  printf\() s
+/Courier-Bold 10 10 SUF
+0.737255 0.560784 0.560784 setrgbcolor
+59 194 M
+("1-6\\t\\tTurn lights 1-6 on and off\\n") s
+/F-gs-font 10 10 SF
+0 setgray
+281 194 M
+(\);) s
+5 183 M
+(  printf\() s
+/Courier-Bold 10 10 SUF
+0.737255 0.560784 0.560784 setrgbcolor
+59 183 M
+("f\\t\\tMove submarine forwards\\n") s
+/F-gs-font 10 10 SF
+0 setgray
+251 183 M
+(\);) s
+5 172 M
+(  printf\() s
+/Courier-Bold 10 10 SUF
+0.737255 0.560784 0.560784 setrgbcolor
+59 172 M
+("j\\t\\tMove submarine backwards\\n") s
+/F-gs-font 10 10 SF
+0 setgray
+257 172 M
+(\);) s
+5 161 M
+(  printf\() s
+/Courier-Bold 10 10 SUF
+0.737255 0.560784 0.560784 setrgbcolor
+59 161 M
+("UP ARROW\\tTilt submarine up\\n") s
+/F-gs-font 10 10 SF
+0 setgray
+245 161 M
+(\);) s
+5 150 M
+(  printf\() s
+/Courier-Bold 10 10 SUF
+0.737255 0.560784 0.560784 setrgbcolor
+59 150 M
+("DOWN ARROW\\tTilt submarine down\\n") s
+/F-gs-font 10 10 SF
+0 setgray
+269 150 M
+(\);) s
+5 139 M
+(  printf\() s
+/Courier-Bold 10 10 SUF
+0.737255 0.560784 0.560784 setrgbcolor
+59 139 M
+("LEFT ARROW\\tRotate submarine to port\\n") s
+/F-gs-font 10 10 SF
+0 setgray
+299 139 M
+(\);) s
+5 128 M
+(  printf\() s
+/Courier-Bold 10 10 SUF
+0.737255 0.560784 0.560784 setrgbcolor
+59 128 M
+("RIGHT ARROW\\tRotate submarine to starboard\\n") s
+/F-gs-font 10 10 SF
+0 setgray
+335 128 M
+(\);) s
+5 117 M
+(  printf\() s
+/Courier-Bold 10 10 SUF
+0.737255 0.560784 0.560784 setrgbcolor
+59 117 M
+("i\\t\\tSwitch view to inside submarine \(also in MMB menu\)\\n") s
+/F-gs-font 10 10 SF
+0 setgray
+413 117 M
+(\);) s
+5 106 M
+(  printf\() s
+/Courier-Bold 10 10 SUF
+0.737255 0.560784 0.560784 setrgbcolor
+59 106 M
+("o\\t\\tSwitch view to outside submarine \(also in MMB menu\)\\n") s
+/F-gs-font 10 10 SF
+0 setgray
+419 106 M
+(\);) s
+5 95 M
+(  printf\() s
+/Courier-Bold 10 10 SUF
+0.737255 0.560784 0.560784 setrgbcolor
+59 95 M
+("ESC\\t\\tExit program \(also in MMB menu\)\\n\\n") s
+/F-gs-font 10 10 SF
+0 setgray
+323 95 M
+(\);) s
+5 73 M
+(  glClearColor\(0.3, 0.3, 0.3, 1.0\); ) s
+/Courier-Oblique 10 10 SUF
+0.698039 0.133333 0.133333 setrgbcolor
+221 73 M
+(/* Grey background */) s
+/F-gs-font 10 10 SF
+0 setgray
+5 62 M
+(  ) s
+/Courier-Oblique 10 10 SUF
+0.698039 0.133333 0.133333 setrgbcolor
+17 62 M
+(/* smooth shading */) s
+/F-gs-font 10 10 SF
+0 setgray
+5 51 M
+(  glShadeModel\(GL_SMOOTH\);) s
+5 40 M
+(  glEnable\(GL_DEPTH_TEST\);) s
+5 29 M
+(  ) s
+/Courier-Oblique 10 10 SUF
+0.698039 0.133333 0.133333 setrgbcolor
+17 29 M
+(/* enable lighting */) s
+/F-gs-font 10 10 SF
+0 setgray
+5 18 M
+(  glEnable\(GL_LIGHTING\);) s
+5 7 M
+(  ) s
+/Courier-Oblique 10 10 SUF
+0.698039 0.133333 0.133333 setrgbcolor
+17 7 M
+(/* enable blending */) s
+/F-gs-font 10 10 SF
+0 setgray
+_R
+_R
+S
+%%Page: (3-4) 2
+%%BeginPageSetup
+_S
+90 rotate
+24 -24 translate
+%Page: (3) 3
+%BeginPageSetup
+_S
+% N-up sub-page 1/2
+0 -547 translate
+0.688917 dup scale
+/pagenum 3 def
+/fname (main.c) def
+/fdir () def
+/ftail (main.c) def
+% User defined strings:
+/fmodstr (Thu May 24 16:54:19 2001) def
+/pagenumstr (3) def
+/user_header_p false def
+/user_footer_p false def
+%%EndPageSetup
+do_header
+5 766 M
+(  glBlendFunc\(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA\);) s
+5 755 M
+(  glEnable\(GL_BLEND\);) s
+5 733 M
+(  ) s
+/Courier-Oblique 10 10 SUF
+0.698039 0.133333 0.133333 setrgbcolor
+17 733 M
+(/* initialise random numbers */) s
+/F-gs-font 10 10 SF
+0 setgray
+5 722 M
+(  srand\(\() s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+59 722 M
+(unsigned) s
+/F-gs-font 10 10 SF
+0 setgray
+107 722 M
+( ) s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+113 722 M
+(int) s
+/F-gs-font 10 10 SF
+0 setgray
+131 722 M
+(\) time\(NULL\)\);) s
+5 700 M
+(  ) s
+/Courier-Oblique 10 10 SUF
+0.698039 0.133333 0.133333 setrgbcolor
+17 700 M
+(/* Initialise */) s
+/F-gs-font 10 10 SF
+0 setgray
+5 689 M
+(  InitMenu\(\);) s
+5 678 M
+(  InitTextures\(\);) s
+5 667 M
+(  InitGround\(\);) s
+5 656 M
+(  InitTank\(\);) s
+5 645 M
+(  InitWater\(\);) s
+5 634 M
+(  InitLights\(\);) s
+5 623 M
+(  InitAerator\(\);) s
+5 612 M
+(  InitBubbles\(\);) s
+5 601 M
+(  InitSubmarine\(\);) s
+5 579 M
+(  ) s
+/Courier-Oblique 10 10 SUF
+0.698039 0.133333 0.133333 setrgbcolor
+17 579 M
+(/* register callbacks */) s
+/F-gs-font 10 10 SF
+0 setgray
+5 568 M
+(  glutDisplayFunc\(Display\);) s
+5 557 M
+(  glutReshapeFunc\(Reshape\);) s
+5 546 M
+(  glutSpecialFunc\(Special\);) s
+5 535 M
+(  glutKeyboardFunc\(Keyboard\);) s
+5 524 M
+(  glutIdleFunc\(Idle\);) s
+5 502 M
+(  glutMainLoop\(\);) s
+5 480 M
+(  ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+17 480 M
+(return) s
+/F-gs-font 10 10 SF
+0 setgray
+53 480 M
+( 0;) s
+5 469 M
+(}) s
+/Courier-Oblique 10 10 SUF
+0.698039 0.133333 0.133333 setrgbcolor
+5 447 M
+(/**************************************************/) s
+/F-gs-font 10 10 SF
+0 setgray
+/Courier-Oblique 10 10 SUF
+0.698039 0.133333 0.133333 setrgbcolor
+5 436 M
+(/* CALLBACKS                                      */) s
+/F-gs-font 10 10 SF
+0 setgray
+/Courier-Oblique 10 10 SUF
+0.698039 0.133333 0.133333 setrgbcolor
+5 425 M
+(/**************************************************/) s
+/F-gs-font 10 10 SF
+0 setgray
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+5 403 M
+(void) s
+/F-gs-font 10 10 SF
+0 setgray
+29 403 M
+( ) s
+/Courier-Bold 10 10 SUF
+0 0 1 setrgbcolor
+35 403 M
+(Display) s
+/F-gs-font 10 10 SF
+0 setgray
+77 403 M
+(\(\) {) s
+5 392 M
+(  GLfloat ambientUnderwaterLight[] = {0.5, 0.5, 1.0, 1.0};) s
+5 381 M
+(  GLfloat ambientLight[] = {0.7, 0.7, 0.7, 1.0};) s
+5 359 M
+(  glClear\(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT\);) s
+5 337 M
+(  ) s
+/Courier-Oblique 10 10 SUF
+0.698039 0.133333 0.133333 setrgbcolor
+17 337 M
+(/* Set up the viewpoint */) s
+/F-gs-font 10 10 SF
+0 setgray
+5 326 M
+(  glLoadIdentity\(\);) s
+5 315 M
+(  ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+17 315 M
+(if) s
+/F-gs-font 10 10 SF
+0 setgray
+29 315 M
+(\(viewPosition == OUTSIDE\) {) s
+5 304 M
+(    ) s
+/Courier-Oblique 10 10 SUF
+0.698039 0.133333 0.133333 setrgbcolor
+29 304 M
+(/* set the viewpoint outside the tank looking in */) s
+/F-gs-font 10 10 SF
+0 setgray
+5 293 M
+(    gluLookAt\(100.0, 50.0, 150.0,) s
+5 282 M
+(              0.0, 25.0, 0.0,) s
+5 271 M
+(              0.0, 1.0, 0.0\);) s
+5 260 M
+(    glLightModelfv\(GL_LIGHT_MODEL_AMBIENT, ambientLight\);) s
+5 249 M
+(  }) s
+5 238 M
+(  ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+17 238 M
+(else) s
+/F-gs-font 10 10 SF
+0 setgray
+41 238 M
+( {) s
+5 227 M
+(    ) s
+/Courier-Oblique 10 10 SUF
+0.698039 0.133333 0.133333 setrgbcolor
+29 227 M
+(/* set the viewpoint to point in the direction of the sub */) s
+/F-gs-font 10 10 SF
+0 setgray
+5 216 M
+(    glRotatef\(sub.dive, 1.0, 0.0, 0.0\);) s
+5 205 M
+(    glRotatef\(-sub.turn-90.0, 0.0, 1.0, 0.0\);) s
+5 194 M
+(    ) s
+/Courier-Oblique 10 10 SUF
+0.698039 0.133333 0.133333 setrgbcolor
+29 194 M
+(/* translate to the position of the sub */) s
+/F-gs-font 10 10 SF
+0 setgray
+5 183 M
+(    glTranslatef\(-sub.x, -sub.y, -sub.z\);) s
+5 172 M
+(    ) s
+/Courier-Oblique 10 10 SUF
+0.698039 0.133333 0.133333 setrgbcolor
+29 172 M
+(/* underwater lighting effect */) s
+/F-gs-font 10 10 SF
+0 setgray
+5 161 M
+(    glLightModelfv\(GL_LIGHT_MODEL_AMBIENT, ambientUnderwaterLight\);) s
+5 150 M
+(  }) s
+5 128 M
+(  ) s
+/Courier-Oblique 10 10 SUF
+0.698039 0.133333 0.133333 setrgbcolor
+17 128 M
+(/* Draw the scene */) s
+/F-gs-font 10 10 SF
+0 setgray
+5 117 M
+(  DrawLights\(\);) s
+5 106 M
+(  ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+17 106 M
+(if) s
+/F-gs-font 10 10 SF
+0 setgray
+29 106 M
+(\(light0\) glEnable\(GL_LIGHT0\); ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+209 106 M
+(else) s
+/F-gs-font 10 10 SF
+0 setgray
+233 106 M
+( glDisable\(GL_LIGHT0\);) s
+5 95 M
+(  ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+17 95 M
+(if) s
+/F-gs-font 10 10 SF
+0 setgray
+29 95 M
+(\(light1\) glEnable\(GL_LIGHT1\); ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+209 95 M
+(else) s
+/F-gs-font 10 10 SF
+0 setgray
+233 95 M
+( glDisable\(GL_LIGHT1\);) s
+5 84 M
+(  ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+17 84 M
+(if) s
+/F-gs-font 10 10 SF
+0 setgray
+29 84 M
+(\(light2\) glEnable\(GL_LIGHT2\); ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+209 84 M
+(else) s
+/F-gs-font 10 10 SF
+0 setgray
+233 84 M
+( glDisable\(GL_LIGHT2\);) s
+5 73 M
+(  ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+17 73 M
+(if) s
+/F-gs-font 10 10 SF
+0 setgray
+29 73 M
+(\(light3\) glEnable\(GL_LIGHT3\); ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+209 73 M
+(else) s
+/F-gs-font 10 10 SF
+0 setgray
+233 73 M
+( glDisable\(GL_LIGHT3\);) s
+5 62 M
+(  ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+17 62 M
+(if) s
+/F-gs-font 10 10 SF
+0 setgray
+29 62 M
+(\(light4\) glEnable\(GL_LIGHT4\); ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+209 62 M
+(else) s
+/F-gs-font 10 10 SF
+0 setgray
+233 62 M
+( glDisable\(GL_LIGHT4\);) s
+5 51 M
+(  ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+17 51 M
+(if) s
+/F-gs-font 10 10 SF
+0 setgray
+29 51 M
+(\(light5\) glEnable\(GL_LIGHT5\); ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+209 51 M
+(else) s
+/F-gs-font 10 10 SF
+0 setgray
+233 51 M
+( glDisable\(GL_LIGHT5\);) s
+5 40 M
+(  ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+17 40 M
+(if) s
+/F-gs-font 10 10 SF
+0 setgray
+29 40 M
+(\(light6\) glEnable\(GL_LIGHT6\); ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+209 40 M
+(else) s
+/F-gs-font 10 10 SF
+0 setgray
+233 40 M
+( glDisable\(GL_LIGHT6\);) s
+5 29 M
+(  glCallList\(ground\);) s
+5 18 M
+(  glCallList\(tank\);) s
+5 7 M
+(  glCallList\(waterBack\);) s
+_R
+%Page: (4) 4
+%BeginPageSetup
+_S
+% N-up sub-page 2/2
+402 -547 translate
+0.688917 dup scale
+/pagenum 4 def
+/fname (main.c) def
+/fdir () def
+/ftail (main.c) def
+% User defined strings:
+/fmodstr (Thu May 24 16:54:19 2001) def
+/pagenumstr (4) def
+/user_header_p false def
+/user_footer_p false def
+%%EndPageSetup
+do_header
+5 766 M
+(  glCallList\(aerator\);) s
+5 755 M
+(  DrawBubbles\(\);) s
+5 744 M
+(  ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+17 744 M
+(if) s
+/F-gs-font 10 10 SF
+0 setgray
+29 744 M
+(\(viewPosition != IN_SUB\) DrawSubmarine\(\);) s
+5 733 M
+(  glCallList\(waterFront\);) s
+5 711 M
+(  glFlush\(\);) s
+5 700 M
+(  glutSwapBuffers\(\);) s
+5 689 M
+(  ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+17 689 M
+(return) s
+/F-gs-font 10 10 SF
+0 setgray
+53 689 M
+(;) s
+5 678 M
+(}) s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+5 656 M
+(void) s
+/F-gs-font 10 10 SF
+0 setgray
+29 656 M
+( ) s
+/Courier-Bold 10 10 SUF
+0 0 1 setrgbcolor
+35 656 M
+(Reshape) s
+/F-gs-font 10 10 SF
+0 setgray
+77 656 M
+(\() s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+83 656 M
+(int) s
+/F-gs-font 10 10 SF
+0 setgray
+101 656 M
+( w, ) s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+125 656 M
+(int) s
+/F-gs-font 10 10 SF
+0 setgray
+143 656 M
+( h\) {) s
+5 645 M
+(  glMatrixMode\(GL_PROJECTION\);) s
+5 634 M
+(  glLoadIdentity\(\);) s
+5 623 M
+(  gluPerspective\(45.0, \() s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+149 623 M
+(float) s
+/F-gs-font 10 10 SF
+0 setgray
+179 623 M
+(\)w/\() s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+203 623 M
+(float) s
+/F-gs-font 10 10 SF
+0 setgray
+233 623 M
+(\)h, 1.0, 400.0\);) s
+5 612 M
+(  glMatrixMode\(GL_MODELVIEW\);) s
+5 601 M
+(  glLoadIdentity\(\);) s
+5 590 M
+(  glViewport\(0, 0, w, h\);) s
+5 579 M
+(}) s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+5 557 M
+(void) s
+/F-gs-font 10 10 SF
+0 setgray
+29 557 M
+( ) s
+/Courier-Bold 10 10 SUF
+0 0 1 setrgbcolor
+35 557 M
+(Menu) s
+/F-gs-font 10 10 SF
+0 setgray
+59 557 M
+(\() s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+65 557 M
+(int) s
+/F-gs-font 10 10 SF
+0 setgray
+83 557 M
+( id\) {) s
+5 546 M
+(  ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+17 546 M
+(if) s
+/F-gs-font 10 10 SF
+0 setgray
+29 546 M
+(\(id < 0\) {) s
+5 535 M
+(    ) s
+/Courier-Oblique 10 10 SUF
+0.698039 0.133333 0.133333 setrgbcolor
+29 535 M
+(/* user selected exit */) s
+/F-gs-font 10 10 SF
+0 setgray
+5 524 M
+(    printf\() s
+/Courier-Bold 10 10 SUF
+0.737255 0.560784 0.560784 setrgbcolor
+71 524 M
+("\\n") s
+/F-gs-font 10 10 SF
+0 setgray
+95 524 M
+(\);) s
+5 513 M
+(    exit\(0\);) s
+5 502 M
+(  }) s
+5 491 M
+(  ) s
+/Courier-Oblique 10 10 SUF
+0.698039 0.133333 0.133333 setrgbcolor
+17 491 M
+(/* set the view position according to the selection */) s
+/F-gs-font 10 10 SF
+0 setgray
+5 480 M
+(  viewPosition = id;) s
+5 469 M
+(}) s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+5 447 M
+(void) s
+/F-gs-font 10 10 SF
+0 setgray
+29 447 M
+( ) s
+/Courier-Bold 10 10 SUF
+0 0 1 setrgbcolor
+35 447 M
+(Keyboard) s
+/F-gs-font 10 10 SF
+0 setgray
+83 447 M
+(\() s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+89 447 M
+(unsigned) s
+/F-gs-font 10 10 SF
+0 setgray
+137 447 M
+( ) s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+143 447 M
+(char) s
+/F-gs-font 10 10 SF
+0 setgray
+167 447 M
+( key, ) s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+203 447 M
+(int) s
+/F-gs-font 10 10 SF
+0 setgray
+221 447 M
+( x, ) s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+245 447 M
+(int) s
+/F-gs-font 10 10 SF
+0 setgray
+263 447 M
+( y\) {) s
+5 436 M
+(  ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+17 436 M
+(switch) s
+/F-gs-font 10 10 SF
+0 setgray
+53 436 M
+(\(key\) {) s
+5 425 M
+(  ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+17 425 M
+(case) s
+/F-gs-font 10 10 SF
+0 setgray
+41 425 M
+( ) s
+/Courier-Bold 10 10 SUF
+0.737255 0.560784 0.560784 setrgbcolor
+47 425 M
+('1') s
+/F-gs-font 10 10 SF
+0 setgray
+65 425 M
+(:) s
+5 414 M
+(    light1 = 1 - light1;) s
+5 403 M
+(    ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+29 403 M
+(break) s
+/F-gs-font 10 10 SF
+0 setgray
+59 403 M
+(;) s
+5 392 M
+(  ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+17 392 M
+(case) s
+/F-gs-font 10 10 SF
+0 setgray
+41 392 M
+( ) s
+/Courier-Bold 10 10 SUF
+0.737255 0.560784 0.560784 setrgbcolor
+47 392 M
+('2') s
+/F-gs-font 10 10 SF
+0 setgray
+65 392 M
+(:) s
+5 381 M
+(    light2 = 1 - light2;) s
+5 370 M
+(    ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+29 370 M
+(break) s
+/F-gs-font 10 10 SF
+0 setgray
+59 370 M
+(;) s
+5 359 M
+(  ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+17 359 M
+(case) s
+/F-gs-font 10 10 SF
+0 setgray
+41 359 M
+( ) s
+/Courier-Bold 10 10 SUF
+0.737255 0.560784 0.560784 setrgbcolor
+47 359 M
+('3') s
+/F-gs-font 10 10 SF
+0 setgray
+65 359 M
+(:) s
+5 348 M
+(    light3 = 1 - light3;) s
+5 337 M
+(    ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+29 337 M
+(break) s
+/F-gs-font 10 10 SF
+0 setgray
+59 337 M
+(;) s
+5 326 M
+(  ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+17 326 M
+(case) s
+/F-gs-font 10 10 SF
+0 setgray
+41 326 M
+( ) s
+/Courier-Bold 10 10 SUF
+0.737255 0.560784 0.560784 setrgbcolor
+47 326 M
+('4') s
+/F-gs-font 10 10 SF
+0 setgray
+65 326 M
+(:) s
+5 315 M
+(    light4 = 1 - light4;) s
+5 304 M
+(    ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+29 304 M
+(break) s
+/F-gs-font 10 10 SF
+0 setgray
+59 304 M
+(;) s
+5 293 M
+(  ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+17 293 M
+(case) s
+/F-gs-font 10 10 SF
+0 setgray
+41 293 M
+( ) s
+/Courier-Bold 10 10 SUF
+0.737255 0.560784 0.560784 setrgbcolor
+47 293 M
+('5') s
+/F-gs-font 10 10 SF
+0 setgray
+65 293 M
+(:) s
+5 282 M
+(    light5 = 1 - light5;) s
+5 271 M
+(    ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+29 271 M
+(break) s
+/F-gs-font 10 10 SF
+0 setgray
+59 271 M
+(;) s
+5 260 M
+(  ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+17 260 M
+(case) s
+/F-gs-font 10 10 SF
+0 setgray
+41 260 M
+( ) s
+/Courier-Bold 10 10 SUF
+0.737255 0.560784 0.560784 setrgbcolor
+47 260 M
+('6') s
+/F-gs-font 10 10 SF
+0 setgray
+65 260 M
+(:) s
+5 249 M
+(    light6 = 1 - light6;) s
+5 238 M
+(    ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+29 238 M
+(break) s
+/F-gs-font 10 10 SF
+0 setgray
+59 238 M
+(;) s
+5 227 M
+(  ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+17 227 M
+(case) s
+/F-gs-font 10 10 SF
+0 setgray
+41 227 M
+( ) s
+/Courier-Bold 10 10 SUF
+0.737255 0.560784 0.560784 setrgbcolor
+47 227 M
+('f') s
+/F-gs-font 10 10 SF
+0 setgray
+65 227 M
+(:) s
+5 216 M
+(    ) s
+/Courier-Oblique 10 10 SUF
+0.698039 0.133333 0.133333 setrgbcolor
+29 216 M
+(/* Move the sub forwards */) s
+/F-gs-font 10 10 SF
+0 setgray
+5 205 M
+(    AccelerateSubmarine\(SUB_ACCELERATION\);) s
+5 194 M
+(    ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+29 194 M
+(break) s
+/F-gs-font 10 10 SF
+0 setgray
+59 194 M
+(;) s
+5 183 M
+(  ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+17 183 M
+(case) s
+/F-gs-font 10 10 SF
+0 setgray
+41 183 M
+( ) s
+/Courier-Bold 10 10 SUF
+0.737255 0.560784 0.560784 setrgbcolor
+47 183 M
+('j') s
+/F-gs-font 10 10 SF
+0 setgray
+65 183 M
+(:) s
+5 172 M
+(    ) s
+/Courier-Oblique 10 10 SUF
+0.698039 0.133333 0.133333 setrgbcolor
+29 172 M
+(/* Move the sub backwards */) s
+/F-gs-font 10 10 SF
+0 setgray
+5 161 M
+(    AccelerateSubmarine\(-SUB_ACCELERATION\);) s
+5 150 M
+(    ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+29 150 M
+(break) s
+/F-gs-font 10 10 SF
+0 setgray
+59 150 M
+(;) s
+5 139 M
+(  ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+17 139 M
+(case) s
+/F-gs-font 10 10 SF
+0 setgray
+41 139 M
+( ) s
+/Courier-Bold 10 10 SUF
+0.737255 0.560784 0.560784 setrgbcolor
+47 139 M
+('i') s
+/F-gs-font 10 10 SF
+0 setgray
+65 139 M
+(:) s
+5 128 M
+(    viewPosition = IN_SUB;) s
+5 117 M
+(    ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+29 117 M
+(break) s
+/F-gs-font 10 10 SF
+0 setgray
+59 117 M
+(;) s
+5 106 M
+(  ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+17 106 M
+(case) s
+/F-gs-font 10 10 SF
+0 setgray
+41 106 M
+( ) s
+/Courier-Bold 10 10 SUF
+0.737255 0.560784 0.560784 setrgbcolor
+47 106 M
+('o') s
+/F-gs-font 10 10 SF
+0 setgray
+65 106 M
+(:) s
+5 95 M
+(    viewPosition = OUTSIDE;) s
+5 84 M
+(    ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+29 84 M
+(break) s
+/F-gs-font 10 10 SF
+0 setgray
+59 84 M
+(;) s
+5 73 M
+(  ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+17 73 M
+(case) s
+/F-gs-font 10 10 SF
+0 setgray
+41 73 M
+( ) s
+/Courier-Bold 10 10 SUF
+0.372549 0.619608 0.627451 setrgbcolor
+47 73 M
+(27) s
+/F-gs-font 10 10 SF
+0 setgray
+59 73 M
+(:) s
+5 62 M
+(    ) s
+/Courier-Oblique 10 10 SUF
+0.698039 0.133333 0.133333 setrgbcolor
+29 62 M
+(/* exit */) s
+/F-gs-font 10 10 SF
+0 setgray
+5 51 M
+(    printf\() s
+/Courier-Bold 10 10 SUF
+0.737255 0.560784 0.560784 setrgbcolor
+71 51 M
+("\\n") s
+/F-gs-font 10 10 SF
+0 setgray
+95 51 M
+(\);) s
+5 40 M
+(    exit\(0\);) s
+5 29 M
+(    ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+29 29 M
+(break) s
+/F-gs-font 10 10 SF
+0 setgray
+59 29 M
+(;) s
+5 18 M
+(  }) s
+5 7 M
+(  ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+17 7 M
+(return) s
+/F-gs-font 10 10 SF
+0 setgray
+53 7 M
+(;) s
+_R
+_R
+S
+%%Page: (5-6) 3
+%%BeginPageSetup
+_S
+90 rotate
+24 -24 translate
+%Page: (5) 5
+%BeginPageSetup
+_S
+% N-up sub-page 1/2
+0 -547 translate
+0.688917 dup scale
+/pagenum 5 def
+/fname (main.c) def
+/fdir () def
+/ftail (main.c) def
+% User defined strings:
+/fmodstr (Thu May 24 16:54:19 2001) def
+/pagenumstr (5) def
+/user_header_p false def
+/user_footer_p false def
+%%EndPageSetup
+do_header
+5 766 M
+(}) s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+5 744 M
+(void) s
+/F-gs-font 10 10 SF
+0 setgray
+29 744 M
+( ) s
+/Courier-Bold 10 10 SUF
+0 0 1 setrgbcolor
+35 744 M
+(Special) s
+/F-gs-font 10 10 SF
+0 setgray
+77 744 M
+(\() s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+83 744 M
+(int) s
+/F-gs-font 10 10 SF
+0 setgray
+101 744 M
+( key, ) s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+137 744 M
+(int) s
+/F-gs-font 10 10 SF
+0 setgray
+155 744 M
+( x, ) s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+179 744 M
+(int) s
+/F-gs-font 10 10 SF
+0 setgray
+197 744 M
+( y\) {) s
+5 733 M
+(  ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+17 733 M
+(switch) s
+/F-gs-font 10 10 SF
+0 setgray
+53 733 M
+(\(key\) {) s
+5 722 M
+(  ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+17 722 M
+(case) s
+/F-gs-font 10 10 SF
+0 setgray
+41 722 M
+( ) s
+/Courier-Bold 10 10 SUF
+0.372549 0.619608 0.627451 setrgbcolor
+47 722 M
+(GLUT_KEY_UP) s
+/F-gs-font 10 10 SF
+0 setgray
+113 722 M
+(:) s
+5 711 M
+(    ) s
+/Courier-Oblique 10 10 SUF
+0.698039 0.133333 0.133333 setrgbcolor
+29 711 M
+(/* Tilt submarine up */) s
+/F-gs-font 10 10 SF
+0 setgray
+5 700 M
+(    sub.dive -= 1.0;) s
+5 689 M
+(    ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+29 689 M
+(if) s
+/F-gs-font 10 10 SF
+0 setgray
+41 689 M
+(\(sub.dive < -60.0\) sub.dive = -60.0;) s
+5 678 M
+(    ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+29 678 M
+(break) s
+/F-gs-font 10 10 SF
+0 setgray
+59 678 M
+(;) s
+5 667 M
+(  ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+17 667 M
+(case) s
+/F-gs-font 10 10 SF
+0 setgray
+41 667 M
+( ) s
+/Courier-Bold 10 10 SUF
+0.372549 0.619608 0.627451 setrgbcolor
+47 667 M
+(GLUT_KEY_DOWN) s
+/F-gs-font 10 10 SF
+0 setgray
+125 667 M
+(:) s
+5 656 M
+(    ) s
+/Courier-Oblique 10 10 SUF
+0.698039 0.133333 0.133333 setrgbcolor
+29 656 M
+(/* Tilt submarine down */) s
+/F-gs-font 10 10 SF
+0 setgray
+5 645 M
+(    sub.dive += 1.0;) s
+5 634 M
+(    ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+29 634 M
+(if) s
+/F-gs-font 10 10 SF
+0 setgray
+41 634 M
+(\(sub.dive > 60.0\) sub.dive = 60.0;) s
+5 623 M
+(    ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+29 623 M
+(break) s
+/F-gs-font 10 10 SF
+0 setgray
+59 623 M
+(;) s
+5 612 M
+(  ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+17 612 M
+(case) s
+/F-gs-font 10 10 SF
+0 setgray
+41 612 M
+( ) s
+/Courier-Bold 10 10 SUF
+0.372549 0.619608 0.627451 setrgbcolor
+47 612 M
+(GLUT_KEY_LEFT) s
+/F-gs-font 10 10 SF
+0 setgray
+125 612 M
+(:) s
+5 601 M
+(    ) s
+/Courier-Oblique 10 10 SUF
+0.698039 0.133333 0.133333 setrgbcolor
+29 601 M
+(/* Rotate submarine to port */) s
+/F-gs-font 10 10 SF
+0 setgray
+5 590 M
+(    sub.turn += 2.0;) s
+5 579 M
+(    ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+29 579 M
+(if) s
+/F-gs-font 10 10 SF
+0 setgray
+41 579 M
+(\(sub.turn > 360.0\) sub.turn -= 360.0;) s
+5 568 M
+(    ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+29 568 M
+(break) s
+/F-gs-font 10 10 SF
+0 setgray
+59 568 M
+(;) s
+5 557 M
+(  ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+17 557 M
+(case) s
+/F-gs-font 10 10 SF
+0 setgray
+41 557 M
+( ) s
+/Courier-Bold 10 10 SUF
+0.372549 0.619608 0.627451 setrgbcolor
+47 557 M
+(GLUT_KEY_RIGHT) s
+/F-gs-font 10 10 SF
+0 setgray
+131 557 M
+(:) s
+5 546 M
+(    ) s
+/Courier-Oblique 10 10 SUF
+0.698039 0.133333 0.133333 setrgbcolor
+29 546 M
+(/* Rotate submarine to starboard */) s
+/F-gs-font 10 10 SF
+0 setgray
+5 535 M
+(    sub.turn -= 2.0;) s
+5 524 M
+(    ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+29 524 M
+(if) s
+/F-gs-font 10 10 SF
+0 setgray
+41 524 M
+(\(sub.turn < 0.0\) sub.turn += 360.0;) s
+5 513 M
+(    ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+29 513 M
+(break) s
+/F-gs-font 10 10 SF
+0 setgray
+59 513 M
+(;) s
+5 502 M
+(  }) s
+5 491 M
+(}) s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+5 469 M
+(void) s
+/F-gs-font 10 10 SF
+0 setgray
+29 469 M
+( ) s
+/Courier-Bold 10 10 SUF
+0 0 1 setrgbcolor
+35 469 M
+(Idle) s
+/F-gs-font 10 10 SF
+0 setgray
+59 469 M
+(\(\) {) s
+5 458 M
+(  ) s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+17 458 M
+(static) s
+/F-gs-font 10 10 SF
+0 setgray
+53 458 M
+( clock_t old = 0, last = 0;) s
+5 447 M
+(  ) s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+17 447 M
+(static) s
+/F-gs-font 10 10 SF
+0 setgray
+53 447 M
+( ) s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+59 447 M
+(int) s
+/F-gs-font 10 10 SF
+0 setgray
+77 447 M
+( ticks = 0;) s
+5 436 M
+(  clock_t new, elapsed;) s
+5 425 M
+(  ) s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+17 425 M
+(float) s
+/F-gs-font 10 10 SF
+0 setgray
+47 425 M
+( elapsedSecs;) s
+5 414 M
+(  GLfloat velAdj;) s
+5 403 M
+(  ) s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+17 403 M
+(static) s
+/F-gs-font 10 10 SF
+0 setgray
+53 403 M
+( ) s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+59 403 M
+(float) s
+/F-gs-font 10 10 SF
+0 setgray
+89 403 M
+( t = 0;) s
+5 381 M
+(  ticks++;) s
+5 370 M
+(  new=clock\(\);) s
+5 348 M
+(  ) s
+/Courier-Oblique 10 10 SUF
+0.698039 0.133333 0.133333 setrgbcolor
+17 348 M
+(/* if 0.5 seconds passed, calculate average frame rate */) s
+/F-gs-font 10 10 SF
+0 setgray
+5 337 M
+(  ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+17 337 M
+(if) s
+/F-gs-font 10 10 SF
+0 setgray
+29 337 M
+(\(\(new - old\)/CLOCKS_PER_SEC > 0.5\) {) s
+5 326 M
+(    elapsed=\(new - old\);) s
+5 315 M
+(    old = new;) s
+5 304 M
+(    fprintf\(stderr, ) s
+/Courier-Bold 10 10 SUF
+0.737255 0.560784 0.560784 setrgbcolor
+125 304 M
+("FPS: %.1f   \\r") s
+/F-gs-font 10 10 SF
+0 setgray
+221 304 M
+(,  ticks * \() s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+293 304 M
+(float) s
+/F-gs-font 10 10 SF
+0 setgray
+323 304 M
+(\) CLOCKS_PER_SEC / \() s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+443 304 M
+(float) s
+/F-gs-font 10 10 SF
+0 setgray
+473 304 M
+(\) elapsed\);) s
+5 293 M
+(    ticks = 0;) s
+5 282 M
+(  }) s
+5 271 M
+(  ) s
+5 260 M
+(  ) s
+/Courier-Oblique 10 10 SUF
+0.698039 0.133333 0.133333 setrgbcolor
+17 260 M
+(/* update submarine position */) s
+/F-gs-font 10 10 SF
+0 setgray
+5 249 M
+(  elapsedSecs = \(new - last\)/\() s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+185 249 M
+(float) s
+/F-gs-font 10 10 SF
+0 setgray
+215 249 M
+(\)CLOCKS_PER_SEC;) s
+5 238 M
+(  velAdj = WATER_RESISTANCE * elapsedSecs;) s
+5 227 M
+(  sub.x += sub.xVelocity * elapsedSecs;) s
+5 216 M
+(  sub.y += sub.yVelocity * elapsedSecs;) s
+5 205 M
+(  sub.z += sub.zVelocity * elapsedSecs;) s
+5 194 M
+(  CollisionDetection\(\);) s
+5 183 M
+(  ) s
+/Courier-Oblique 10 10 SUF
+0.698039 0.133333 0.133333 setrgbcolor
+17 183 M
+(/* water resistance */) s
+/F-gs-font 10 10 SF
+0 setgray
+5 172 M
+(  sub.xVelocity -= velAdj * sub.xVelocity;) s
+5 161 M
+(  sub.yVelocity -= velAdj * sub.yVelocity;) s
+5 150 M
+(  sub.zVelocity -= velAdj * sub.zVelocity;) s
+5 139 M
+(  ) s
+5 128 M
+(  last = new;) s
+5 117 M
+(  glutPostRedisplay\(\);) s
+5 106 M
+(}) s
+/Courier-Oblique 10 10 SUF
+0.698039 0.133333 0.133333 setrgbcolor
+5 84 M
+(/**************************************************/) s
+/F-gs-font 10 10 SF
+0 setgray
+/Courier-Oblique 10 10 SUF
+0.698039 0.133333 0.133333 setrgbcolor
+5 73 M
+(/* INITIALISATION                                 */) s
+/F-gs-font 10 10 SF
+0 setgray
+/Courier-Oblique 10 10 SUF
+0.698039 0.133333 0.133333 setrgbcolor
+5 62 M
+(/**************************************************/) s
+/F-gs-font 10 10 SF
+0 setgray
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+5 40 M
+(void) s
+/F-gs-font 10 10 SF
+0 setgray
+29 40 M
+( ) s
+/Courier-Bold 10 10 SUF
+0 0 1 setrgbcolor
+35 40 M
+(InitMenu) s
+/F-gs-font 10 10 SF
+0 setgray
+83 40 M
+(\() s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+89 40 M
+(void) s
+/F-gs-font 10 10 SF
+0 setgray
+113 40 M
+(\) {) s
+5 29 M
+(  glutCreateMenu\(Menu\);) s
+5 18 M
+(  glutAddMenuEntry\() s
+/Courier-Bold 10 10 SUF
+0.737255 0.560784 0.560784 setrgbcolor
+119 18 M
+("Fixed View") s
+/F-gs-font 10 10 SF
+0 setgray
+191 18 M
+(, OUTSIDE\);) s
+5 7 M
+(  glutAddMenuEntry\() s
+/Courier-Bold 10 10 SUF
+0.737255 0.560784 0.560784 setrgbcolor
+119 7 M
+("Submarine View") s
+/F-gs-font 10 10 SF
+0 setgray
+215 7 M
+(, IN_SUB\);) s
+_R
+%Page: (6) 6
+%BeginPageSetup
+_S
+% N-up sub-page 2/2
+402 -547 translate
+0.688917 dup scale
+/pagenum 6 def
+/fname (main.c) def
+/fdir () def
+/ftail (main.c) def
+% User defined strings:
+/fmodstr (Thu May 24 16:54:19 2001) def
+/pagenumstr (6) def
+/user_header_p false def
+/user_footer_p false def
+%%EndPageSetup
+do_header
+5 766 M
+(  glutAddMenuEntry\() s
+/Courier-Bold 10 10 SUF
+0.737255 0.560784 0.560784 setrgbcolor
+119 766 M
+("Exit") s
+/F-gs-font 10 10 SF
+0 setgray
+155 766 M
+(, -1\);) s
+5 755 M
+(  glutAttachMenu\(GLUT_MIDDLE_BUTTON\);) s
+5 744 M
+(}) s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+5 722 M
+(void) s
+/F-gs-font 10 10 SF
+0 setgray
+29 722 M
+( ) s
+/Courier-Bold 10 10 SUF
+0 0 1 setrgbcolor
+35 722 M
+(InitTextures) s
+/F-gs-font 10 10 SF
+0 setgray
+107 722 M
+(\() s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+113 722 M
+(void) s
+/F-gs-font 10 10 SF
+0 setgray
+137 722 M
+(\) {) s
+5 711 M
+(  GLubyte textureBuffer[256][256][4];) s
+5 700 M
+(  ) s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+17 700 M
+(int) s
+/F-gs-font 10 10 SF
+0 setgray
+35 700 M
+( i;) s
+5 678 M
+(  glGenTextures\(NUMBER_OF_TEXTURES, textures\);) s
+5 656 M
+(  ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+17 656 M
+(for) s
+/F-gs-font 10 10 SF
+0 setgray
+35 656 M
+(\(i = 0; i < NUMBER_OF_TEXTURES; i++\) {) s
+5 645 M
+(    ) s
+/Courier-Oblique 10 10 SUF
+0.698039 0.133333 0.133333 setrgbcolor
+29 645 M
+(/* load the texture */) s
+/F-gs-font 10 10 SF
+0 setgray
+5 634 M
+(    open_image_file\(textureFiles[i], textureBuffer\);) s
+5 623 M
+(    ) s
+5 612 M
+(    ) s
+/Courier-Oblique 10 10 SUF
+0.698039 0.133333 0.133333 setrgbcolor
+29 612 M
+(/* apply the texture */) s
+/F-gs-font 10 10 SF
+0 setgray
+5 601 M
+(    glBindTexture\(GL_TEXTURE_2D, textures[i]\);) s
+5 590 M
+(    glTexParameteri\(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT\);) s
+5 579 M
+(    glTexParameteri\(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT\);) s
+5 568 M
+(    glTexParameteri\(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST\);) s
+5 557 M
+(    glTexParameteri\(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST\);) s
+5 546 M
+(    glTexImage2D\(GL_TEXTURE_2D, 0, GL_RGBA, 256, 256,) s
+5 535 M
+(                 0, GL_RGBA, GL_UNSIGNED_BYTE, textureBuffer\);) s
+5 524 M
+(  }) s
+5 513 M
+(}) s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+5 491 M
+(void) s
+/F-gs-font 10 10 SF
+0 setgray
+29 491 M
+( ) s
+/Courier-Bold 10 10 SUF
+0 0 1 setrgbcolor
+35 491 M
+(InitGround) s
+/F-gs-font 10 10 SF
+0 setgray
+95 491 M
+(\() s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+101 491 M
+(void) s
+/F-gs-font 10 10 SF
+0 setgray
+125 491 M
+(\) {) s
+5 480 M
+(  GLfloat groundVertices[][3] = {{-75.0, -5.0, 50.0}, {-75.0, -5.0, -50.0},) s
+5 469 M
+(                               {75.0, -5.0, -50.0}, {75.0, -5.0, 50.0}};) s
+5 458 M
+(  GLfloat groundColor[] = {1.0, 1.0, 1.0, 1.0};) s
+5 447 M
+(  ) s
+5 436 M
+(  ground = glGenLists\(1\);) s
+5 425 M
+(  ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+17 425 M
+(if) s
+/F-gs-font 10 10 SF
+0 setgray
+29 425 M
+(\(ground != 0\) {) s
+5 414 M
+(    glNewList\(ground, GL_COMPILE\);) s
+5 403 M
+(    ) s
+5 392 M
+(      ) s
+/Courier-Oblique 10 10 SUF
+0.698039 0.133333 0.133333 setrgbcolor
+41 392 M
+(/* set the material properties of the ground */) s
+/F-gs-font 10 10 SF
+0 setgray
+5 381 M
+(      glMaterialfv\(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, groundColor\);) s
+5 370 M
+(      glMaterialfv\(GL_FRONT, GL_SPECULAR, groundColor\);) s
+5 359 M
+(      glMaterialf\(GL_FRONT, GL_SHININESS, 0\);) s
+5 348 M
+(      ) s
+/Courier-Oblique 10 10 SUF
+0.698039 0.133333 0.133333 setrgbcolor
+41 348 M
+(/* Select the ground texture and enable it */) s
+/F-gs-font 10 10 SF
+0 setgray
+5 337 M
+(      glTexEnvf\(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE\);) s
+5 326 M
+(      glBindTexture\(GL_TEXTURE_2D, textures[GROUND]\);) s
+5 315 M
+(      glEnable\(GL_TEXTURE_2D\);) s
+5 304 M
+(      ) s
+/Courier-Oblique 10 10 SUF
+0.698039 0.133333 0.133333 setrgbcolor
+41 304 M
+(/* draw the ground */) s
+/F-gs-font 10 10 SF
+0 setgray
+5 293 M
+(      glBegin\(GL_QUADS\);) s
+5 282 M
+(        glNormal3f\(0.0, 1.0, 0.0\);) s
+5 271 M
+(        glTexCoord2i\(0,1\); glVertex3fv\(groundVertices[0]\);) s
+5 260 M
+(        glTexCoord2i\(1,1\); glVertex3fv\(groundVertices[1]\);) s
+5 249 M
+(        glTexCoord2i\(1,0\); glVertex3fv\(groundVertices[2]\);) s
+5 238 M
+(        glTexCoord2i\(0,0\); glVertex3fv\(groundVertices[3]\);) s
+5 227 M
+(      glEnd\(\);) s
+5 216 M
+(      ) s
+5 205 M
+(      glDisable\(GL_TEXTURE_2D\);) s
+5 194 M
+(    glEndList\(\);) s
+5 183 M
+(  }) s
+5 172 M
+(  ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+17 172 M
+(else) s
+/F-gs-font 10 10 SF
+0 setgray
+41 172 M
+( {) s
+5 161 M
+(    fprintf\(stderr, ) s
+/Courier-Bold 10 10 SUF
+0.737255 0.560784 0.560784 setrgbcolor
+125 161 M
+("ERROR: Unable to create display list for ground") s
+/F-gs-font 10 10 SF
+0 setgray
+419 161 M
+(\);) s
+5 150 M
+(    exit\(1\);) s
+5 139 M
+(  }) s
+5 128 M
+(}) s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+5 106 M
+(void) s
+/F-gs-font 10 10 SF
+0 setgray
+29 106 M
+( ) s
+/Courier-Bold 10 10 SUF
+0 0 1 setrgbcolor
+35 106 M
+(InitTank) s
+/F-gs-font 10 10 SF
+0 setgray
+83 106 M
+(\() s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+89 106 M
+(void) s
+/F-gs-font 10 10 SF
+0 setgray
+113 106 M
+(\) {) s
+5 95 M
+(  GLfloat tankColor[] = {0.4, 0.8, 0.8, 0.5};) s
+5 84 M
+(  GLfloat baseColor[] = {0.8, 0.8, 0.8, 1.0};) s
+5 73 M
+(  GLfloat lidColor[] = {0.5, 0.5, 0.5, 1.0};) s
+5 62 M
+(  GLfloat shelfColor[] = {0.2, 0.2, 0.2, 1.0};) s
+5 51 M
+(  GLfloat sandColor[] = {0.4, 0.4, 1.0, 1.0};) s
+5 40 M
+(  GLfloat glassVertices[][3] = {{-50.0, 0.0, 25.0}, {-50.0, 0.0, -25.0},) s
+5 29 M
+(                                {50.0, 0.0, -25.0}, {50.0, 0.0, 25.0},) s
+5 18 M
+(                                {-50.0, 50.0, 25.0}, {-50.0, 50.0, -25.0},) s
+5 7 M
+(                                {50.0, 50.0, -25.0}, {50.0, 50.0, 25.0}};) s
+_R
+_R
+S
+%%Page: (7-8) 4
+%%BeginPageSetup
+_S
+90 rotate
+24 -24 translate
+%Page: (7) 7
+%BeginPageSetup
+_S
+% N-up sub-page 1/2
+0 -547 translate
+0.688917 dup scale
+/pagenum 7 def
+/fname (main.c) def
+/fdir () def
+/ftail (main.c) def
+% User defined strings:
+/fmodstr (Thu May 24 16:54:19 2001) def
+/pagenumstr (7) def
+/user_header_p false def
+/user_footer_p false def
+%%EndPageSetup
+do_header
+5 766 M
+(  GLfloat glassNormals[][3] = {{-1.0, 0.0, 0.0}, {0.0, 0.0, -1.0},) s
+5 755 M
+(                               {1.0, 0.0, 0.0}, {0.0, 0.0, 1.0}};) s
+5 744 M
+(  GLfloat baseVertices[][3] = {{-55.0, -5.0, 30.0}, {-55.0, -5.0, -30.0},) s
+5 733 M
+(                               {55.0, -5.0, -30.0}, {55.0, -5.0, 30.0}};) s
+5 722 M
+(  GLfloat baseNormals[][3] = {{-0.707, 0.707, 0.0}, {0.0, 0.707, -0.707},) s
+5 711 M
+(                              {0.707, 0.707, 0.0}, {0.0, 0.707, 0.707}};) s
+5 700 M
+(  GLfloat lidVertices[][3] = {{-40.0, 60.0, 15.0}, {-40.0, 60.0, -15.0},) s
+5 689 M
+(                              {40.0, 60.0, -15.0}, {40.0, 60.0, 15.0}};) s
+5 678 M
+(  GLfloat lidNormals[][3] = {{-0.707, 0.707, 0.0}, {0.0, 0.707, -0.707},) s
+5 667 M
+(                             {0.707, 0.707, 0.0}, {0.0, 0.707, 0.707}};) s
+5 656 M
+(  ) s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+17 656 M
+(int) s
+/F-gs-font 10 10 SF
+0 setgray
+35 656 M
+( i, j;) s
+5 634 M
+(  tank = glGenLists\(1\);) s
+5 623 M
+(  ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+17 623 M
+(if) s
+/F-gs-font 10 10 SF
+0 setgray
+29 623 M
+(\(tank != 0\) {) s
+5 612 M
+(    glNewList\(tank, GL_COMPILE\);) s
+5 590 M
+(    ) s
+/Courier-Oblique 10 10 SUF
+0.698039 0.133333 0.133333 setrgbcolor
+29 590 M
+(/* Set the material properties of the glass */) s
+/F-gs-font 10 10 SF
+0 setgray
+5 579 M
+(    glMaterialfv\(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, tankColor\);) s
+5 568 M
+(    glMaterialfv\(GL_FRONT_AND_BACK, GL_SPECULAR, tankColor\);) s
+5 557 M
+(    glMaterialf\(GL_FRONT_AND_BACK, GL_SHININESS, 100\);) s
+5 546 M
+(    ) s
+/Courier-Oblique 10 10 SUF
+0.698039 0.133333 0.133333 setrgbcolor
+29 546 M
+(/* Draw the glass */) s
+/F-gs-font 10 10 SF
+0 setgray
+5 535 M
+(      ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+41 535 M
+(for) s
+/F-gs-font 10 10 SF
+0 setgray
+59 535 M
+(\(i = 0; i < 4; i++\) {) s
+5 524 M
+(        glBegin\(GL_LINE_LOOP\);) s
+5 513 M
+(          glNormal3fv\(glassNormals[i]\);) s
+5 502 M
+(          glVertex3fv\(glassVertices[i]\);) s
+5 491 M
+(          glVertex3fv\(glassVertices[i+4]\);) s
+5 480 M
+(          ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+65 480 M
+(if) s
+/F-gs-font 10 10 SF
+0 setgray
+77 480 M
+(\(i == 3\) { ) s
+/Courier-Oblique 10 10 SUF
+0.698039 0.133333 0.133333 setrgbcolor
+143 480 M
+(/* last edge */) s
+/F-gs-font 10 10 SF
+0 setgray
+5 469 M
+(            glVertex3fv\(glassVertices[4]\);) s
+5 458 M
+(            glVertex3fv\(glassVertices[0]\);) s
+5 447 M
+(          }) s
+5 436 M
+(          ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+65 436 M
+(else) s
+/F-gs-font 10 10 SF
+0 setgray
+89 436 M
+( { ) s
+/Courier-Oblique 10 10 SUF
+0.698039 0.133333 0.133333 setrgbcolor
+107 436 M
+(/* other edges */) s
+/F-gs-font 10 10 SF
+0 setgray
+5 425 M
+(            glVertex3fv\(glassVertices[i+5]\);) s
+5 414 M
+(            glVertex3fv\(glassVertices[i+1]\);) s
+5 403 M
+(          }) s
+5 392 M
+(        glEnd\(\);) s
+5 381 M
+(      }) s
+5 359 M
+(      ) s
+/Courier-Oblique 10 10 SUF
+0.698039 0.133333 0.133333 setrgbcolor
+41 359 M
+(/* set the material properties of the sand */) s
+/F-gs-font 10 10 SF
+0 setgray
+5 348 M
+(      glMaterialfv\(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, sandColor\);) s
+5 337 M
+(      glMaterialfv\(GL_FRONT, GL_SPECULAR, sandColor\);) s
+5 326 M
+(      glMaterialf\(GL_FRONT, GL_SHININESS, 0\);) s
+5 315 M
+(      ) s
+/Courier-Oblique 10 10 SUF
+0.698039 0.133333 0.133333 setrgbcolor
+41 315 M
+(/* Select the sand texture and enable it */) s
+/F-gs-font 10 10 SF
+0 setgray
+5 304 M
+(      glTexEnvf\(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE\);) s
+5 293 M
+(      glBindTexture\(GL_TEXTURE_2D, textures[SAND]\);) s
+5 282 M
+(      glEnable\(GL_TEXTURE_2D\);) s
+5 271 M
+(      ) s
+/Courier-Oblique 10 10 SUF
+0.698039 0.133333 0.133333 setrgbcolor
+41 271 M
+(/* Draw the bottom of the tank */) s
+/F-gs-font 10 10 SF
+0 setgray
+5 260 M
+(      glBegin\(GL_QUADS\);) s
+5 249 M
+(        glNormal3f\(0.0, 1.0, 0.0\);) s
+5 238 M
+(          glTexCoord2f\(0.0, 0.0\);) s
+5 227 M
+(          glVertex3fv\(glassVertices[0]\);) s
+5 216 M
+(          glTexCoord2f\(0.0, 1.0\);) s
+5 205 M
+(          glVertex3fv\(glassVertices[1]\);) s
+5 194 M
+(          glTexCoord2f\(1.0, 1.0\);) s
+5 183 M
+(          glVertex3fv\(glassVertices[2]\);) s
+5 172 M
+(          glTexCoord2f\(1.0, 0.0\);) s
+5 161 M
+(          glVertex3fv\(glassVertices[3]\);) s
+5 150 M
+(      glEnd\(\);) s
+5 128 M
+(      ) s
+/Courier-Oblique 10 10 SUF
+0.698039 0.133333 0.133333 setrgbcolor
+41 128 M
+(/* Select the wood texture for the base and the lid */) s
+/F-gs-font 10 10 SF
+0 setgray
+5 117 M
+(      glTexEnvf\(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE\);) s
+5 106 M
+(      glBindTexture\(GL_TEXTURE_2D, textures[WOOD]\);) s
+5 95 M
+(      glEnable\(GL_TEXTURE_2D\);) s
+5 73 M
+(      ) s
+/Courier-Oblique 10 10 SUF
+0.698039 0.133333 0.133333 setrgbcolor
+41 73 M
+(/* Set the material properties of the base */) s
+/F-gs-font 10 10 SF
+0 setgray
+5 62 M
+(      glMaterialfv\(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, baseColor\);) s
+5 51 M
+(      glMaterialfv\(GL_FRONT, GL_SPECULAR, baseColor\);) s
+5 40 M
+(      glMaterialf\(GL_FRONT, GL_SHININESS, 64\);) s
+5 29 M
+(     ) s
+5 18 M
+(      ) s
+/Courier-Oblique 10 10 SUF
+0.698039 0.133333 0.133333 setrgbcolor
+41 18 M
+(/* Draw the base */) s
+/F-gs-font 10 10 SF
+0 setgray
+5 7 M
+(      glBegin\(GL_QUADS\);) s
+_R
+%Page: (8) 8
+%BeginPageSetup
+_S
+% N-up sub-page 2/2
+402 -547 translate
+0.688917 dup scale
+/pagenum 8 def
+/fname (main.c) def
+/fdir () def
+/ftail (main.c) def
+% User defined strings:
+/fmodstr (Thu May 24 16:54:19 2001) def
+/pagenumstr (8) def
+/user_header_p false def
+/user_footer_p false def
+%%EndPageSetup
+do_header
+5 766 M
+(      ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+41 766 M
+(for) s
+/F-gs-font 10 10 SF
+0 setgray
+59 766 M
+(\(i = 0; i < 4; i++\) {) s
+5 755 M
+(        glNormal3fv\(baseNormals[i]\);) s
+5 744 M
+(        glTexCoord2i\(1,0\);) s
+5 733 M
+(        glVertex3fv\(glassVertices[i]\);) s
+5 722 M
+(        glTexCoord2i\(0,0\);) s
+5 711 M
+(        glVertex3fv\(baseVertices[i]\);) s
+5 700 M
+(        ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+53 700 M
+(if) s
+/F-gs-font 10 10 SF
+0 setgray
+65 700 M
+(\(i == 3\) { ) s
+/Courier-Oblique 10 10 SUF
+0.698039 0.133333 0.133333 setrgbcolor
+131 700 M
+(/* last side */) s
+/F-gs-font 10 10 SF
+0 setgray
+5 689 M
+(          glTexCoord2i\(0,1\);) s
+5 678 M
+(          glVertex3fv\(baseVertices[0]\);) s
+5 667 M
+(          glTexCoord2i\(1,1\);) s
+5 656 M
+(          glVertex3fv\(glassVertices[0]\);) s
+5 645 M
+(        }) s
+5 634 M
+(        ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+53 634 M
+(else) s
+/F-gs-font 10 10 SF
+0 setgray
+77 634 M
+( { ) s
+/Courier-Oblique 10 10 SUF
+0.698039 0.133333 0.133333 setrgbcolor
+95 634 M
+(/* other sides */) s
+/F-gs-font 10 10 SF
+0 setgray
+5 623 M
+(          glTexCoord2i\(0,1\);) s
+5 612 M
+(          glVertex3fv\(baseVertices[i+1]\);) s
+5 601 M
+(          glTexCoord2i\(1,1\);) s
+5 590 M
+(          glVertex3fv\(glassVertices[i+1]\);) s
+5 579 M
+(        }) s
+5 568 M
+(      }) s
+5 557 M
+(      glEnd\(\);) s
+5 535 M
+(      ) s
+/Courier-Oblique 10 10 SUF
+0.698039 0.133333 0.133333 setrgbcolor
+41 535 M
+(/* Set the material properties of the lid */) s
+/F-gs-font 10 10 SF
+0 setgray
+5 524 M
+(      glMaterialfv\(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, lidColor\);) s
+5 513 M
+(      glMaterialfv\(GL_FRONT_AND_BACK, GL_SPECULAR, lidColor\);) s
+5 502 M
+(      glMaterialf\(GL_FRONT_AND_BACK, GL_SHININESS, 64\);) s
+5 480 M
+(      ) s
+/Courier-Oblique 10 10 SUF
+0.698039 0.133333 0.133333 setrgbcolor
+41 480 M
+(/* Draw the sides of the lid */) s
+/F-gs-font 10 10 SF
+0 setgray
+5 469 M
+(      glBegin\(GL_QUADS\);) s
+5 458 M
+(        ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+53 458 M
+(for) s
+/F-gs-font 10 10 SF
+0 setgray
+71 458 M
+(\(i = 0; i< 4; i++\) {) s
+5 447 M
+(          glNormal3fv\(lidNormals[i]\);) s
+5 436 M
+(          glTexCoord2i\(1, 0\);) s
+5 425 M
+(          glVertex3fv\(glassVertices[i+4]\);) s
+5 414 M
+(          glTexCoord2i\(0, 0\);) s
+5 403 M
+(          glVertex3fv\(lidVertices[i]\);) s
+5 392 M
+(          ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+65 392 M
+(if) s
+/F-gs-font 10 10 SF
+0 setgray
+77 392 M
+(\(i == 3\) { ) s
+/Courier-Oblique 10 10 SUF
+0.698039 0.133333 0.133333 setrgbcolor
+143 392 M
+(/* last side */) s
+/F-gs-font 10 10 SF
+0 setgray
+5 381 M
+(            glTexCoord2i\(0, 1\);) s
+5 370 M
+(            glVertex3fv\(lidVertices[0]\);) s
+5 359 M
+(            glTexCoord2i\(1, 1\);) s
+5 348 M
+(            glVertex3fv\(glassVertices[4]\);) s
+5 337 M
+(          }) s
+5 326 M
+(          ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+65 326 M
+(else) s
+/F-gs-font 10 10 SF
+0 setgray
+89 326 M
+( { ) s
+/Courier-Oblique 10 10 SUF
+0.698039 0.133333 0.133333 setrgbcolor
+107 326 M
+(/* other sides */) s
+/F-gs-font 10 10 SF
+0 setgray
+5 315 M
+(            glTexCoord2i\(0, 1\);) s
+5 304 M
+(            glVertex3fv\(lidVertices[i+1]\);) s
+5 293 M
+(            glTexCoord2i\(1, 1\);) s
+5 282 M
+(            glVertex3fv\(glassVertices[i+5]\);) s
+5 271 M
+(          }) s
+5 260 M
+(        }) s
+5 238 M
+(        ) s
+/Courier-Oblique 10 10 SUF
+0.698039 0.133333 0.133333 setrgbcolor
+53 238 M
+(/* Draw the top of the lid */) s
+/F-gs-font 10 10 SF
+0 setgray
+5 227 M
+(        ) s
+/Courier-Oblique 10 10 SUF
+0.698039 0.133333 0.133333 setrgbcolor
+53 227 M
+(/* REF ? */) s
+/F-gs-font 10 10 SF
+0 setgray
+5 216 M
+(        glNormal3f\(0.0, 1.0, 0.0\);) s
+5 205 M
+(        glTexCoord2i\(1, 0\); glVertex3fv\(lidVertices[0]\);) s
+5 194 M
+(        glTexCoord2i\(0, 0\); glVertex3fv\(lidVertices[1]\);) s
+5 183 M
+(        glTexCoord2i\(0, 1\); glVertex3fv\(lidVertices[2]\);) s
+5 172 M
+(        glTexCoord2i\(1, 1\); glVertex3fv\(lidVertices[3]\);) s
+5 161 M
+(      glEnd\(\);) s
+5 139 M
+(      glDisable\(GL_TEXTURE_2D\);) s
+5 117 M
+(      ) s
+/Courier-Oblique 10 10 SUF
+0.698039 0.133333 0.133333 setrgbcolor
+41 117 M
+(/* Set the material properties of the shelf */) s
+/F-gs-font 10 10 SF
+0 setgray
+5 106 M
+(      glMaterialfv\(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, shelfColor\);) s
+5 95 M
+(      glMaterialfv\(GL_FRONT_AND_BACK, GL_SPECULAR, shelfColor\);) s
+5 84 M
+(      glMaterialf\(GL_FRONT_AND_BACK, GL_SHININESS, 64\);) s
+5 62 M
+(      ) s
+/Courier-Oblique 10 10 SUF
+0.698039 0.133333 0.133333 setrgbcolor
+41 62 M
+(/* Draw the shelf */) s
+/F-gs-font 10 10 SF
+0 setgray
+5 51 M
+(      glPushMatrix\(\);) s
+5 40 M
+(        glTranslatef\(0.0, 20.5, -20.0\); ) s
+5 29 M
+(        glScalef\(20.0, 1.0, 10.0\);) s
+5 18 M
+(        glutSolidCube\(1.0\);) s
+5 7 M
+(      glPopMatrix\(\);) s
+_R
+_R
+S
+%%Page: (9-10) 5
+%%BeginPageSetup
+_S
+90 rotate
+24 -24 translate
+%Page: (9) 9
+%BeginPageSetup
+_S
+% N-up sub-page 1/2
+0 -547 translate
+0.688917 dup scale
+/pagenum 9 def
+/fname (main.c) def
+/fdir () def
+/ftail (main.c) def
+% User defined strings:
+/fmodstr (Thu May 24 16:54:19 2001) def
+/pagenumstr (9) def
+/user_header_p false def
+/user_footer_p false def
+%%EndPageSetup
+do_header
+5 755 M
+(    glEndList\(\);) s
+5 744 M
+(  }) s
+5 733 M
+(  ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+17 733 M
+(else) s
+/F-gs-font 10 10 SF
+0 setgray
+41 733 M
+( {) s
+5 722 M
+(    fprintf\(stderr, ) s
+/Courier-Bold 10 10 SUF
+0.737255 0.560784 0.560784 setrgbcolor
+125 722 M
+("ERROR: Unable to create display list for tank\\n") s
+/F-gs-font 10 10 SF
+0 setgray
+419 722 M
+(\);) s
+5 711 M
+(    exit\(1\);) s
+5 700 M
+(  }) s
+5 689 M
+(  ) s
+5 678 M
+(}) s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+5 656 M
+(void) s
+/F-gs-font 10 10 SF
+0 setgray
+29 656 M
+( ) s
+/Courier-Bold 10 10 SUF
+0 0 1 setrgbcolor
+35 656 M
+(InitWater) s
+/F-gs-font 10 10 SF
+0 setgray
+89 656 M
+(\() s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+95 656 M
+(void) s
+/F-gs-font 10 10 SF
+0 setgray
+119 656 M
+(\) {) s
+5 645 M
+(  ) s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+17 645 M
+(int) s
+/F-gs-font 10 10 SF
+0 setgray
+35 645 M
+( i, j;) s
+5 634 M
+(  GLfloat waterColor[] = {0.2, 0.2, 0.8, 0.3};) s
+5 623 M
+(  GLfloat waterVertices[][3] = {{-50.0, 0.0, -25.0}, {50.0, 0.0, -25.0},) s
+5 612 M
+(                                 {50.0, 0.0, 25.0}, {-50.0, 0.0, 25.0},) s
+5 601 M
+(                                 {-50.0, 40.0, -25.0}, {50.0, 40.0, -25.0},) s
+5 590 M
+(                                 {50.0, 40.0, 25.0}, {-50.0, 40.0, 25.0}};) s
+5 579 M
+(  GLfloat topVertices[WATER_TOP_SUBDIVISION+1][WATER_TOP_SUBDIVISION+1][3];) s
+5 568 M
+(  GLfloat sideVertices[WATER_SIDES_SUBDIVISION+1][WATER_SIDES_SUBDIVISION+1][3];) s
+5 546 M
+(  waterBack = glGenLists\(1\);) s
+5 535 M
+(  ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+17 535 M
+(if) s
+/F-gs-font 10 10 SF
+0 setgray
+29 535 M
+(\(waterBack != 0\) {) s
+5 524 M
+(    waterFront = waterBack + 1;) s
+5 502 M
+(    ) s
+/Courier-Oblique 10 10 SUF
+0.698039 0.133333 0.133333 setrgbcolor
+29 502 M
+(/* Create the back of the water */) s
+/F-gs-font 10 10 SF
+0 setgray
+5 491 M
+(    glNewList\(waterBack, GL_COMPILE\);) s
+5 480 M
+(      ) s
+/Courier-Oblique 10 10 SUF
+0.698039 0.133333 0.133333 setrgbcolor
+41 480 M
+(/* Set the material properties to water */) s
+/F-gs-font 10 10 SF
+0 setgray
+5 469 M
+(      glMaterialfv\(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, waterColor\);) s
+5 458 M
+(      glMaterialfv\(GL_FRONT_AND_BACK, GL_SPECULAR, waterColor\);) s
+5 447 M
+(      glMaterialf\(GL_FRONT_AND_BACK, GL_SHININESS, 100\);) s
+5 425 M
+(      ) s
+/Courier-Oblique 10 10 SUF
+0.698039 0.133333 0.133333 setrgbcolor
+41 425 M
+(/* subdivide the plane */) s
+/F-gs-font 10 10 SF
+0 setgray
+5 414 M
+(      SubdivideXY\(waterVertices[0], ) s
+5 403 M
+(                  waterVertices[5], ) s
+5 392 M
+(                  \(GLfloat *\)sideVertices, ) s
+5 381 M
+(                  WATER_SIDES_SUBDIVISION\);) s
+5 359 M
+(      ) s
+/Courier-Oblique 10 10 SUF
+0.698039 0.133333 0.133333 setrgbcolor
+41 359 M
+(/* draw the back of the water */) s
+/F-gs-font 10 10 SF
+0 setgray
+5 348 M
+(      glBegin\(GL_QUADS\);) s
+5 337 M
+(        glNormal3f\(0.0, 0.0, -1.0\);) s
+5 326 M
+(        ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+53 326 M
+(for) s
+/F-gs-font 10 10 SF
+0 setgray
+71 326 M
+(\(i = 0; i < WATER_SIDES_SUBDIVISION; i++\) {) s
+5 315 M
+(          ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+65 315 M
+(for) s
+/F-gs-font 10 10 SF
+0 setgray
+83 315 M
+(\(j = 0; j < WATER_SIDES_SUBDIVISION; j++\) {) s
+5 304 M
+(            glVertex3fv\(sideVertices[i][j]\);) s
+5 293 M
+(            glVertex3fv\(sideVertices[i+1][j]\);) s
+5 282 M
+(            glVertex3fv\(sideVertices[i+1][j+1]\);) s
+5 271 M
+(            glVertex3fv\(sideVertices[i][j+1]\);      ) s
+5 260 M
+(          }) s
+5 249 M
+(        }) s
+5 238 M
+(      glEnd\(\);) s
+5 227 M
+(    glEndList\(\);) s
+5 205 M
+(    ) s
+/Courier-Oblique 10 10 SUF
+0.698039 0.133333 0.133333 setrgbcolor
+29 205 M
+(/* Create the front of the water */) s
+/F-gs-font 10 10 SF
+0 setgray
+5 194 M
+(    glNewList\(waterFront, GL_COMPILE\);) s
+5 183 M
+(      ) s
+/Courier-Oblique 10 10 SUF
+0.698039 0.133333 0.133333 setrgbcolor
+41 183 M
+(/* Set the material properties to water */) s
+/F-gs-font 10 10 SF
+0 setgray
+5 172 M
+(      glMaterialfv\(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, waterColor\);) s
+5 161 M
+(      glMaterialfv\(GL_FRONT_AND_BACK, GL_SPECULAR, waterColor\);) s
+5 150 M
+(      glMaterialf\(GL_FRONT_AND_BACK, GL_SHININESS, 100\);    ) s
+5 128 M
+(      ) s
+/Courier-Oblique 10 10 SUF
+0.698039 0.133333 0.133333 setrgbcolor
+41 128 M
+(/***** draw the top *****/) s
+/F-gs-font 10 10 SF
+0 setgray
+5 117 M
+(      ) s
+/Courier-Oblique 10 10 SUF
+0.698039 0.133333 0.133333 setrgbcolor
+41 117 M
+(/* subdivide the plane */) s
+/F-gs-font 10 10 SF
+0 setgray
+5 106 M
+(      SubdivideXZ\(waterVertices[4], ) s
+5 95 M
+(                  waterVertices[6],) s
+5 84 M
+(                  \(GLfloat *\)topVertices,) s
+5 73 M
+(                  WATER_TOP_SUBDIVISION\);) s
+5 51 M
+(      ) s
+/Courier-Oblique 10 10 SUF
+0.698039 0.133333 0.133333 setrgbcolor
+41 51 M
+(/* draw the water */) s
+/F-gs-font 10 10 SF
+0 setgray
+5 40 M
+(      glBegin\(GL_QUADS\);) s
+5 29 M
+(        glNormal3f\(0.0, 1.0, 0.0\);) s
+5 18 M
+(        ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+53 18 M
+(for) s
+/F-gs-font 10 10 SF
+0 setgray
+71 18 M
+(\(i = 0; i < WATER_TOP_SUBDIVISION; i++\) {) s
+5 7 M
+(          ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+65 7 M
+(for) s
+/F-gs-font 10 10 SF
+0 setgray
+83 7 M
+(\(j = 0; j < WATER_TOP_SUBDIVISION; j++\) {) s
+_R
+%Page: (10) 10
+%BeginPageSetup
+_S
+% N-up sub-page 2/2
+402 -547 translate
+0.688917 dup scale
+/pagenum 10 def
+/fname (main.c) def
+/fdir () def
+/ftail (main.c) def
+% User defined strings:
+/fmodstr (Thu May 24 16:54:19 2001) def
+/pagenumstr (10) def
+/user_header_p false def
+/user_footer_p false def
+%%EndPageSetup
+do_header
+5 766 M
+(            glVertex3fv\(topVertices[i][j]\);) s
+5 755 M
+(            glVertex3fv\(topVertices[i+1][j]\);) s
+5 744 M
+(            glVertex3fv\(topVertices[i+1][j+1]\);) s
+5 733 M
+(            glVertex3fv\(topVertices[i][j+1]\);       ) s
+5 722 M
+(          }) s
+5 711 M
+(        }) s
+5 700 M
+(      glEnd\(\);) s
+5 678 M
+(      ) s
+/Courier-Oblique 10 10 SUF
+0.698039 0.133333 0.133333 setrgbcolor
+41 678 M
+(/***** draw the RHS *****/) s
+/F-gs-font 10 10 SF
+0 setgray
+5 667 M
+(      ) s
+/Courier-Oblique 10 10 SUF
+0.698039 0.133333 0.133333 setrgbcolor
+41 667 M
+(/* subdivide the plane */) s
+/F-gs-font 10 10 SF
+0 setgray
+5 656 M
+(      SubdivideYZ\(waterVertices[1], ) s
+5 645 M
+(                  waterVertices[6], ) s
+5 634 M
+(                  \(GLfloat *\)sideVertices,) s
+5 623 M
+(                  WATER_SIDES_SUBDIVISION\);) s
+5 601 M
+(      ) s
+/Courier-Oblique 10 10 SUF
+0.698039 0.133333 0.133333 setrgbcolor
+41 601 M
+(/* draw the water */) s
+/F-gs-font 10 10 SF
+0 setgray
+5 590 M
+(      glBegin\(GL_QUADS\);) s
+5 579 M
+(        glNormal3f\(1.0, 0.0, 0.0\);) s
+5 568 M
+(        ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+53 568 M
+(for) s
+/F-gs-font 10 10 SF
+0 setgray
+71 568 M
+(\(i = 0; i < WATER_SIDES_SUBDIVISION; i++\) {) s
+5 557 M
+(          ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+65 557 M
+(for) s
+/F-gs-font 10 10 SF
+0 setgray
+83 557 M
+(\(j = 0; j < WATER_SIDES_SUBDIVISION; j++\) {) s
+5 546 M
+(            glVertex3fv\(sideVertices[i][j]\);) s
+5 535 M
+(            glVertex3fv\(sideVertices[i+1][j]\);) s
+5 524 M
+(            glVertex3fv\(sideVertices[i+1][j+1]\);) s
+5 513 M
+(            glVertex3fv\(sideVertices[i][j+1]\);      ) s
+5 502 M
+(          }) s
+5 491 M
+(        }) s
+5 480 M
+(      glEnd\(\);) s
+5 458 M
+(      ) s
+/Courier-Oblique 10 10 SUF
+0.698039 0.133333 0.133333 setrgbcolor
+41 458 M
+(/***** draw the front *****/) s
+/F-gs-font 10 10 SF
+0 setgray
+5 447 M
+(      ) s
+/Courier-Oblique 10 10 SUF
+0.698039 0.133333 0.133333 setrgbcolor
+41 447 M
+(/* subdivide the plane */) s
+/F-gs-font 10 10 SF
+0 setgray
+5 436 M
+(      SubdivideXY\(waterVertices[2], ) s
+5 425 M
+(                  waterVertices[7], ) s
+5 414 M
+(                  \(GLfloat *\)sideVertices,) s
+5 403 M
+(                  WATER_SIDES_SUBDIVISION\);) s
+5 392 M
+(      ) s
+5 381 M
+(      ) s
+/Courier-Oblique 10 10 SUF
+0.698039 0.133333 0.133333 setrgbcolor
+41 381 M
+(/* draw the water */) s
+/F-gs-font 10 10 SF
+0 setgray
+5 370 M
+(      glBegin\(GL_QUADS\);) s
+5 359 M
+(        glNormal3f\(0.0, 0.0, 1.0\);) s
+5 348 M
+(        ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+53 348 M
+(for) s
+/F-gs-font 10 10 SF
+0 setgray
+71 348 M
+(\(i = 0; i < WATER_SIDES_SUBDIVISION; i++\) {) s
+5 337 M
+(          ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+65 337 M
+(for) s
+/F-gs-font 10 10 SF
+0 setgray
+83 337 M
+(\(j = 0; j < WATER_SIDES_SUBDIVISION; j++\) {) s
+5 326 M
+(            glVertex3fv\(sideVertices[i][j]\);) s
+5 315 M
+(            glVertex3fv\(sideVertices[i+1][j]\);) s
+5 304 M
+(            glVertex3fv\(sideVertices[i+1][j+1]\);) s
+5 293 M
+(            glVertex3fv\(sideVertices[i][j+1]\);      ) s
+5 282 M
+(          }) s
+5 271 M
+(        }) s
+5 260 M
+(      glEnd\(\);) s
+5 238 M
+(      ) s
+/Courier-Oblique 10 10 SUF
+0.698039 0.133333 0.133333 setrgbcolor
+41 238 M
+(/***** draw the LHS *****/) s
+/F-gs-font 10 10 SF
+0 setgray
+5 227 M
+(      ) s
+/Courier-Oblique 10 10 SUF
+0.698039 0.133333 0.133333 setrgbcolor
+41 227 M
+(/* subdivide the plane */) s
+/F-gs-font 10 10 SF
+0 setgray
+5 216 M
+(      SubdivideYZ\(waterVertices[3],) s
+5 205 M
+(                  waterVertices[4],) s
+5 194 M
+(                  \(GLfloat *\)sideVertices,) s
+5 183 M
+(                  WATER_SIDES_SUBDIVISION\);) s
+5 161 M
+(      ) s
+/Courier-Oblique 10 10 SUF
+0.698039 0.133333 0.133333 setrgbcolor
+41 161 M
+(/* draw the water */) s
+/F-gs-font 10 10 SF
+0 setgray
+5 150 M
+(      glBegin\(GL_QUADS\);) s
+5 139 M
+(        glNormal3f\(-1.0, 0.0, 0.0\);) s
+5 128 M
+(        ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+53 128 M
+(for) s
+/F-gs-font 10 10 SF
+0 setgray
+71 128 M
+(\(i = 0; i < WATER_SIDES_SUBDIVISION; i++\) {) s
+5 117 M
+(          ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+65 117 M
+(for) s
+/F-gs-font 10 10 SF
+0 setgray
+83 117 M
+(\(j = 0; j < WATER_SIDES_SUBDIVISION; j++\) {) s
+5 106 M
+(            glVertex3fv\(sideVertices[i][j]\);) s
+5 95 M
+(            glVertex3fv\(sideVertices[i+1][j]\);) s
+5 84 M
+(            glVertex3fv\(sideVertices[i+1][j+1]\);) s
+5 73 M
+(            glVertex3fv\(sideVertices[i][j+1]\);      ) s
+5 62 M
+(          }) s
+5 51 M
+(        }) s
+5 40 M
+(      glEnd\(\);) s
+5 18 M
+(    glEndList\(\);) s
+5 7 M
+(  }) s
+_R
+_R
+S
+%%Page: (11-12) 6
+%%BeginPageSetup
+_S
+90 rotate
+24 -24 translate
+%Page: (11) 11
+%BeginPageSetup
+_S
+% N-up sub-page 1/2
+0 -547 translate
+0.688917 dup scale
+/pagenum 11 def
+/fname (main.c) def
+/fdir () def
+/ftail (main.c) def
+% User defined strings:
+/fmodstr (Thu May 24 16:54:19 2001) def
+/pagenumstr (11) def
+/user_header_p false def
+/user_footer_p false def
+%%EndPageSetup
+do_header
+5 766 M
+(  ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+17 766 M
+(else) s
+/F-gs-font 10 10 SF
+0 setgray
+41 766 M
+( {) s
+5 755 M
+(    fprintf\(stderr, ) s
+/Courier-Bold 10 10 SUF
+0.737255 0.560784 0.560784 setrgbcolor
+125 755 M
+("ERROR: Unable to create display list for the water\\n") s
+/F-gs-font 10 10 SF
+0 setgray
+449 755 M
+(\);) s
+5 744 M
+(    exit\(1\);) s
+5 733 M
+(  }) s
+5 722 M
+(}) s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+5 700 M
+(void) s
+/F-gs-font 10 10 SF
+0 setgray
+29 700 M
+( ) s
+/Courier-Bold 10 10 SUF
+0 0 1 setrgbcolor
+35 700 M
+(InitLights) s
+/F-gs-font 10 10 SF
+0 setgray
+95 700 M
+(\() s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+101 700 M
+(void) s
+/F-gs-font 10 10 SF
+0 setgray
+125 700 M
+(\) {) s
+5 689 M
+(  ) s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+17 689 M
+(int) s
+/F-gs-font 10 10 SF
+0 setgray
+35 689 M
+( i, j;) s
+5 678 M
+(  GLfloat roomLightColor[] = {0.04, 0.04, 0.03, 1.0};) s
+5 667 M
+(  GLfloat realLightPositions[][4] = {{0.0, 400.0, 100.0, 1.0}, ) s
+5 656 M
+(                                     {-30.0, 50.0, 12.0, 1.0}, {-30.0, 50.0, -12.0, 1.0},) s
+5 645 M
+( ) s
+5 634 M
+(                                     {0.0, 50.0, 12.0, 1.0}, {0.0, 50.0, -12.0, 1.0}, ) s
+5 623 M
+(                                     {30.0, 50.0, 12.0, 1.0}, {30.0, 50.0, -12.0, 1.0}};) s
+5 612 M
+(                                 ) s
+5 601 M
+(  GLfloat lightDirection[3] = {0.0, -1.0, 0.0};) s
+5 590 M
+(  GLfloat fakeLightColor[] = {1.0, 1.0, 0.8, 1.0};) s
+5 579 M
+(  GLfloat lightEmission[] = {1.0, 1.0, 1.0, 1.0};) s
+5 568 M
+(  GLfloat black[] = {0.0, 0.0, 0.0, 1.0};) s
+5 557 M
+(  GLfloat fakeLightPositions[][3] = {{-30.0, 54.0, 12.0}, {-30.0, 54.0, -12.0},) s
+5 546 M
+(                                     {0.0, 54.0, 12.0}, {0.0, 54.0, -12.0},) s
+5 535 M
+(                                     {30.0, 54.0, 12.0}, {30.0, 54.0, -12.0}};) s
+5 524 M
+(  GLfloat lightShadeVertices[CONE_SEGMENTS*2][3];) s
+5 513 M
+(  GLfloat lightShadeNormals[CONE_SEGMENTS][3];) s
+5 502 M
+(  GLfloat lightRadius = 3;) s
+5 469 M
+(  ) s
+/Courier-Oblique 10 10 SUF
+0.698039 0.133333 0.133333 setrgbcolor
+17 469 M
+(/* Calculate the light shade */) s
+/F-gs-font 10 10 SF
+0 setgray
+5 458 M
+(  ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+17 458 M
+(for) s
+/F-gs-font 10 10 SF
+0 setgray
+35 458 M
+(\(i = 0; i < CONE_SEGMENTS; i++\) {) s
+5 447 M
+(    lightShadeNormals[i][0] = sin\(\(2*PI/CONE_SEGMENTS\)*i\);) s
+5 436 M
+(    lightShadeNormals[i][1] = 0.0;) s
+5 425 M
+(    lightShadeNormals[i][2] = cos\(\(2*PI/CONE_SEGMENTS\)*i\);) s
+5 414 M
+(    lightShadeVertices[i][0] = \(lightRadius + 0.2\) * lightShadeNormals[i][0];) s
+5 403 M
+(    lightShadeVertices[i][1] = -lightRadius;) s
+5 392 M
+(    lightShadeVertices[i][2] = \(lightRadius + 0.2\) * lightShadeNormals[i][2];) s
+5 381 M
+(    lightShadeVertices[i+CONE_SEGMENTS][0] = lightShadeVertices[i][0];) s
+5 370 M
+(    lightShadeVertices[i+CONE_SEGMENTS][1] = lightRadius;) s
+5 359 M
+(    lightShadeVertices[i+CONE_SEGMENTS][2] = lightShadeVertices[i][2];) s
+5 348 M
+(  }) s
+5 326 M
+(  lights = glGenLists\(1\);) s
+5 315 M
+(  ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+17 315 M
+(if) s
+/F-gs-font 10 10 SF
+0 setgray
+29 315 M
+(\(lights != 0\) {) s
+5 304 M
+(    glNewList\(lights, GL_COMPILE\);) s
+5 282 M
+(      ) s
+/Courier-Oblique 10 10 SUF
+0.698039 0.133333 0.133333 setrgbcolor
+41 282 M
+(/* Set the light properties */) s
+/F-gs-font 10 10 SF
+0 setgray
+5 271 M
+(      glMaterialfv\(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, fakeLightColor\);) s
+5 260 M
+(      glMaterialfv\(GL_FRONT, GL_SPECULAR, fakeLightColor\);) s
+5 249 M
+(      glMaterialfv\(GL_FRONT, GL_EMISSION, lightEmission\);) s
+5 238 M
+(      glMaterialf\(GL_FRONT, GL_SHININESS, 128\);) s
+5 227 M
+(      ) s
+/Courier-Oblique 10 10 SUF
+0.698039 0.133333 0.133333 setrgbcolor
+41 227 M
+(/* draw the lights */) s
+/F-gs-font 10 10 SF
+0 setgray
+5 216 M
+(      ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+41 216 M
+(for) s
+/F-gs-font 10 10 SF
+0 setgray
+59 216 M
+(\(i = 0; i < 6; i++\) {) s
+5 205 M
+(        glPushMatrix\(\);) s
+5 194 M
+(          glTranslatef\(fakeLightPositions[i][0],) s
+5 183 M
+(                       fakeLightPositions[i][1],) s
+5 172 M
+(                       fakeLightPositions[i][2]\);) s
+5 161 M
+(          glutSolidSphere\(lightRadius, 15, 15\);) s
+5 150 M
+(        glPopMatrix\(\);) s
+5 139 M
+(      }) s
+5 128 M
+(      ) s
+/Courier-Oblique 10 10 SUF
+0.698039 0.133333 0.133333 setrgbcolor
+41 128 M
+(/* draw the shades */) s
+/F-gs-font 10 10 SF
+0 setgray
+5 117 M
+(      glMaterialfv\(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, black\);) s
+5 106 M
+(      glMaterialfv\(GL_FRONT, GL_SPECULAR, black\);) s
+5 95 M
+(      glMaterialfv\(GL_FRONT, GL_EMISSION, black\);) s
+5 84 M
+(      glMaterialf\(GL_FRONT, GL_SHININESS, 128\);) s
+5 73 M
+(      ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+41 73 M
+(for) s
+/F-gs-font 10 10 SF
+0 setgray
+59 73 M
+(\(i = 0; i < 6; i++\) {) s
+5 62 M
+(        glPushMatrix\(\);) s
+5 51 M
+(          glTranslatef\(fakeLightPositions[i][0],) s
+5 40 M
+(                       fakeLightPositions[i][1],) s
+5 29 M
+(                       fakeLightPositions[i][2]\);) s
+5 18 M
+(          glBegin\(GL_QUAD_STRIP\);) s
+5 7 M
+(            ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+77 7 M
+(for) s
+/F-gs-font 10 10 SF
+0 setgray
+95 7 M
+(\(j = 0; j < CONE_SEGMENTS; j++\) {) s
+_R
+%Page: (12) 12
+%BeginPageSetup
+_S
+% N-up sub-page 2/2
+402 -547 translate
+0.688917 dup scale
+/pagenum 12 def
+/fname (main.c) def
+/fdir () def
+/ftail (main.c) def
+% User defined strings:
+/fmodstr (Thu May 24 16:54:19 2001) def
+/pagenumstr (12) def
+/user_header_p false def
+/user_footer_p false def
+%%EndPageSetup
+do_header
+5 766 M
+(              glNormal3fv\(lightShadeNormals[j]\);) s
+5 755 M
+(              glVertex3fv\(lightShadeVertices[j]\);) s
+5 744 M
+(              glVertex3fv\(lightShadeVertices[j+CONE_SEGMENTS]\);) s
+5 733 M
+(            }) s
+5 722 M
+(            glNormal3fv\(lightShadeNormals[0]\);) s
+5 711 M
+(            glVertex3fv\(lightShadeVertices[0]\);) s
+5 700 M
+(            glVertex3fv\(lightShadeVertices[CONE_SEGMENTS]\);) s
+5 689 M
+(          glEnd\(\);) s
+5 678 M
+(        glPopMatrix\(\);) s
+5 667 M
+(      }) s
+5 634 M
+(      ) s
+/Courier-Oblique 10 10 SUF
+0.698039 0.133333 0.133333 setrgbcolor
+41 634 M
+(/* Place the real lights */) s
+/F-gs-font 10 10 SF
+0 setgray
+5 623 M
+(      ) s
+/Courier-Oblique 10 10 SUF
+0.698039 0.133333 0.133333 setrgbcolor
+41 623 M
+(/* room light */) s
+/F-gs-font 10 10 SF
+0 setgray
+5 612 M
+(      glLightfv\(GL_LIGHT0, GL_AMBIENT, roomLightColor\);) s
+5 601 M
+(      glLightfv\(GL_LIGHT0, GL_DIFFUSE, roomLightColor\);) s
+5 590 M
+(      glLightfv\(GL_LIGHT0, GL_SPECULAR, roomLightColor\);) s
+5 579 M
+(      glLightfv\(GL_LIGHT0, GL_POSITION, realLightPositions[0]\);) s
+5 568 M
+(      glLightf\(GL_LIGHT0, GL_SPOT_CUTOFF, 180.0\);) s
+5 557 M
+(      ) s
+5 546 M
+(      ) s
+/Courier-Oblique 10 10 SUF
+0.698039 0.133333 0.133333 setrgbcolor
+41 546 M
+(/* spot lights */) s
+/F-gs-font 10 10 SF
+0 setgray
+5 535 M
+(      glLightfv\(GL_LIGHT1, GL_POSITION, realLightPositions[1]\);) s
+5 524 M
+(      glLightfv\(GL_LIGHT1, GL_SPOT_DIRECTION, lightDirection\);) s
+5 513 M
+(      glLightf\(GL_LIGHT1, GL_SPOT_CUTOFF, SPOTLIGHT_WIDTH\);) s
+5 502 M
+(      ) s
+5 491 M
+(      glLightfv\(GL_LIGHT2, GL_POSITION, realLightPositions[2]\);) s
+5 480 M
+(      glLightfv\(GL_LIGHT2, GL_SPOT_DIRECTION, lightDirection\);) s
+5 469 M
+(      glLightf\(GL_LIGHT2, GL_SPOT_CUTOFF, SPOTLIGHT_WIDTH\);) s
+5 447 M
+(      glLightfv\(GL_LIGHT3, GL_POSITION, realLightPositions[3]\);) s
+5 436 M
+(      glLightfv\(GL_LIGHT3, GL_SPOT_DIRECTION, lightDirection\);) s
+5 425 M
+(      glLightf\(GL_LIGHT3, GL_SPOT_CUTOFF, SPOTLIGHT_WIDTH\);) s
+5 414 M
+(      ) s
+5 403 M
+(      glLightfv\(GL_LIGHT4, GL_POSITION, realLightPositions[4]\);) s
+5 392 M
+(      glLightfv\(GL_LIGHT4, GL_SPOT_DIRECTION, lightDirection\);) s
+5 381 M
+(      glLightf\(GL_LIGHT4, GL_SPOT_CUTOFF, SPOTLIGHT_WIDTH\);) s
+5 359 M
+(      glLightfv\(GL_LIGHT5, GL_POSITION, realLightPositions[5]\);) s
+5 348 M
+(      glLightfv\(GL_LIGHT5, GL_SPOT_DIRECTION, lightDirection\);) s
+5 337 M
+(      glLightf\(GL_LIGHT5, GL_SPOT_CUTOFF, SPOTLIGHT_WIDTH\);) s
+5 326 M
+(      ) s
+5 315 M
+(      glLightfv\(GL_LIGHT6, GL_POSITION, realLightPositions[6]\);) s
+5 304 M
+(      glLightfv\(GL_LIGHT6, GL_SPOT_DIRECTION, lightDirection\);) s
+5 293 M
+(      glLightf\(GL_LIGHT6, GL_SPOT_CUTOFF, SPOTLIGHT_WIDTH\);) s
+5 271 M
+(    glEndList\(\);) s
+5 260 M
+(  }) s
+5 249 M
+(  ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+17 249 M
+(else) s
+/F-gs-font 10 10 SF
+0 setgray
+41 249 M
+( {) s
+5 238 M
+(    fprintf\(stderr, ) s
+/Courier-Bold 10 10 SUF
+0.737255 0.560784 0.560784 setrgbcolor
+125 238 M
+("ERROR: Unable to create display list for lights\\n") s
+/F-gs-font 10 10 SF
+0 setgray
+431 238 M
+(\);) s
+5 227 M
+(    exit\(1\);) s
+5 216 M
+(  }) s
+5 205 M
+(}) s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+5 183 M
+(void) s
+/F-gs-font 10 10 SF
+0 setgray
+29 183 M
+( ) s
+/Courier-Bold 10 10 SUF
+0 0 1 setrgbcolor
+35 183 M
+(InitAerator) s
+/F-gs-font 10 10 SF
+0 setgray
+101 183 M
+(\() s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+107 183 M
+(void) s
+/F-gs-font 10 10 SF
+0 setgray
+131 183 M
+(\) {) s
+5 172 M
+(  ) s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+17 172 M
+(int) s
+/F-gs-font 10 10 SF
+0 setgray
+35 172 M
+( i;) s
+5 161 M
+(  GLfloat topRadius = 1.0;) s
+5 150 M
+(  GLfloat bottomRadius = 4.0;) s
+5 139 M
+(  GLfloat height = 7.0;) s
+5 128 M
+(  GLfloat aeratorVertices[CONE_SEGMENTS*2][3];) s
+5 117 M
+(  GLfloat aeratorNormals[CONE_SEGMENTS][3];) s
+5 106 M
+(  GLfloat aeratorInsideColor[] = {0.0, 0.0, 1.0, 1.0};) s
+5 95 M
+(  GLfloat aeratorOutsideColor[] = {0.2, 0.07, 0.02, 1.0};) s
+5 73 M
+(  aerator = glGenLists\(1\);) s
+5 62 M
+(  ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+17 62 M
+(if) s
+/F-gs-font 10 10 SF
+0 setgray
+29 62 M
+(\(aerator != 0\) {) s
+5 40 M
+(    ) s
+/Courier-Oblique 10 10 SUF
+0.698039 0.133333 0.133333 setrgbcolor
+29 40 M
+(/* Calculate the aerator */) s
+/F-gs-font 10 10 SF
+0 setgray
+5 29 M
+(    ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+29 29 M
+(for) s
+/F-gs-font 10 10 SF
+0 setgray
+47 29 M
+(\(i = 0; i < CONE_SEGMENTS; i++\) {) s
+5 18 M
+(      aeratorVertices[i][0] = bottomRadius * sin\(\(2*PI/CONE_SEGMENTS\)*i\);) s
+5 7 M
+(      aeratorVertices[i][1] = 0.0;) s
+_R
+_R
+S
+%%Page: (13-14) 7
+%%BeginPageSetup
+_S
+90 rotate
+24 -24 translate
+%Page: (13) 13
+%BeginPageSetup
+_S
+% N-up sub-page 1/2
+0 -547 translate
+0.688917 dup scale
+/pagenum 13 def
+/fname (main.c) def
+/fdir () def
+/ftail (main.c) def
+% User defined strings:
+/fmodstr (Thu May 24 16:54:19 2001) def
+/pagenumstr (13) def
+/user_header_p false def
+/user_footer_p false def
+%%EndPageSetup
+do_header
+5 766 M
+(      aeratorVertices[i][2] = bottomRadius * cos\(\(2*PI/CONE_SEGMENTS\)*i\);) s
+5 755 M
+(      aeratorVertices[i+CONE_SEGMENTS][0] = topRadius * sin\(\(2*PI/CONE_SEGMENTS\)*i\);) s
+5 744 M
+(      aeratorVertices[i+CONE_SEGMENTS][1] = height;) s
+5 733 M
+(      aeratorVertices[i+CONE_SEGMENTS][2] = topRadius * cos\(\(2*PI/CONE_SEGMENTS\)*i\);) s
+5 722 M
+(      aeratorNormals[i][0] = height * sin\(\(2*PI/CONE_SEGMENTS\)*i\);) s
+5 711 M
+(      aeratorNormals[i][1] = bottomRadius - topRadius;) s
+5 700 M
+(      aeratorNormals[i][2] = height * cos\(\(2*PI/CONE_SEGMENTS\)*i\);) s
+5 689 M
+(      Normalise\(aeratorNormals[i]\);) s
+5 678 M
+(    }) s
+5 656 M
+(    glNewList\(aerator, GL_COMPILE\);) s
+5 645 M
+(      glPushMatrix\(\);) s
+5 634 M
+(        glTranslatef\(0.0, 0.0, -20.0\);) s
+5 623 M
+(        glLightModeli\(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE\);) s
+5 612 M
+(        ) s
+/Courier-Oblique 10 10 SUF
+0.698039 0.133333 0.133333 setrgbcolor
+53 612 M
+(/* set the material properties for the outdide... */) s
+/F-gs-font 10 10 SF
+0 setgray
+5 601 M
+(        glMaterialfv\(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, aeratorOutsideColor\);) s
+5 590 M
+(        glMaterialfv\(GL_FRONT, GL_SPECULAR, aeratorOutsideColor\);) s
+5 579 M
+(        glMaterialf\(GL_FRONT, GL_SHININESS, 0\);) s
+5 568 M
+(        ) s
+/Courier-Oblique 10 10 SUF
+0.698039 0.133333 0.133333 setrgbcolor
+53 568 M
+(/* ...and for the inside */) s
+/F-gs-font 10 10 SF
+0 setgray
+5 557 M
+(        glMaterialfv\(GL_BACK, GL_AMBIENT_AND_DIFFUSE, aeratorInsideColor\);) s
+5 546 M
+(        glMaterialfv\(GL_BACK, GL_SPECULAR, aeratorInsideColor\);) s
+5 535 M
+(        glMaterialf\(GL_BACK, GL_SHININESS, 128\);) s
+5 524 M
+(        ) s
+5 513 M
+(        ) s
+/Courier-Oblique 10 10 SUF
+0.698039 0.133333 0.133333 setrgbcolor
+53 513 M
+(/* Draw the aerator */) s
+/F-gs-font 10 10 SF
+0 setgray
+5 502 M
+(        glBegin\(GL_QUAD_STRIP\);) s
+5 491 M
+(          ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+65 491 M
+(for) s
+/F-gs-font 10 10 SF
+0 setgray
+83 491 M
+(\(i = 0; i < CONE_SEGMENTS; i++\) {) s
+5 480 M
+(            glNormal3fv\(aeratorNormals[i]\);) s
+5 469 M
+(            glVertex3fv\(aeratorVertices[i+CONE_SEGMENTS]\);) s
+5 458 M
+(            glVertex3fv\(aeratorVertices[i]\);) s
+5 447 M
+(          }) s
+5 436 M
+(          glNormal3fv\(aeratorNormals[0]\);) s
+5 425 M
+(          glVertex3fv\(aeratorVertices[CONE_SEGMENTS]\);) s
+5 414 M
+(          glVertex3fv\(aeratorVertices[0]\);) s
+5 403 M
+(        glEnd\(\);) s
+5 381 M
+(        glLightModeli\(GL_LIGHT_MODEL_TWO_SIDE, GL_FALSE\);) s
+5 370 M
+(      ) s
+5 359 M
+(      glPopMatrix\(\);) s
+5 348 M
+(    glEndList\(\);) s
+5 337 M
+(  }) s
+5 326 M
+(  ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+17 326 M
+(else) s
+/F-gs-font 10 10 SF
+0 setgray
+41 326 M
+( {) s
+5 315 M
+(    fprintf\(stderr, ) s
+/Courier-Bold 10 10 SUF
+0.737255 0.560784 0.560784 setrgbcolor
+125 315 M
+("ERROR: Unable to create display list for aerator\\n") s
+/F-gs-font 10 10 SF
+0 setgray
+437 315 M
+(\);) s
+5 304 M
+(    exit\(1\);) s
+5 293 M
+(  }) s
+5 282 M
+(}) s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+5 260 M
+(void) s
+/F-gs-font 10 10 SF
+0 setgray
+29 260 M
+( ) s
+/Courier-Bold 10 10 SUF
+0 0 1 setrgbcolor
+35 260 M
+(InitBubbles) s
+/F-gs-font 10 10 SF
+0 setgray
+101 260 M
+(\() s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+107 260 M
+(void) s
+/F-gs-font 10 10 SF
+0 setgray
+131 260 M
+(\) {) s
+5 249 M
+(  ) s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+17 249 M
+(int) s
+/F-gs-font 10 10 SF
+0 setgray
+35 249 M
+( i;) s
+5 227 M
+(  ) s
+/Courier-Oblique 10 10 SUF
+0.698039 0.133333 0.133333 setrgbcolor
+17 227 M
+(/* Disable all the bubbles */) s
+/F-gs-font 10 10 SF
+0 setgray
+5 216 M
+(  ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+17 216 M
+(for) s
+/F-gs-font 10 10 SF
+0 setgray
+35 216 M
+(\(i = 0; i < MAX_BUBBLES; i++\) bubbles[i].active = 0;) s
+5 205 M
+(  ) s
+/Courier-Oblique 10 10 SUF
+0.698039 0.133333 0.133333 setrgbcolor
+17 205 M
+(/* set point characteristics */) s
+/F-gs-font 10 10 SF
+0 setgray
+5 194 M
+(  glPointSize\(4\);) s
+5 183 M
+(  glEnable\(GL_POINT_SMOOTH\);) s
+5 172 M
+(  glHint\(GL_POINT_SMOOTH_HINT, GL_FASTEST\);) s
+5 161 M
+(}) s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+5 139 M
+(void) s
+/F-gs-font 10 10 SF
+0 setgray
+29 139 M
+( ) s
+/Courier-Bold 10 10 SUF
+0 0 1 setrgbcolor
+35 139 M
+(InitSubmarine) s
+/F-gs-font 10 10 SF
+0 setgray
+113 139 M
+(\() s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+119 139 M
+(void) s
+/F-gs-font 10 10 SF
+0 setgray
+143 139 M
+(\) {) s
+5 128 M
+(  ) s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+17 128 M
+(int) s
+/F-gs-font 10 10 SF
+0 setgray
+35 128 M
+( i;) s
+5 117 M
+(  ) s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+17 117 M
+(const) s
+/F-gs-font 10 10 SF
+0 setgray
+47 117 M
+( GLfloat radius = 1.5;) s
+5 106 M
+(  GLfloat submarineColor[] = {0.0124, 0.1288, 0.1992, 1.0};) s
+5 95 M
+(  GLfloat propellerGuardVertices[SUBMARINE_SEGMENTS*2][3];) s
+5 84 M
+(  GLfloat propellerGuardNormals[SUBMARINE_SEGMENTS][3];) s
+5 62 M
+(  submarine = glGenLists\(1\);) s
+5 51 M
+(  ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+17 51 M
+(if) s
+/F-gs-font 10 10 SF
+0 setgray
+29 51 M
+(\(submarine != 0\) {) s
+5 40 M
+(    glNewList\(submarine, GL_COMPILE\);) s
+5 18 M
+(      ) s
+/Courier-Oblique 10 10 SUF
+0.698039 0.133333 0.133333 setrgbcolor
+41 18 M
+(/* Set the material properties of the submarine */) s
+/F-gs-font 10 10 SF
+0 setgray
+5 7 M
+(      glMaterialfv\(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, submarineColor\);) s
+_R
+%Page: (14) 14
+%BeginPageSetup
+_S
+% N-up sub-page 2/2
+402 -547 translate
+0.688917 dup scale
+/pagenum 14 def
+/fname (main.c) def
+/fdir () def
+/ftail (main.c) def
+% User defined strings:
+/fmodstr (Thu May 24 16:54:19 2001) def
+/pagenumstr (14) def
+/user_header_p false def
+/user_footer_p false def
+%%EndPageSetup
+do_header
+5 766 M
+(      glMaterialfv\(GL_FRONT, GL_SPECULAR, submarineColor\);) s
+5 755 M
+(      glMaterialf\(GL_FRONT, GL_SHININESS, 100\);) s
+5 744 M
+(      ) s
+5 733 M
+(      ) s
+/Courier-Oblique 10 10 SUF
+0.698039 0.133333 0.133333 setrgbcolor
+41 733 M
+(/* Draw the body */) s
+/F-gs-font 10 10 SF
+0 setgray
+5 722 M
+(      glPushMatrix\(\);) s
+5 711 M
+(        glScalef\(4.0, 1.0, 1.0\);) s
+5 700 M
+(        glutSolidSphere\(1.5, SUBMARINE_SEGMENTS, SUBMARINE_SEGMENTS\);) s
+5 689 M
+(      glPopMatrix\(\);) s
+5 667 M
+(      ) s
+/Courier-Oblique 10 10 SUF
+0.698039 0.133333 0.133333 setrgbcolor
+41 667 M
+(/* calculate the propeller_guard */) s
+/F-gs-font 10 10 SF
+0 setgray
+5 656 M
+(      ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+41 656 M
+(for) s
+/F-gs-font 10 10 SF
+0 setgray
+59 656 M
+(\(i = 0; i < SUBMARINE_SEGMENTS; i++\) {) s
+5 645 M
+(        propellerGuardNormals[i][0] = 0.0;) s
+5 634 M
+(        propellerGuardNormals[i][1] = sin\(\(2*PI/SUBMARINE_SEGMENTS\)*i\);) s
+5 623 M
+(        propellerGuardNormals[i][2] = cos\(\(2*PI/SUBMARINE_SEGMENTS\)*i\);) s
+5 612 M
+(        propellerGuardVertices[i][0] = 5.5;) s
+5 601 M
+(        propellerGuardVertices[i][1] = radius * propellerGuardNormals[i][1]; ) s
+5 590 M
+(        propellerGuardVertices[i][2] = radius * propellerGuardNormals[i][2];) s
+5 579 M
+(        propellerGuardVertices[i+SUBMARINE_SEGMENTS][0] = 6.5;) s
+5 568 M
+(        propellerGuardVertices[i+SUBMARINE_SEGMENTS][1] = propellerGuardVertices[i][1];) s
+5 557 M
+(        propellerGuardVertices[i+SUBMARINE_SEGMENTS][2] = propellerGuardVertices[i][2];) s
+5 546 M
+(      }) s
+5 524 M
+(      ) s
+/Courier-Oblique 10 10 SUF
+0.698039 0.133333 0.133333 setrgbcolor
+41 524 M
+(/* draw the propeller guard */) s
+/F-gs-font 10 10 SF
+0 setgray
+5 513 M
+(      glBegin\(GL_QUAD_STRIP\);) s
+5 502 M
+(        ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+53 502 M
+(for) s
+/F-gs-font 10 10 SF
+0 setgray
+71 502 M
+(\(i = 0; i < SUBMARINE_SEGMENTS; i++\) {) s
+5 491 M
+(          glNormal3fv\(propellerGuardNormals[i]\);) s
+5 480 M
+(          glVertex3fv\(propellerGuardVertices[i]\);) s
+5 469 M
+(          glVertex3fv\(propellerGuardVertices[i+SUBMARINE_SEGMENTS]\);) s
+5 458 M
+(        }) s
+5 447 M
+(        glNormal3fv\(propellerGuardNormals[0]\);) s
+5 436 M
+(        glVertex3fv\(propellerGuardVertices[0]\);) s
+5 425 M
+(        glVertex3fv\(propellerGuardVertices[SUBMARINE_SEGMENTS]\);          ) s
+5 414 M
+(      glEnd\(\);) s
+5 392 M
+(      ) s
+/Courier-Oblique 10 10 SUF
+0.698039 0.133333 0.133333 setrgbcolor
+41 392 M
+(/* draw the tower */) s
+/F-gs-font 10 10 SF
+0 setgray
+5 381 M
+(      glPushMatrix\(\);) s
+5 370 M
+(        glTranslatef\(0.0, 1.5, 0.0\);) s
+5 359 M
+(        glScalef\(3.0, 1.0, 1.0\);) s
+5 348 M
+(        glutSolidCube\(1.0\);) s
+5 337 M
+(      glPopMatrix\(\);) s
+5 315 M
+(      ) s
+/Courier-Oblique 10 10 SUF
+0.698039 0.133333 0.133333 setrgbcolor
+41 315 M
+(/* draw the fins */) s
+/F-gs-font 10 10 SF
+0 setgray
+5 304 M
+(      ) s
+/Courier-Oblique 10 10 SUF
+0.698039 0.133333 0.133333 setrgbcolor
+41 304 M
+(/* elevators */) s
+/F-gs-font 10 10 SF
+0 setgray
+5 293 M
+(      glPushMatrix\(\);) s
+5 282 M
+(        glTranslatef\(-2.5, 0.0, 0.0\);) s
+5 271 M
+(        glScalef\(3, 1.0, 8.0\);) s
+5 260 M
+(        glutSolidCube\(0.5\);) s
+5 249 M
+(      glPopMatrix\(\);) s
+5 238 M
+(      ) s
+/Courier-Oblique 10 10 SUF
+0.698039 0.133333 0.133333 setrgbcolor
+41 238 M
+(/* steering */) s
+/F-gs-font 10 10 SF
+0 setgray
+5 227 M
+(      glPushMatrix\(\);) s
+5 216 M
+(        glTranslatef\(6.75, 0.0, 0.0\);) s
+5 205 M
+(        glScalef\(2.0, 8*radius, 1.0\);) s
+5 194 M
+(        glutSolidCube\(0.25\);) s
+5 183 M
+(      glPopMatrix\(\);) s
+5 161 M
+(    glEndList\(\);) s
+5 150 M
+(  }) s
+5 139 M
+(  ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+17 139 M
+(else) s
+/F-gs-font 10 10 SF
+0 setgray
+41 139 M
+( {) s
+5 128 M
+(    fprintf\(stderr, ) s
+/Courier-Bold 10 10 SUF
+0.737255 0.560784 0.560784 setrgbcolor
+125 128 M
+("ERROR: Unable to create display list for submarine\\n") s
+/F-gs-font 10 10 SF
+0 setgray
+449 128 M
+(\);) s
+5 117 M
+(    exit\(1\);) s
+5 106 M
+(  }) s
+5 84 M
+(  sub.x = 0.0;) s
+5 73 M
+(  sub.y = 20.0;) s
+5 62 M
+(  sub.z = 0.0;) s
+5 51 M
+(  sub.xVelocity = 0.0;) s
+5 40 M
+(  sub.yVelocity = 0.0;) s
+5 29 M
+(  sub.zVelocity = 0.0;) s
+5 18 M
+(  sub.dive = 0.0;) s
+5 7 M
+(  sub.turn = 0.0;) s
+_R
+_R
+S
+%%Page: (15-16) 8
+%%BeginPageSetup
+_S
+90 rotate
+24 -24 translate
+%Page: (15) 15
+%BeginPageSetup
+_S
+% N-up sub-page 1/2
+0 -547 translate
+0.688917 dup scale
+/pagenum 15 def
+/fname (main.c) def
+/fdir () def
+/ftail (main.c) def
+% User defined strings:
+/fmodstr (Thu May 24 16:54:19 2001) def
+/pagenumstr (15) def
+/user_header_p false def
+/user_footer_p false def
+%%EndPageSetup
+do_header
+5 766 M
+(}) s
+/Courier-Oblique 10 10 SUF
+0.698039 0.133333 0.133333 setrgbcolor
+5 744 M
+(/**************************************************/) s
+/F-gs-font 10 10 SF
+0 setgray
+/Courier-Oblique 10 10 SUF
+0.698039 0.133333 0.133333 setrgbcolor
+5 733 M
+(/* DRAWING FUNCTIONS                              */) s
+/F-gs-font 10 10 SF
+0 setgray
+/Courier-Oblique 10 10 SUF
+0.698039 0.133333 0.133333 setrgbcolor
+5 722 M
+(/**************************************************/) s
+/F-gs-font 10 10 SF
+0 setgray
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+5 711 M
+(void) s
+/F-gs-font 10 10 SF
+0 setgray
+29 711 M
+( ) s
+/Courier-Bold 10 10 SUF
+0 0 1 setrgbcolor
+35 711 M
+(DrawLights) s
+/F-gs-font 10 10 SF
+0 setgray
+95 711 M
+(\(\) {) s
+5 700 M
+(  GLfloat lightColor[] = {1.0, 1.0, 1.0, 1.0};) s
+5 678 M
+(  ) s
+/Courier-Oblique 10 10 SUF
+0.698039 0.133333 0.133333 setrgbcolor
+17 678 M
+(/* Make the lights blue to give an underwater effect */) s
+/F-gs-font 10 10 SF
+0 setgray
+5 667 M
+(  ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+17 667 M
+(if) s
+/F-gs-font 10 10 SF
+0 setgray
+29 667 M
+(\(viewPosition == IN_SUB\) {) s
+5 656 M
+(    lightColor[0] = 0.4;) s
+5 645 M
+(    lightColor[1] = 0.4;) s
+5 634 M
+(    light0 = 0;) s
+5 623 M
+(  }) s
+5 612 M
+(  ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+17 612 M
+(else) s
+/F-gs-font 10 10 SF
+0 setgray
+41 612 M
+( light0 = 1;) s
+5 590 M
+(  ) s
+/Courier-Oblique 10 10 SUF
+0.698039 0.133333 0.133333 setrgbcolor
+17 590 M
+(/* Draw the lights */) s
+/F-gs-font 10 10 SF
+0 setgray
+5 579 M
+(  glCallList\(lights\);) s
+5 557 M
+(  ) s
+/Courier-Oblique 10 10 SUF
+0.698039 0.133333 0.133333 setrgbcolor
+17 557 M
+(/* Set the properties of the lights */) s
+/F-gs-font 10 10 SF
+0 setgray
+5 546 M
+(  glLightfv\(GL_LIGHT1, GL_AMBIENT, lightColor\);) s
+5 535 M
+(  glLightfv\(GL_LIGHT1, GL_DIFFUSE, lightColor\);) s
+5 524 M
+(  glLightfv\(GL_LIGHT1, GL_SPECULAR, lightColor\);) s
+5 502 M
+(  glLightfv\(GL_LIGHT2, GL_AMBIENT, lightColor\);) s
+5 491 M
+(  glLightfv\(GL_LIGHT2, GL_DIFFUSE, lightColor\);) s
+5 480 M
+(  glLightfv\(GL_LIGHT2, GL_SPECULAR, lightColor\);) s
+5 458 M
+(  glLightfv\(GL_LIGHT3, GL_AMBIENT, lightColor\);) s
+5 447 M
+(  glLightfv\(GL_LIGHT3, GL_DIFFUSE, lightColor\);) s
+5 436 M
+(  glLightfv\(GL_LIGHT3, GL_SPECULAR, lightColor\);) s
+5 414 M
+(  glLightfv\(GL_LIGHT4, GL_AMBIENT, lightColor\);) s
+5 403 M
+(  glLightfv\(GL_LIGHT4, GL_DIFFUSE, lightColor\);) s
+5 392 M
+(  glLightfv\(GL_LIGHT4, GL_SPECULAR, lightColor\);) s
+5 370 M
+(  glLightfv\(GL_LIGHT5, GL_AMBIENT, lightColor\);) s
+5 359 M
+(  glLightfv\(GL_LIGHT5, GL_DIFFUSE, lightColor\);) s
+5 348 M
+(  glLightfv\(GL_LIGHT5, GL_SPECULAR, lightColor\);) s
+5 326 M
+(  glLightfv\(GL_LIGHT6, GL_AMBIENT, lightColor\);) s
+5 315 M
+(  glLightfv\(GL_LIGHT6, GL_DIFFUSE, lightColor\);) s
+5 304 M
+(  glLightfv\(GL_LIGHT6, GL_SPECULAR, lightColor\);) s
+5 282 M
+(}) s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+5 260 M
+(void) s
+/F-gs-font 10 10 SF
+0 setgray
+29 260 M
+( ) s
+/Courier-Bold 10 10 SUF
+0 0 1 setrgbcolor
+35 260 M
+(DrawBubbles) s
+/F-gs-font 10 10 SF
+0 setgray
+101 260 M
+(\() s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+107 260 M
+(void) s
+/F-gs-font 10 10 SF
+0 setgray
+131 260 M
+(\) {) s
+5 249 M
+(  ) s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+17 249 M
+(int) s
+/F-gs-font 10 10 SF
+0 setgray
+35 249 M
+( i;) s
+5 238 M
+(  GLfloat bubbleColor[] = {0.8, 0.8, 1.0, 0.2};) s
+5 227 M
+(  ) s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+17 227 M
+(static) s
+/F-gs-font 10 10 SF
+0 setgray
+53 227 M
+( ) s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+59 227 M
+(float) s
+/F-gs-font 10 10 SF
+0 setgray
+89 227 M
+( timeSinceBubble = 0;) s
+5 216 M
+(  ) s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+17 216 M
+(static) s
+/F-gs-font 10 10 SF
+0 setgray
+53 216 M
+( clock_t oldTime = 0;) s
+5 205 M
+(  clock_t newTime;) s
+5 194 M
+(  ) s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+17 194 M
+(float) s
+/F-gs-font 10 10 SF
+0 setgray
+47 194 M
+( elapsed;) s
+5 183 M
+(  GLfloat acceleration;) s
+5 172 M
+(  ) s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+17 172 M
+(int) s
+/F-gs-font 10 10 SF
+0 setgray
+35 172 M
+( active = 0;) s
+5 150 M
+(  newTime = clock\(\);) s
+5 139 M
+(  elapsed = \() s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+83 139 M
+(float) s
+/F-gs-font 10 10 SF
+0 setgray
+113 139 M
+(\) \(newTime - oldTime\)/\() s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+251 139 M
+(float) s
+/F-gs-font 10 10 SF
+0 setgray
+281 139 M
+(\) CLOCKS_PER_SEC;) s
+5 128 M
+(  oldTime = newTime;) s
+5 117 M
+(  timeSinceBubble += elapsed;) s
+5 106 M
+(  acceleration = elapsed * BOUYANCY;) s
+5 84 M
+(  ) s
+/Courier-Oblique 10 10 SUF
+0.698039 0.133333 0.133333 setrgbcolor
+17 84 M
+(/* Set the material properties of the bubbles */) s
+/F-gs-font 10 10 SF
+0 setgray
+5 73 M
+(  glMaterialfv\(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, bubbleColor\);) s
+5 62 M
+(  glMaterialfv\(GL_FRONT, GL_SPECULAR, bubbleColor\);) s
+5 51 M
+(  glMaterialf\(GL_FRONT, GL_SHININESS, 50\);) s
+5 29 M
+(  ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+17 29 M
+(for) s
+/F-gs-font 10 10 SF
+0 setgray
+35 29 M
+(\(i = 0; i < MAX_BUBBLES; i++\) {) s
+5 18 M
+(    ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+29 18 M
+(if) s
+/F-gs-font 10 10 SF
+0 setgray
+41 18 M
+(\(bubbles[i].active\) {) s
+5 7 M
+(      active++;) s
+_R
+%Page: (16) 16
+%BeginPageSetup
+_S
+% N-up sub-page 2/2
+402 -547 translate
+0.688917 dup scale
+/pagenum 16 def
+/fname (main.c) def
+/fdir () def
+/ftail (main.c) def
+% User defined strings:
+/fmodstr (Thu May 24 16:54:19 2001) def
+/pagenumstr (16) def
+/user_header_p false def
+/user_footer_p false def
+%%EndPageSetup
+do_header
+5 766 M
+(      ) s
+/Courier-Oblique 10 10 SUF
+0.698039 0.133333 0.133333 setrgbcolor
+41 766 M
+(/* Calculate new bubble position */) s
+/F-gs-font 10 10 SF
+0 setgray
+5 755 M
+(      bubbles[i].position[0] += bubbles[i].xVelocity * elapsed;) s
+5 744 M
+(      bubbles[i].position[1] += bubbles[i].yVelocity * elapsed;) s
+5 733 M
+(      bubbles[i].position[2] += bubbles[i].zVelocity * elapsed;) s
+5 722 M
+(      ) s
+/Courier-Oblique 10 10 SUF
+0.698039 0.133333 0.133333 setrgbcolor
+41 722 M
+(/* accelerate bubble upwards */) s
+/F-gs-font 10 10 SF
+0 setgray
+5 711 M
+(      bubbles[i].yVelocity += acceleration * \(1 + 0.5*\(RandF\(\) - 0.5\)\);) s
+5 700 M
+(      ) s
+/Courier-Oblique 10 10 SUF
+0.698039 0.133333 0.133333 setrgbcolor
+41 700 M
+(/* collision detection */) s
+/F-gs-font 10 10 SF
+0 setgray
+5 689 M
+(      ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+41 689 M
+(if) s
+/F-gs-font 10 10 SF
+0 setgray
+53 689 M
+(\(bubbles[i].position[1] > 40.0\) bubbles[i].active = 0; ) s
+/Courier-Oblique 10 10 SUF
+0.698039 0.133333 0.133333 setrgbcolor
+383 689 M
+(/* burst at water surface ) s
+5 678 M
+(*/) s
+/F-gs-font 10 10 SF
+0 setgray
+5 667 M
+(      ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+41 667 M
+(else) s
+/F-gs-font 10 10 SF
+0 setgray
+65 667 M
+( {) s
+5 656 M
+(        ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+53 656 M
+(if) s
+/F-gs-font 10 10 SF
+0 setgray
+65 656 M
+(\(HitShelf\(bubbles[i]\)\) {) s
+5 645 M
+(          ) s
+/Courier-Oblique 10 10 SUF
+0.698039 0.133333 0.133333 setrgbcolor
+65 645 M
+(/* Move the bubble under the shelf */) s
+/F-gs-font 10 10 SF
+0 setgray
+5 634 M
+(          bubbles[i].position[1] -= bubbles[i].position[1] - 19.2;) s
+5 623 M
+(          bubbles[i].yVelocity = -bubbles[i].yVelocity * BUBBLE_BOUNCE;) s
+5 612 M
+(        }) s
+5 601 M
+(        ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+53 601 M
+(if) s
+/F-gs-font 10 10 SF
+0 setgray
+65 601 M
+(\(HitWall\(bubbles[i]\)\) {) s
+5 590 M
+(          ) s
+/Courier-Oblique 10 10 SUF
+0.698039 0.133333 0.133333 setrgbcolor
+65 590 M
+(/* bounce of wall */) s
+/F-gs-font 10 10 SF
+0 setgray
+5 579 M
+(          bubbles[i].position[2] -= bubbles[i].position[2] + 24.2;) s
+5 568 M
+(          bubbles[i].zVelocity = -bubbles[i].zVelocity * BUBBLE_BOUNCE;) s
+5 557 M
+(        }) s
+5 546 M
+(        ) s
+/Courier-Oblique 10 10 SUF
+0.698039 0.133333 0.133333 setrgbcolor
+53 546 M
+(/* Draw the bubble */) s
+/F-gs-font 10 10 SF
+0 setgray
+5 535 M
+(        ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+53 535 M
+(if) s
+/F-gs-font 10 10 SF
+0 setgray
+65 535 M
+(\(viewPosition == IN_SUB\) {) s
+5 524 M
+(          ) s
+/Courier-Oblique 10 10 SUF
+0.698039 0.133333 0.133333 setrgbcolor
+65 524 M
+(/* Draw bubbles as spheres when inside the tank */) s
+/F-gs-font 10 10 SF
+0 setgray
+5 513 M
+(          glPushMatrix\(\);) s
+5 502 M
+(            glTranslatef\(bubbles[i].position[0],) s
+5 491 M
+(                         bubbles[i].position[1],) s
+5 480 M
+(                         bubbles[i].position[2]\);) s
+5 469 M
+(            glutSolidSphere\(0.8, 10, 10\);) s
+5 458 M
+(          glPopMatrix\(\);) s
+5 447 M
+(        }) s
+5 436 M
+(        ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+53 436 M
+(else) s
+/F-gs-font 10 10 SF
+0 setgray
+77 436 M
+( {) s
+5 425 M
+(          ) s
+/Courier-Oblique 10 10 SUF
+0.698039 0.133333 0.133333 setrgbcolor
+65 425 M
+(/* Draw bubbles as points when outside the tank */) s
+/F-gs-font 10 10 SF
+0 setgray
+5 414 M
+(          glBegin\(GL_POINTS\);) s
+5 403 M
+(            glVertex3fv\(bubbles[i].position\);) s
+5 392 M
+(          glEnd\(\);) s
+5 381 M
+(        }) s
+5 370 M
+(      }) s
+5 359 M
+(    }) s
+5 348 M
+(    ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+29 348 M
+(else) s
+/F-gs-font 10 10 SF
+0 setgray
+53 348 M
+( ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+59 348 M
+(if) s
+/F-gs-font 10 10 SF
+0 setgray
+71 348 M
+(\(timeSinceBubble > TIME_BETWEEN_BUBBLES\) { ) s
+/Courier-Oblique 10 10 SUF
+0.698039 0.133333 0.133333 setrgbcolor
+329 348 M
+(/* time to draw a new bubble */) s
+/F-gs-font 10 10 SF
+0 setgray
+5 337 M
+(      ) s
+/Courier-Oblique 10 10 SUF
+0.698039 0.133333 0.133333 setrgbcolor
+41 337 M
+(/* release a new bubble */) s
+/F-gs-font 10 10 SF
+0 setgray
+5 326 M
+(      bubbles[i].position[0] = 0.0;) s
+5 315 M
+(      bubbles[i].position[1] = 7.0;) s
+5 304 M
+(      bubbles[i].position[2] = -20.0;) s
+5 293 M
+(      bubbles[i].xVelocity = 4 * \(RandF\(\) - 0.5\);) s
+5 282 M
+(      bubbles[i].yVelocity = 0.0;) s
+5 271 M
+(      bubbles[i].zVelocity = 4 * \(RandF\(\) - 0.5\);) s
+5 260 M
+(      bubbles[i].active = 1;) s
+5 249 M
+(      timeSinceBubble -= TIME_BETWEEN_BUBBLES;) s
+5 238 M
+(    }) s
+5 227 M
+(  }) s
+5 216 M
+(  ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+17 216 M
+(if) s
+/F-gs-font 10 10 SF
+0 setgray
+29 216 M
+(\(active == MAX_BUBBLES\) fprintf\(stderr, ) s
+/Courier-Bold 10 10 SUF
+0.737255 0.560784 0.560784 setrgbcolor
+269 216 M
+("WARNING: MAX BUBBLES REACHED               \\) s
+5 205 M
+(n") s
+/F-gs-font 10 10 SF
+0 setgray
+17 205 M
+(\);) s
+5 194 M
+(  fprintf\(stderr, ) s
+/Courier-Bold 10 10 SUF
+0.737255 0.560784 0.560784 setrgbcolor
+113 194 M
+("\\t\\tActive bubbles: %2i\\r") s
+/F-gs-font 10 10 SF
+0 setgray
+275 194 M
+(, active\);) s
+5 183 M
+(}) s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+5 161 M
+(void) s
+/F-gs-font 10 10 SF
+0 setgray
+29 161 M
+( ) s
+/Courier-Bold 10 10 SUF
+0 0 1 setrgbcolor
+35 161 M
+(DrawSubmarine) s
+/F-gs-font 10 10 SF
+0 setgray
+113 161 M
+(\() s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+119 161 M
+(void) s
+/F-gs-font 10 10 SF
+0 setgray
+143 161 M
+(\) {) s
+5 150 M
+(  glPushMatrix\(\);) s
+5 139 M
+(    ) s
+/Courier-Oblique 10 10 SUF
+0.698039 0.133333 0.133333 setrgbcolor
+29 139 M
+(/* move submarine into position */) s
+/F-gs-font 10 10 SF
+0 setgray
+5 128 M
+(    glTranslatef\(sub.x, sub.y, sub.z\);) s
+5 117 M
+(    glRotatef\(sub.turn, 0.0, 1.0, 0.0\);) s
+5 106 M
+(    glRotatef\(sub.dive, 0.0, 0.0, 1.0\);) s
+5 95 M
+(    ) s
+/Courier-Oblique 10 10 SUF
+0.698039 0.133333 0.133333 setrgbcolor
+29 95 M
+(/* Draw submarine */) s
+/F-gs-font 10 10 SF
+0 setgray
+5 84 M
+(    glCallList\(submarine\);) s
+5 73 M
+(  glPopMatrix\(\);) s
+5 62 M
+(}) s
+/Courier-Oblique 10 10 SUF
+0.698039 0.133333 0.133333 setrgbcolor
+5 40 M
+(/**************************************************/) s
+/F-gs-font 10 10 SF
+0 setgray
+/Courier-Oblique 10 10 SUF
+0.698039 0.133333 0.133333 setrgbcolor
+5 29 M
+(/* MISC FUNCTIONS                                 */) s
+/F-gs-font 10 10 SF
+0 setgray
+/Courier-Oblique 10 10 SUF
+0.698039 0.133333 0.133333 setrgbcolor
+5 18 M
+(/**************************************************/) s
+/F-gs-font 10 10 SF
+0 setgray
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+5 7 M
+(float) s
+/F-gs-font 10 10 SF
+0 setgray
+35 7 M
+( ) s
+/Courier-Bold 10 10 SUF
+0 0 1 setrgbcolor
+41 7 M
+(RandF) s
+/F-gs-font 10 10 SF
+0 setgray
+71 7 M
+(\(\) {) s
+_R
+_R
+S
+%%Page: (17-18) 9
+%%BeginPageSetup
+_S
+90 rotate
+24 -24 translate
+%Page: (17) 17
+%BeginPageSetup
+_S
+% N-up sub-page 1/2
+0 -547 translate
+0.688917 dup scale
+/pagenum 17 def
+/fname (main.c) def
+/fdir () def
+/ftail (main.c) def
+% User defined strings:
+/fmodstr (Thu May 24 16:54:19 2001) def
+/pagenumstr (17) def
+/user_header_p false def
+/user_footer_p false def
+%%EndPageSetup
+do_header
+5 766 M
+(  ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+17 766 M
+(return) s
+/F-gs-font 10 10 SF
+0 setgray
+53 766 M
+( \() s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+65 766 M
+(float) s
+/F-gs-font 10 10 SF
+0 setgray
+95 766 M
+(\)rand\(\)/\() s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+149 766 M
+(float) s
+/F-gs-font 10 10 SF
+0 setgray
+179 766 M
+(\)RAND_MAX;) s
+5 755 M
+(}) s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+5 733 M
+(int) s
+/F-gs-font 10 10 SF
+0 setgray
+23 733 M
+( ) s
+/Courier-Bold 10 10 SUF
+0 0 1 setrgbcolor
+29 733 M
+(HitShelf) s
+/F-gs-font 10 10 SF
+0 setgray
+77 733 M
+(\(bubble b\) {) s
+5 722 M
+(  ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+17 722 M
+(if) s
+/F-gs-font 10 10 SF
+0 setgray
+29 722 M
+(\(b.position[1] >= 19.2 && b.position[2] < -15.0 &&) s
+5 711 M
+(     b.position[0] > -10.0 && b.position[0] < 10.0\) ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+317 711 M
+(return) s
+/F-gs-font 10 10 SF
+0 setgray
+353 711 M
+( 1;) s
+5 700 M
+(  ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+17 700 M
+(return) s
+/F-gs-font 10 10 SF
+0 setgray
+53 700 M
+( 0;) s
+5 689 M
+(}) s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+5 667 M
+(int) s
+/F-gs-font 10 10 SF
+0 setgray
+23 667 M
+( ) s
+/Courier-Bold 10 10 SUF
+0 0 1 setrgbcolor
+29 667 M
+(HitWall) s
+/F-gs-font 10 10 SF
+0 setgray
+71 667 M
+(\(bubble b\) {) s
+5 656 M
+(  ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+17 656 M
+(if) s
+/F-gs-font 10 10 SF
+0 setgray
+29 656 M
+(\(b.position[2] < -24.2\) ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+173 656 M
+(return) s
+/F-gs-font 10 10 SF
+0 setgray
+209 656 M
+( 1;) s
+5 645 M
+(  ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+17 645 M
+(return) s
+/F-gs-font 10 10 SF
+0 setgray
+53 645 M
+( 0;) s
+5 634 M
+(}) s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+5 612 M
+(void) s
+/F-gs-font 10 10 SF
+0 setgray
+29 612 M
+( ) s
+/Courier-Bold 10 10 SUF
+0 0 1 setrgbcolor
+35 612 M
+(AccelerateSubmarine) s
+/F-gs-font 10 10 SF
+0 setgray
+149 612 M
+(\(GLfloat acceleration\) {) s
+5 601 M
+(  GLfloat x1, y1, z1;) s
+5 590 M
+(  GLfloat x2, y2, z2;) s
+5 579 M
+(  ) s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+17 579 M
+(double) s
+/F-gs-font 10 10 SF
+0 setgray
+53 579 M
+( theta;) s
+5 557 M
+(  ) s
+/Courier-Oblique 10 10 SUF
+0.698039 0.133333 0.133333 setrgbcolor
+17 557 M
+(/* acceleration vector before rotation is:) s
+5 546 M
+(     x = -acceleration) s
+5 535 M
+(     y = 0) s
+5 524 M
+(     z = 0) s
+5 513 M
+(  */) s
+/F-gs-font 10 10 SF
+0 setgray
+5 491 M
+(  ) s
+/Courier-Oblique 10 10 SUF
+0.698039 0.133333 0.133333 setrgbcolor
+17 491 M
+(/* rotate around z axis */) s
+/F-gs-font 10 10 SF
+0 setgray
+5 480 M
+(  theta = sub.dive * \(PI/180\);) s
+5 469 M
+(  x1 = -acceleration*cos\(theta\);) s
+5 458 M
+(  y1 = -acceleration*sin\(theta\);) s
+5 447 M
+(  z1 = 0.0;) s
+5 425 M
+(  ) s
+/Courier-Oblique 10 10 SUF
+0.698039 0.133333 0.133333 setrgbcolor
+17 425 M
+(/* rotate around y axis */) s
+/F-gs-font 10 10 SF
+0 setgray
+5 414 M
+(  theta = sub.turn * \(PI/180\);) s
+5 403 M
+(  x2 = x1*cos\(theta\) + z1*sin\(theta\);) s
+5 392 M
+(  y2 = y1;) s
+5 381 M
+(  z2 = -x1*sin\(theta\) + z1*cos\(theta\);) s
+5 359 M
+(  ) s
+/Courier-Oblique 10 10 SUF
+0.698039 0.133333 0.133333 setrgbcolor
+17 359 M
+(/* add to velocity vector */) s
+/F-gs-font 10 10 SF
+0 setgray
+5 348 M
+(  sub.xVelocity += x2;) s
+5 337 M
+(  sub.yVelocity += y2;) s
+5 326 M
+(  sub.zVelocity += z2;) s
+5 315 M
+(  ) s
+5 304 M
+(}) s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+5 282 M
+(void) s
+/F-gs-font 10 10 SF
+0 setgray
+29 282 M
+( ) s
+/Courier-Bold 10 10 SUF
+0 0 1 setrgbcolor
+35 282 M
+(CollisionDetection) s
+/F-gs-font 10 10 SF
+0 setgray
+143 282 M
+(\() s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+149 282 M
+(void) s
+/F-gs-font 10 10 SF
+0 setgray
+173 282 M
+(\) {) s
+5 271 M
+(  ) s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+17 271 M
+(int) s
+/F-gs-font 10 10 SF
+0 setgray
+35 271 M
+( i;) s
+5 260 M
+(  GLfloat boundingBox[][3] = {{-6.0, -1.5, -2.0}, {-6.0, -1.5, 2.0},) s
+5 249 M
+(                               {-6.0, 2.0, -2.0}, {-6.0, 2.0, 2.0},) s
+5 238 M
+(                              {7.25, 2.0, 2.0}, {7.25, 2.0, -2.0},) s
+5 227 M
+(                              {7.25, -1.5, 2.0}, {7.25, -1.5, -2.0}};) s
+5 216 M
+(  GLfloat xAdj = 0.0, yAdj = 0.0, zAdj = 0.0;) s
+5 205 M
+(  GLfloat tmpX, tmpY, tmpZ;) s
+5 194 M
+(  GLfloat diveR, turnR;) s
+5 183 M
+(  ) s
+5 172 M
+(  diveR = sub.dive * \(PI/180\);) s
+5 161 M
+(  turnR = sub.turn * \(PI/180\);) s
+5 150 M
+(  ) s
+/Courier-Oblique 10 10 SUF
+0.698039 0.133333 0.133333 setrgbcolor
+17 150 M
+(/* rotate and translate the bounding box */) s
+/F-gs-font 10 10 SF
+0 setgray
+5 139 M
+(  ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+17 139 M
+(for) s
+/F-gs-font 10 10 SF
+0 setgray
+35 139 M
+(\(i = 0; i < 8; i++\) {) s
+5 128 M
+(    ) s
+/Courier-Oblique 10 10 SUF
+0.698039 0.133333 0.133333 setrgbcolor
+29 128 M
+(/* rotate bounding box around z */) s
+/F-gs-font 10 10 SF
+0 setgray
+5 117 M
+(    tmpX = boundingBox[i][0]*cos\(diveR\) - boundingBox[i][1]*sin\(diveR\);) s
+5 106 M
+(    tmpY = boundingBox[i][0]*sin\(diveR\) + boundingBox[i][1]*cos\(diveR\);) s
+5 95 M
+(    tmpZ = boundingBox[i][2];) s
+5 84 M
+(    ) s
+/Courier-Oblique 10 10 SUF
+0.698039 0.133333 0.133333 setrgbcolor
+29 84 M
+(/* rotate bounding box around y */) s
+/F-gs-font 10 10 SF
+0 setgray
+5 73 M
+(    boundingBox[i][0] = tmpX*cos\(turnR\) + tmpZ*sin\(turnR\);) s
+5 62 M
+(    boundingBox[i][1] = tmpY;) s
+5 51 M
+(    boundingBox[i][2] = -tmpX*sin\(turnR\) + tmpZ*cos\(turnR\);) s
+5 40 M
+(    ) s
+/Courier-Oblique 10 10 SUF
+0.698039 0.133333 0.133333 setrgbcolor
+29 40 M
+(/* translate bounding box */) s
+/F-gs-font 10 10 SF
+0 setgray
+5 29 M
+(    boundingBox[i][0] += sub.x;) s
+5 18 M
+(    boundingBox[i][1] += sub.y;) s
+5 7 M
+(    boundingBox[i][2] += sub.z;) s
+_R
+%Page: (18) 18
+%BeginPageSetup
+_S
+% N-up sub-page 2/2
+402 -547 translate
+0.688917 dup scale
+/pagenum 18 def
+/fname (main.c) def
+/fdir () def
+/ftail (main.c) def
+% User defined strings:
+/fmodstr (Thu May 24 16:54:19 2001) def
+/pagenumstr (18) def
+/user_header_p false def
+/user_footer_p false def
+%%EndPageSetup
+do_header
+5 766 M
+(  }) s
+5 744 M
+(  ) s
+/Courier-Oblique 10 10 SUF
+0.698039 0.133333 0.133333 setrgbcolor
+17 744 M
+(/* check if any of the bounding box vertices have hit anything */) s
+/F-gs-font 10 10 SF
+0 setgray
+5 733 M
+(  ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+17 733 M
+(for) s
+/F-gs-font 10 10 SF
+0 setgray
+35 733 M
+(\(i = 0; i < 8; i++\) {) s
+5 722 M
+(    ) s
+/Courier-Oblique 10 10 SUF
+0.698039 0.133333 0.133333 setrgbcolor
+29 722 M
+(/* x */) s
+/F-gs-font 10 10 SF
+0 setgray
+5 711 M
+(    ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+29 711 M
+(if) s
+/F-gs-font 10 10 SF
+0 setgray
+41 711 M
+(\(boundingBox[i][0] < -50.0 && -50.0 - boundingBox[i][0] > xAdj\)) s
+5 700 M
+(      xAdj = -50.0 - boundingBox[i][0];) s
+5 689 M
+(    ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+29 689 M
+(if) s
+/F-gs-font 10 10 SF
+0 setgray
+41 689 M
+(\(boundingBox[i][0] > 50.0 && 50.0 - boundingBox[i][0] < xAdj\)) s
+5 678 M
+(      xAdj = 50.0 - boundingBox[i][0];) s
+5 667 M
+(    ) s
+/Courier-Oblique 10 10 SUF
+0.698039 0.133333 0.133333 setrgbcolor
+29 667 M
+(/* y */) s
+/F-gs-font 10 10 SF
+0 setgray
+5 656 M
+(    ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+29 656 M
+(if) s
+/F-gs-font 10 10 SF
+0 setgray
+41 656 M
+(\(boundingBox[i][1] < 0.0 && 0.0 - boundingBox[i][1] > yAdj\)) s
+5 645 M
+(      yAdj = 0.0 - boundingBox[i][1];) s
+5 634 M
+(    ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+29 634 M
+(if) s
+/F-gs-font 10 10 SF
+0 setgray
+41 634 M
+(\(i > 5 && boundingBox[i][1] > 40.0 && 40.0 - boundingBox[i][1] < yAdj\)) s
+5 623 M
+(      yAdj = 40.0 - boundingBox[i][1];) s
+5 612 M
+(    ) s
+/Courier-Oblique 10 10 SUF
+0.698039 0.133333 0.133333 setrgbcolor
+29 612 M
+(/* z */) s
+/F-gs-font 10 10 SF
+0 setgray
+5 601 M
+(    ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+29 601 M
+(if) s
+/F-gs-font 10 10 SF
+0 setgray
+41 601 M
+(\(boundingBox[i][2] < -25.0 && -25.0 - boundingBox[i][2] > zAdj\)) s
+5 590 M
+(      zAdj = -25.0 - boundingBox[i][2];) s
+5 579 M
+(    ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+29 579 M
+(if) s
+/F-gs-font 10 10 SF
+0 setgray
+41 579 M
+(\(boundingBox[i][2] > 25.0 && 25.0 - boundingBox[i][2] < zAdj\)) s
+5 568 M
+(      zAdj = 25.0 - boundingBox[i][2];) s
+5 557 M
+(  }) s
+5 546 M
+(  ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+17 546 M
+(if) s
+/F-gs-font 10 10 SF
+0 setgray
+29 546 M
+(\(sub.y > 40.0\) yAdj = 40.0 - sub.y;) s
+5 524 M
+(  ) s
+/Courier-Oblique 10 10 SUF
+0.698039 0.133333 0.133333 setrgbcolor
+17 524 M
+(/* Adjust submarine position and velocity if we have hit anything */) s
+/F-gs-font 10 10 SF
+0 setgray
+5 513 M
+(  ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+17 513 M
+(if) s
+/F-gs-font 10 10 SF
+0 setgray
+29 513 M
+(\(xAdj != 0.0\) {) s
+5 502 M
+(    sub.x += xAdj;) s
+5 491 M
+(    sub.xVelocity = -sub.xVelocity * SUB_BOUNCE;) s
+5 480 M
+(  }) s
+5 469 M
+(  ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+17 469 M
+(if) s
+/F-gs-font 10 10 SF
+0 setgray
+29 469 M
+(\(yAdj != 0.0\) {) s
+5 458 M
+(    sub.y += yAdj;) s
+5 447 M
+(    sub.yVelocity = -sub.yVelocity * SUB_BOUNCE;) s
+5 436 M
+(  }) s
+5 425 M
+(  ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+17 425 M
+(if) s
+/F-gs-font 10 10 SF
+0 setgray
+29 425 M
+(\(zAdj != 0.0\) {) s
+5 414 M
+(    sub.z += zAdj;) s
+5 403 M
+(    sub.zVelocity = -sub.zVelocity * SUB_BOUNCE;) s
+5 392 M
+(  }) s
+5 381 M
+(}) s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+5 359 M
+(void) s
+/F-gs-font 10 10 SF
+0 setgray
+29 359 M
+( ) s
+/Courier-Bold 10 10 SUF
+0 0 1 setrgbcolor
+35 359 M
+(SubdivideXY) s
+/F-gs-font 10 10 SF
+0 setgray
+101 359 M
+(\(GLfloat v1[3], GLfloat v2[3], GLfloat* vertices, ) s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+401 359 M
+(int) s
+/F-gs-font 10 10 SF
+0 setgray
+419 359 M
+( div\) {) s
+5 348 M
+(  ) s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+17 348 M
+(int) s
+/F-gs-font 10 10 SF
+0 setgray
+35 348 M
+( i, j, index;) s
+5 326 M
+(  ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+17 326 M
+(for) s
+/F-gs-font 10 10 SF
+0 setgray
+35 326 M
+(\(i = 0; i < div+1; i++\) {) s
+5 315 M
+(    ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+29 315 M
+(for) s
+/F-gs-font 10 10 SF
+0 setgray
+47 315 M
+(\(j = 0; j < div+1; j++\) {) s
+5 304 M
+(      index = i*\(div+1\)*3 + j*3;) s
+5 293 M
+(      ) s
+/Courier-Oblique 10 10 SUF
+0.698039 0.133333 0.133333 setrgbcolor
+41 293 M
+(/* x */) s
+/F-gs-font 10 10 SF
+0 setgray
+5 282 M
+(      ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+41 282 M
+(if) s
+/F-gs-font 10 10 SF
+0 setgray
+53 282 M
+(\(i == 0\)) s
+5 271 M
+(        vertices[index] = v1[0];) s
+5 260 M
+(      ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+41 260 M
+(else) s
+/F-gs-font 10 10 SF
+0 setgray
+65 260 M
+( ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+71 260 M
+(if) s
+/F-gs-font 10 10 SF
+0 setgray
+83 260 M
+(\(i == div\)) s
+5 249 M
+(        vertices[index] = v2[0];) s
+5 238 M
+(      ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+41 238 M
+(else) s
+/F-gs-font 10 10 SF
+0 setgray
+5 227 M
+(        vertices[index] = v1[0] + i/\() s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+227 227 M
+(float) s
+/F-gs-font 10 10 SF
+0 setgray
+257 227 M
+(\)div * \(v2[0] - v1[0]\);) s
+5 216 M
+(      ) s
+/Courier-Oblique 10 10 SUF
+0.698039 0.133333 0.133333 setrgbcolor
+41 216 M
+(/* y */) s
+/F-gs-font 10 10 SF
+0 setgray
+5 205 M
+(      ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+41 205 M
+(if) s
+/F-gs-font 10 10 SF
+0 setgray
+53 205 M
+(\(j == 0\)) s
+5 194 M
+(        vertices[index+1] = v1[1];) s
+5 183 M
+(      ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+41 183 M
+(else) s
+/F-gs-font 10 10 SF
+0 setgray
+65 183 M
+( ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+71 183 M
+(if) s
+/F-gs-font 10 10 SF
+0 setgray
+83 183 M
+(\(j == div\)) s
+5 172 M
+(        vertices[index+1] = v2[1];) s
+5 161 M
+(      ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+41 161 M
+(else) s
+/F-gs-font 10 10 SF
+0 setgray
+5 150 M
+(        vertices[index+1] = v1[1] + j/\() s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+239 150 M
+(float) s
+/F-gs-font 10 10 SF
+0 setgray
+269 150 M
+(\)div * \(v2[1] - v1[1]\);) s
+5 139 M
+(      ) s
+/Courier-Oblique 10 10 SUF
+0.698039 0.133333 0.133333 setrgbcolor
+41 139 M
+(/* z */) s
+/F-gs-font 10 10 SF
+0 setgray
+5 128 M
+(      vertices[index+2] = v1[2];) s
+5 117 M
+(    }) s
+5 106 M
+(  }) s
+5 95 M
+(}) s
+5 84 M
+( ) s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+5 73 M
+(void) s
+/F-gs-font 10 10 SF
+0 setgray
+29 73 M
+( ) s
+/Courier-Bold 10 10 SUF
+0 0 1 setrgbcolor
+35 73 M
+(SubdivideYZ) s
+/F-gs-font 10 10 SF
+0 setgray
+101 73 M
+(\(GLfloat v1[3], GLfloat v2[3], GLfloat* vertices, ) s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+401 73 M
+(int) s
+/F-gs-font 10 10 SF
+0 setgray
+419 73 M
+( div\) {) s
+5 62 M
+(  ) s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+17 62 M
+(int) s
+/F-gs-font 10 10 SF
+0 setgray
+35 62 M
+( i, j, index;) s
+5 40 M
+(  ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+17 40 M
+(for) s
+/F-gs-font 10 10 SF
+0 setgray
+35 40 M
+(\(i = 0; i < div+1; i++\) {) s
+5 29 M
+(    ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+29 29 M
+(for) s
+/F-gs-font 10 10 SF
+0 setgray
+47 29 M
+(\(j = 0; j < div+1; j++\) {) s
+5 18 M
+(      index = i*\(div+1\)*3 + j*3;) s
+5 7 M
+(      ) s
+/Courier-Oblique 10 10 SUF
+0.698039 0.133333 0.133333 setrgbcolor
+41 7 M
+(/* x */) s
+/F-gs-font 10 10 SF
+0 setgray
+_R
+_R
+S
+%%Page: (19-20) 10
+%%BeginPageSetup
+_S
+90 rotate
+24 -24 translate
+%Page: (19) 19
+%BeginPageSetup
+_S
+% N-up sub-page 1/2
+0 -547 translate
+0.688917 dup scale
+/pagenum 19 def
+/fname (main.c) def
+/fdir () def
+/ftail (main.c) def
+% User defined strings:
+/fmodstr (Thu May 24 16:54:19 2001) def
+/pagenumstr (19) def
+/user_header_p false def
+/user_footer_p false def
+%%EndPageSetup
+do_header
+5 766 M
+(      vertices[index] = v1[0];) s
+5 755 M
+(      ) s
+/Courier-Oblique 10 10 SUF
+0.698039 0.133333 0.133333 setrgbcolor
+41 755 M
+(/* y */) s
+/F-gs-font 10 10 SF
+0 setgray
+5 744 M
+(      ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+41 744 M
+(if) s
+/F-gs-font 10 10 SF
+0 setgray
+53 744 M
+(\(i == 0\)) s
+5 733 M
+(        vertices[index+1] = v1[1];) s
+5 722 M
+(      ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+41 722 M
+(else) s
+/F-gs-font 10 10 SF
+0 setgray
+65 722 M
+( ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+71 722 M
+(if) s
+/F-gs-font 10 10 SF
+0 setgray
+83 722 M
+(\(i == div\)) s
+5 711 M
+(        vertices[index+1] = v2[1];) s
+5 700 M
+(      ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+41 700 M
+(else) s
+/F-gs-font 10 10 SF
+0 setgray
+5 689 M
+(        vertices[index+1] = v1[1] + i/\() s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+239 689 M
+(float) s
+/F-gs-font 10 10 SF
+0 setgray
+269 689 M
+(\)div * \(v2[1] - v1[1]\);) s
+5 678 M
+(      ) s
+/Courier-Oblique 10 10 SUF
+0.698039 0.133333 0.133333 setrgbcolor
+41 678 M
+(/* z */) s
+/F-gs-font 10 10 SF
+0 setgray
+5 667 M
+(      ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+41 667 M
+(if) s
+/F-gs-font 10 10 SF
+0 setgray
+53 667 M
+(\(j == 0\)) s
+5 656 M
+(        vertices[index+2] = v1[2];) s
+5 645 M
+(      ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+41 645 M
+(else) s
+/F-gs-font 10 10 SF
+0 setgray
+65 645 M
+( ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+71 645 M
+(if) s
+/F-gs-font 10 10 SF
+0 setgray
+83 645 M
+(\(j == div\)) s
+5 634 M
+(        vertices[index+2] = v2[2];) s
+5 623 M
+(      ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+41 623 M
+(else) s
+/F-gs-font 10 10 SF
+0 setgray
+5 612 M
+(        vertices[index+2] = v1[2] + j/\() s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+239 612 M
+(float) s
+/F-gs-font 10 10 SF
+0 setgray
+269 612 M
+(\)div * \(v2[2] - v1[2]\);) s
+5 601 M
+(    }) s
+5 590 M
+(  }) s
+5 579 M
+(} ) s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+5 557 M
+(void) s
+/F-gs-font 10 10 SF
+0 setgray
+29 557 M
+( ) s
+/Courier-Bold 10 10 SUF
+0 0 1 setrgbcolor
+35 557 M
+(SubdivideXZ) s
+/F-gs-font 10 10 SF
+0 setgray
+101 557 M
+(\(GLfloat v1[3], GLfloat v2[3], GLfloat* vertices, ) s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+401 557 M
+(int) s
+/F-gs-font 10 10 SF
+0 setgray
+419 557 M
+( div\) {) s
+5 546 M
+(  ) s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+17 546 M
+(int) s
+/F-gs-font 10 10 SF
+0 setgray
+35 546 M
+( i, j, index;) s
+5 524 M
+(  ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+17 524 M
+(for) s
+/F-gs-font 10 10 SF
+0 setgray
+35 524 M
+(\(i = 0; i < div+1; i++\) {) s
+5 513 M
+(    ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+29 513 M
+(for) s
+/F-gs-font 10 10 SF
+0 setgray
+47 513 M
+(\(j = 0; j < div+1; j++\) {) s
+5 502 M
+(      index = i*\(div+1\)*3 + j*3;) s
+5 491 M
+(      ) s
+/Courier-Oblique 10 10 SUF
+0.698039 0.133333 0.133333 setrgbcolor
+41 491 M
+(/* x */) s
+/F-gs-font 10 10 SF
+0 setgray
+5 480 M
+(      ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+41 480 M
+(if) s
+/F-gs-font 10 10 SF
+0 setgray
+53 480 M
+(\(i == 0\)) s
+5 469 M
+(        vertices[index] = v1[0];) s
+5 458 M
+(      ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+41 458 M
+(else) s
+/F-gs-font 10 10 SF
+0 setgray
+65 458 M
+( ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+71 458 M
+(if) s
+/F-gs-font 10 10 SF
+0 setgray
+83 458 M
+(\(i == div\)) s
+5 447 M
+(        vertices[index] = v2[0];) s
+5 436 M
+(      ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+41 436 M
+(else) s
+/F-gs-font 10 10 SF
+0 setgray
+5 425 M
+(        vertices[index] = v1[0] + i/\() s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+227 425 M
+(float) s
+/F-gs-font 10 10 SF
+0 setgray
+257 425 M
+(\)div * \(v2[0] - v1[0]\);) s
+5 414 M
+(      ) s
+/Courier-Oblique 10 10 SUF
+0.698039 0.133333 0.133333 setrgbcolor
+41 414 M
+(/* y */) s
+/F-gs-font 10 10 SF
+0 setgray
+5 403 M
+(      vertices[index+1] = v1[1];) s
+5 392 M
+(      ) s
+/Courier-Oblique 10 10 SUF
+0.698039 0.133333 0.133333 setrgbcolor
+41 392 M
+(/* z */) s
+/F-gs-font 10 10 SF
+0 setgray
+5 381 M
+(      ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+41 381 M
+(if) s
+/F-gs-font 10 10 SF
+0 setgray
+53 381 M
+(\(j == 0\)) s
+5 370 M
+(        vertices[index+2] = v1[2];) s
+5 359 M
+(      ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+41 359 M
+(else) s
+/F-gs-font 10 10 SF
+0 setgray
+65 359 M
+( ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+71 359 M
+(if) s
+/F-gs-font 10 10 SF
+0 setgray
+83 359 M
+(\(j == div\)) s
+5 348 M
+(        vertices[index+2] = v2[2];) s
+5 337 M
+(      ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+41 337 M
+(else) s
+/F-gs-font 10 10 SF
+0 setgray
+5 326 M
+(        vertices[index+2] = v1[2] + j/\() s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+239 326 M
+(float) s
+/F-gs-font 10 10 SF
+0 setgray
+269 326 M
+(\)div * \(v2[2] - v1[2]\);) s
+5 315 M
+(    }) s
+5 304 M
+(  }) s
+5 293 M
+(} ) s
+5 271 M
+(GLfloat *) s
+/Courier-Bold 10 10 SUF
+0 0 1 setrgbcolor
+59 271 M
+(CrossProduct) s
+/F-gs-font 10 10 SF
+0 setgray
+131 271 M
+(\(GLfloat m1[3], GLfloat m2[3], GLfloat result[3]\) {) s
+5 260 M
+(  result[0] = m1[1]*m2[2] - m2[1]*m1[2];) s
+5 249 M
+(  result[1] = m2[0]*m1[2] - m1[0]*m2[2];) s
+5 238 M
+(  result[2] = m1[0]*m2[1] - m2[0]*m1[1];) s
+5 227 M
+(  ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+17 227 M
+(return) s
+/F-gs-font 10 10 SF
+0 setgray
+53 227 M
+( result;) s
+5 216 M
+(}) s
+/Courier-Bold 10 10 SUF
+0.133333 0.545098 0.133333 setrgbcolor
+5 194 M
+(void) s
+/F-gs-font 10 10 SF
+0 setgray
+29 194 M
+( ) s
+/Courier-Bold 10 10 SUF
+0 0 1 setrgbcolor
+35 194 M
+(Normalise) s
+/F-gs-font 10 10 SF
+0 setgray
+89 194 M
+(\(GLfloat v[3]\) {) s
+5 183 M
+(  GLfloat length;) s
+5 161 M
+(  length = sqrt\(v[0]*v[0] + v[1]*v[1] + v[2]*v[2]\);) s
+5 150 M
+(  v[0] = v[0]/length;) s
+5 139 M
+(  v[1] = v[1]/length;) s
+5 128 M
+(  v[2] = v[2]/length;) s
+5 117 M
+(  ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+17 117 M
+(return) s
+/F-gs-font 10 10 SF
+0 setgray
+53 117 M
+(;) s
+5 106 M
+(}) s
+5 84 M
+(GLfloat *) s
+/Courier-Bold 10 10 SUF
+0 0 1 setrgbcolor
+59 84 M
+(Difference) s
+/F-gs-font 10 10 SF
+0 setgray
+119 84 M
+(\(GLfloat m1[3], GLfloat m2[3], GLfloat result[3]\) {) s
+5 73 M
+(  result[0] = m1[0] - m2[0];) s
+5 62 M
+(  result[1] = m1[1] - m2[1];) s
+5 51 M
+(  result[2] = m1[2] - m2[2];) s
+5 40 M
+(  ) s
+/Courier-Bold 10 10 SUF
+0.627451 0.12549 0.941176 setrgbcolor
+17 40 M
+(return) s
+/F-gs-font 10 10 SF
+0 setgray
+53 40 M
+( result;) s
+5 29 M
+(}) s
+_R
+_R
+S
+%%Trailer
+%%Pages: 19
+%%DocumentNeededResources: font Courier-Oblique Courier-Bold Courier 
+%%EOF

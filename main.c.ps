@@ -1,0 +1,3875 @@
+%!PS-Adobe-3.0
+%%Title: main.c
+%%Creator: Jonathan Dye (using ps-print v4.1.4)
+%%CreationDate: 17:07:44 May 24 2001
+%%Orientation: Portrait
+%%DocumentNeededResources: font Times-Roman Times-Italic
+%%+ font Courier
+%%+ font Courier-Bold
+%%+ font Courier-Oblique
+%%+ font Courier-BoldOblique
+%%+ font Helvetica
+%%+ font Helvetica-Bold
+%%Pages: (atend)
+%%Requirements:
+%%EndComments
+
+%%BeginPrologue
+
+/LandscapeMode false def
+/NumberOfColumns 1 def
+/LandscapePageHeight 792.0 def
+/PrintPageWidth      498.6141732283465 def
+/PrintWidth   498.6141732283465 def
+/PrintHeight  643.7029732283465 def
+/LeftMargin   56.69291338582677 def
+/RightMargin  56.69291338582677 def
+/InterColumn  56.69291338582677 def
+/BottomMargin 42.51968503937008 def
+/TopMargin    42.51968503937008 def
+/HeaderOffset 28.346456692913385 def
+/HeaderPad    2.4276 def
+/PrintHeader true def
+/PrintOnlyOneHeader false def
+/PrintHeaderFrame true def
+/ShowNofN true def
+/Duplex false def
+/LineHeight   8.967500000000001 def
+/LinesPerColumn 72 def
+/Zebra false def
+/PrintLineNumber false def
+/ZebraHeight 3 def
+% ISOLatin1Encoding stolen from ps_init.ps in GhostScript 2.6.1.4:
+/ISOLatin1Encoding where { pop } {
+% -- The ISO Latin-1 encoding vector isn't known, so define it.
+% -- The first half is the same as the standard encoding,
+% -- except for minus instead of hyphen at code 055.
+/ISOLatin1Encoding
+StandardEncoding 0 45 getinterval aload pop
+    /minus
+StandardEncoding 46 82 getinterval aload pop
+%*** NOTE: the following are missing in the Adobe documentation,
+%*** but appear in the displayed table:
+%*** macron at 0225, dieresis at 0230, cedilla at 0233, space at 0240.
+% 0200 (128)
+    /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef
+    /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef
+    /dotlessi /grave /acute /circumflex /tilde /macron /breve /dotaccent
+    /dieresis /.notdef /ring /cedilla /.notdef /hungarumlaut /ogonek /caron
+% 0240 (160)
+    /space /exclamdown /cent /sterling
+	/currency /yen /brokenbar /section
+    /dieresis /copyright /ordfeminine /guillemotleft
+	/logicalnot /hyphen /registered /macron
+    /degree /plusminus /twosuperior /threesuperior
+	/acute /mu /paragraph /periodcentered
+    /cedilla /onesuperior /ordmasculine /guillemotright
+	/onequarter /onehalf /threequarters /questiondown
+% 0300 (192)
+    /Agrave /Aacute /Acircumflex /Atilde
+	/Adieresis /Aring /AE /Ccedilla
+    /Egrave /Eacute /Ecircumflex /Edieresis
+	/Igrave /Iacute /Icircumflex /Idieresis
+    /Eth /Ntilde /Ograve /Oacute
+	/Ocircumflex /Otilde /Odieresis /multiply
+    /Oslash /Ugrave /Uacute /Ucircumflex
+	/Udieresis /Yacute /Thorn /germandbls
+% 0340 (224)
+    /agrave /aacute /acircumflex /atilde
+	/adieresis /aring /ae /ccedilla
+    /egrave /eacute /ecircumflex /edieresis
+	/igrave /iacute /icircumflex /idieresis
+    /eth /ntilde /ograve /oacute
+	/ocircumflex /otilde /odieresis /divide
+    /oslash /ugrave /uacute /ucircumflex
+	/udieresis /yacute /thorn /ydieresis
+256 packedarray def
+} ifelse
+
+/reencodeFontISO { %def
+  dup
+  length 12 add dict	% Make a new font (a new dict the same size
+			% as the old one) with room for our new symbols.
+
+  begin			% Make the new font the current dictionary.
+
+
+    { 1 index /FID ne
+      { def } { pop pop } ifelse
+    } forall		% Copy each of the symbols from the old dictionary
+			% to the new one except for the font ID.
+
+    currentdict /FontType get 0 ne {
+      /Encoding ISOLatin1Encoding def	% Override the encoding with
+					% the ISOLatin1 encoding.
+    } if
+
+    % Use the font's bounding box to determine the ascent, descent,
+    % and overall height; don't forget that these values have to be
+    % transformed using the font's matrix.
+
+%          ^    (x2 y2)
+%          |       |
+%          |       v
+%          |  +----+ - -
+%          |  |    |   ^
+%          |  |    |   | Ascent (usually > 0)
+%          |  |    |   |
+% (0 0) -> +--+----+-------->
+%             |    |   |
+%             |    |   v Descent (usually < 0)
+% (x1 y1) --> +----+ - -
+
+    currentdict /FontType get 0 ne {
+      /FontBBox load aload pop			% -- x1 y1 x2 y2
+      FontMatrix transform /Ascent  exch def pop
+      FontMatrix transform /Descent exch def pop
+    } {
+      /PrimaryFont FDepVector 0 get def
+      PrimaryFont /FontBBox get aload pop
+      PrimaryFont /FontMatrix get transform /Ascent exch def pop
+      PrimaryFont /FontMatrix get transform /Descent exch def pop
+    } ifelse
+
+    /FontHeight Ascent Descent sub def	% use `sub' because descent < 0
+
+    % Define these in case they're not in the FontInfo
+    % (also, here they're easier to get to).
+    /UnderlinePosition  Descent 0.70 mul def
+    /OverlinePosition   Descent UnderlinePosition sub Ascent add def
+    /StrikeoutPosition  Ascent 0.30 mul def
+    /LineThickness      FontHeight 0.05 mul def
+    /Xshadow            FontHeight  0.08 mul def
+    /Yshadow            FontHeight -0.09 mul def
+    /SpaceBackground    Descent neg UnderlinePosition add def
+    /XBox               Descent neg def
+    /YBox               LineThickness 0.7 mul def
+
+    currentdict		% Leave the new font on the stack
+    end			% Stop using the font as the current dictionary.
+    definefont		% Put the font into the font dictionary
+    pop			% Discard the returned font.
+} bind def
+
+/DefFont {				% Font definition
+  findfont exch scalefont reencodeFontISO
+} def
+
+/F {					% Font selection
+  findfont
+  dup /Ascent            get /Ascent            exch def
+  dup /Descent           get /Descent           exch def
+  dup /FontHeight        get /FontHeight        exch def
+  dup /UnderlinePosition get /UnderlinePosition exch def
+  dup /OverlinePosition  get /OverlinePosition  exch def
+  dup /StrikeoutPosition get /StrikeoutPosition exch def
+  dup /LineThickness     get /LineThickness     exch def
+  dup /Xshadow           get /Xshadow           exch def
+  dup /Yshadow           get /Yshadow           exch def
+  dup /SpaceBackground   get /SpaceBackground   exch def
+  dup /XBox              get /XBox              exch def
+  dup /YBox              get /YBox              exch def
+  setfont
+} def
+
+/FG /setrgbcolor load def
+
+/bg false def
+/BG {
+  dup /bg exch def
+  {mark 4 1 roll ]}
+  {[ 1.0 1.0 1.0 ]}
+  ifelse
+  /bgcolor exch def
+} def
+
+%  B    width    C
+%   +-----------+
+%               | Ascent  (usually > 0)
+% A +           +
+%               | Descent (usually < 0)
+%   +-----------+
+%  E    width    D
+
+/dobackground {				% width --
+  currentpoint				% -- width x y
+  gsave
+    newpath
+    moveto				% A (x y)
+    0 Ascent rmoveto			% B
+    dup 0 rlineto			% C
+    0 Descent Ascent sub rlineto	% D
+    neg 0 rlineto			% E
+    closepath
+    bgcolor aload pop setrgbcolor
+    fill
+  grestore
+} def
+
+/eolbg {				% dobackground until right margin
+  PrintWidth				% -- x-eol
+  currentpoint pop			% -- cur-x
+  sub					% -- width until eol
+  dobackground
+} def
+
+/PLN {PrintLineNumber {doLineNumber}if} def
+
+/SL {					% Soft Linefeed
+  bg { eolbg } if
+  0  currentpoint exch pop LineHeight sub  moveto
+} def
+
+/HL {SL PLN} def			% Hard Linefeed
+
+% Some debug
+/dcp { currentpoint exch 40 string cvs print (, ) print = } def
+/dp { print 2 copy  exch 40 string cvs print (, ) print = } def
+
+/W {
+  ( ) stringwidth	% Get the width of a space in the current font.
+  pop			% Discard the Y component.
+  mul			% Multiply the width of a space
+			% by the number of spaces to plot
+  bg { dup dobackground } if
+  0 rmoveto
+} def
+
+/Effect 0 def
+/EF {/Effect exch def} def
+
+% stack:  string  |-  --
+% effect: 1  - underline  2   - strikeout  4  - overline
+%         8  - shadow     16  - box        32 - outline
+/S {
+  /xx currentpoint dup Descent add /yy exch def
+  Ascent add /YY exch def def
+  dup stringwidth pop xx add /XX exch def
+  Effect 8 and 0 ne {
+    /yy yy Yshadow add def
+    /XX XX Xshadow add def
+  } if
+  bg {
+    true
+    Effect 16 and 0 ne
+      {SpaceBackground doBox}
+      {xx yy XX YY doRect}
+    ifelse
+  } if							% background
+  Effect 16 and 0 ne {false 0 doBox}if			% box
+  Effect 8  and 0 ne {dup doShadow}if			% shadow
+  Effect 32 and 0 ne
+    {true doOutline}					% outline
+    {show}						% normal text
+  ifelse
+  Effect 1  and 0 ne {UnderlinePosition Hline}if	% underline
+  Effect 2  and 0 ne {StrikeoutPosition Hline}if	% strikeout
+  Effect 4  and 0 ne {OverlinePosition  Hline}if	% overline
+} bind def
+
+% stack:  position  |-  --
+/Hline {
+  currentpoint exch pop add dup
+  gsave
+  newpath
+  xx exch moveto
+  XX exch lineto
+  closepath
+  LineThickness setlinewidth stroke
+  grestore
+} bind def
+
+% stack:  fill-or-not delta  |-  --
+/doBox {
+  /dd exch def
+  xx XBox sub dd sub yy YBox sub dd sub
+  XX XBox add dd add YY YBox add dd add
+  doRect
+} bind def
+
+% stack:  fill-or-not lower-x lower-y upper-x upper-y  |-  --
+/doRect {
+  /rYY exch def
+  /rXX exch def
+  /ryy exch def
+  /rxx exch def
+  gsave
+  newpath
+  rXX rYY moveto
+  rxx rYY lineto
+  rxx ryy lineto
+  rXX ryy lineto
+  closepath
+  % top of stack: fill-or-not
+    {FillBgColor}
+    {LineThickness setlinewidth stroke}
+  ifelse
+  grestore
+} bind def
+
+% stack:  string  |-  --
+/doShadow {
+  gsave
+  Xshadow Yshadow rmoveto
+  false doOutline
+  grestore
+} bind def
+
+/st 1 string def
+
+% stack:  string fill-or-not  |-  --
+/doOutline {
+  /-fillp- exch def
+  /-ox- currentpoint /-oy- exch def def
+  gsave
+  LineThickness setlinewidth
+  {
+    st 0 3 -1 roll put
+    st dup true charpath
+    -fillp- {gsave FillBgColor grestore}if
+    stroke stringwidth
+    -oy- add /-oy- exch def
+    -ox- add /-ox- exch def
+    -ox- -oy- moveto
+  } forall
+  grestore
+  -ox- -oy- moveto
+} bind def
+
+% stack:  --
+/FillBgColor {bgcolor aload pop setrgbcolor fill} bind def
+
+/L0 6 /Times-Italic DefFont
+
+% stack:  --
+/doLineNumber {
+  /LineNumber where
+  {
+    pop
+    currentfont
+    gsave
+    0.0 0.0 0.0 setrgbcolor
+    /L0 findfont setfont
+    LineNumber Lines ge
+      {(end      )}
+      {LineNumber 6 string cvs (      ) strcat}
+    ifelse
+    dup stringwidth pop neg 0 rmoveto
+    show
+    grestore
+    setfont
+    /LineNumber LineNumber 1 add def
+  } if
+} def
+
+% stack: --
+/printZebra {
+  gsave
+  0.985 setgray
+  /double-zebra ZebraHeight ZebraHeight add def
+  /yiter double-zebra LineHeight mul neg def
+  /xiter PrintWidth InterColumn add def
+  NumberOfColumns {LinesPerColumn doColumnZebra xiter 0 rmoveto}repeat
+  grestore
+} def
+
+% stack:  lines-per-column |- --
+/doColumnZebra {
+  gsave
+  dup double-zebra idiv {ZebraHeight doZebra 0 yiter rmoveto}repeat
+  double-zebra mod
+  dup 0 le {pop}{dup ZebraHeight gt {pop ZebraHeight}if doZebra}ifelse
+  grestore
+} def
+
+% stack:  zebra-height (in lines) |- --
+/doZebra {
+  /zh exch 0.05 sub LineHeight mul def
+  gsave
+  0 LineHeight 0.65 mul rmoveto
+  PrintWidth 0 rlineto
+  0 zh neg rlineto
+  PrintWidth neg 0 rlineto
+  0 zh rlineto
+  fill
+  grestore
+} def
+
+% tx ty rotation xscale yscale xpos ypos BeginBackImage
+/BeginBackImage {
+  /-save-image- save def
+  /showpage {}def
+  translate
+  scale
+  rotate
+  translate
+} def
+
+/EndBackImage {
+  -save-image- restore
+} def
+
+% string fontsize fontname rotation gray xpos ypos ShowBackText
+/ShowBackText {
+  gsave
+  translate
+  setgray
+  rotate
+  findfont exch dup /-offset- exch -0.25 mul def scalefont setfont
+  0 -offset- moveto
+  /-saveLineThickness- LineThickness def
+  /LineThickness 1 def
+  false doOutline
+  /LineThickness -saveLineThickness- def
+  grestore
+} def
+
+/BeginDoc {
+  % ---- Remember space width of the normal text font `f0'.
+  /SpaceWidth /f0 findfont setfont ( ) stringwidth pop def
+  % ---- save the state of the document (useful for ghostscript!)
+  /docState save def
+  % ---- [jack] Kludge: my ghostscript window is 21x27.7 instead of 21x29.7
+  /JackGhostscript where {pop 1 27.7 29.7 div scale}if
+  % ---- [andrewi] set PageSize based on chosen dimensions
+%  /setpagedevice where {
+%    pop
+%    1 dict dup
+%    /PageSize [ PrintPageWidth LeftMargin add RightMargin add
+%		 LandscapePageHeight ] put
+%    setpagedevice
+%  }{
+    LandscapeMode {
+      % ---- translate to bottom-right corner of Portrait page
+      LandscapePageHeight 0 translate
+      90 rotate
+    }if
+%  }ifelse
+  /ColumnWidth PrintWidth InterColumn add def
+  % ---- translate to lower left corner of TEXT
+  LeftMargin BottomMargin translate
+  % ---- define where  printing will start
+  /f0 F					% this installs Ascent
+  /PrintStartY PrintHeight Ascent sub def
+  /ColumnIndex 1 def
+} def
+
+/EndDoc {
+  % ---- on last page but not last column, spit out the page
+  ColumnIndex 1 eq not { showpage } if
+  % ---- restore the state of the document (useful for ghostscript!)
+  docState restore
+} def
+
+/BeginDSCPage {
+  % ---- when 1st column, save the state of the page
+  ColumnIndex 1 eq { /pageState save def } if
+  % ---- save the state of the column
+  /columnState save def
+} def
+
+/PrintHeaderWidth PrintOnlyOneHeader{PrintPageWidth}{PrintWidth}ifelse def
+
+/BeginPage {
+  % ---- when 1st column, print all background effects
+  ColumnIndex 1 eq {
+  0 PrintStartY moveto			% move to where printing will start
+  Zebra {printZebra}if
+  printGlobalBackground
+  printLocalBackground
+  } if
+  PrintHeader {
+    PrintOnlyOneHeader{ColumnIndex 1 eq}{true}ifelse {
+      PrintHeaderFrame {HeaderFrame}if
+      HeaderText
+    } if
+  } if
+  0 PrintStartY moveto			% move to where printing will start
+  PLN
+} def
+
+/EndPage {
+  bg { eolbg } if
+} def
+
+/EndDSCPage {
+  ColumnIndex NumberOfColumns eq {
+    % ---- on last column, spit out the page
+    showpage
+    % ---- restore the state of the page
+    pageState restore
+    /ColumnIndex 1 def
+  } { % else
+    % ---- restore the state of the current column
+    columnState restore
+    % ---- and translate to the next column
+    ColumnWidth 0 translate
+    /ColumnIndex ColumnIndex 1 add def
+  } ifelse
+} def
+
+/SetHeaderLines {			% nb-lines --
+  /HeaderLines exch def
+  % ---- bottom up
+  HeaderPad
+  HeaderLines 1 sub HeaderLineHeight mul add
+  HeaderTitleLineHeight add
+  HeaderPad add
+  /HeaderHeight exch def
+} def
+
+% |---------|
+% |  tm     |
+% |---------|
+% |  header |
+% |-+-------| <-- (x y)
+% |  ho     |
+% |---------|
+% |  text   |
+% |-+-------| <-- (0 0)
+% |  bm     |
+% |---------|
+
+/HeaderFrameStart {			% -- x y
+  0  PrintHeight HeaderOffset add
+} def
+
+/HeaderFramePath {
+  PrintHeaderWidth	0			rlineto
+  0			HeaderHeight		rlineto
+  PrintHeaderWidth neg	0			rlineto
+  0			HeaderHeight neg	rlineto
+} def
+
+/HeaderFrame {
+  gsave
+    0.4 setlinewidth
+    % ---- fill a black rectangle (the shadow of the next one)
+    HeaderFrameStart moveto
+    1 -1 rmoveto
+    HeaderFramePath
+    0 setgray fill
+    % ---- do the next rectangle ...
+    HeaderFrameStart moveto
+    HeaderFramePath
+    gsave 0.9 setgray fill grestore	% filled with grey
+    gsave 0 setgray stroke grestore	% drawn  with black
+  grestore
+} def
+
+/HeaderStart {
+  HeaderFrameStart
+  exch HeaderPad add exch	% horizontal pad
+  % ---- bottom up
+  HeaderPad add			% vertical   pad
+  HeaderDescent sub
+  HeaderLineHeight HeaderLines 1 sub mul add
+} def
+
+/strcat {
+  dup length 3 -1 roll dup length dup 4 -1 roll add string dup
+  0 5 -1 roll putinterval
+  dup 4 2 roll exch putinterval
+} def
+
+/pagenumberstring {
+  PageNumber 32 string cvs
+  ShowNofN {
+    (/) strcat
+    PageCount 32 string cvs strcat
+  } if
+} def
+
+/HeaderText {
+  HeaderStart moveto
+
+  HeaderLinesRight HeaderLinesLeft	% -- rightLines leftLines
+
+  % ---- hack: `PN 1 and'  ==  `PN 2 modulo'
+
+  % ---- if duplex and even page number, then exchange left and right
+  Duplex PageNumber 1 and 0 eq and { exch } if
+
+  { % ---- process the left lines
+    aload pop
+    exch F
+    gsave
+      dup xcheck { exec } if
+      show
+    grestore
+    0 HeaderLineHeight neg rmoveto
+  } forall
+
+  HeaderStart moveto
+
+  { % ---- process the right lines
+    aload pop
+    exch F
+    gsave
+      dup xcheck { exec } if
+      dup stringwidth pop
+      PrintHeaderWidth exch sub HeaderPad 2 mul sub 0 rmoveto
+      show
+    grestore
+    0 HeaderLineHeight neg rmoveto
+  } forall
+} def
+
+/ReportFontInfo {
+  2 copy
+  /t0 3 1 roll DefFont
+  /t0 F
+  /lh FontHeight def
+  /sw ( ) stringwidth pop def
+  /aw (01234567890abcdefghijklmnopqrstuvwxyz) dup length exch
+  stringwidth pop exch div def
+  /t1 12 /Helvetica-Oblique DefFont
+  /t1 F
+  gsave
+    (For ) show
+    128 string cvs show
+    ( ) show
+    32 string cvs show
+    ( point, the line height is ) show
+    lh 32 string cvs show
+    (, the space width is ) show
+    sw 32 string cvs show
+    (,) show
+  grestore
+  0 FontHeight neg rmoveto
+  gsave
+    (and a crude estimate of average character width is ) show
+    aw 32 string cvs show
+    (.) show
+  grestore
+  0 FontHeight neg rmoveto
+} def
+
+/cm { % cm to point
+  72 mul 2.54 div
+} def
+
+/ReportAllFontInfo {
+  FontDirectory
+  { % key = font name  value = font dictionary
+    pop 10 exch ReportFontInfo
+  } forall
+} def
+
+% 3 cm 20 cm moveto  10 /Courier ReportFontInfo  showpage
+% 3 cm 20 cm moveto  ReportAllFontInfo           showpage
+
+/printGlobalBackground {
+} def
+/printLocalBackground {
+} def
+/h0 14 (Helvetica-Bold) cvn DefFont
+/h1 12 (Helvetica) cvn DefFont
+
+% ---- These lines must be kept together because...
+
+/h0 F
+/HeaderTitleLineHeight FontHeight def
+
+/h1 F
+/HeaderLineHeight FontHeight def
+/HeaderDescent    Descent def
+
+% ---- ...because `F' has a side-effect on `FontHeight' and `Descent'
+
+/f0 8.5 (Courier) cvn DefFont
+/f1 8.5 (Courier-Bold) cvn DefFont
+/f2 8.5 (Courier-Oblique) cvn DefFont
+/f3 8.5 (Courier-BoldOblique) cvn DefFont
+/SpaceWidthRatio 0.600000 def
+
+%%EndPrologue
+
+%%BeginSetup
+BeginDoc
+%%EndSetup
+
+%%Page: 1 1
+/Lines 1326 def
+/PageCount 19 def
+BeginDSCPage
+/LineNumber 1 def
+/PageNumber 1 def
+/HeaderLinesLeft [
+  [ /h0 (main.c) ]
+  [ /h1 (/can-28420/) ]
+] def
+/HeaderLinesRight [
+  [ /h0 /pagenumberstring load ]
+  [ /h1 (May 24 2001) ]
+] def
+2 SetHeaderLines
+BeginPage
+/f0 F
+false BG
+0.000 0.000 0.000 FG
+0.000 0.000 0.000 FG
+0 EF
+(#include <GL/glut.h>) S
+HL
+(#include <stdio.h>) S
+HL
+(#include <stdlib.h>) S
+HL
+(#include <math.h>) S
+HL
+(#include <time.h>) S
+HL
+(#include <string.h>) S
+HL
+HL
+(#ifdef WIN32) S
+HL
+(#include <windows.h>) S
+HL
+(#endif) S
+HL
+HL
+(#include "textureLoad.c") S
+HL
+HL
+(#define WIN_X 400) S
+HL
+(#define WIN_Y 400) S
+HL
+HL
+(/* in case math.h does not define PI */) S
+HL
+(#ifndef PI) S
+HL
+(#define PI 3.141593) S
+HL
+(#endif) S
+HL
+HL
+(/* types */) S
+HL
+(typedef struct {) S
+HL
+(  GLfloat position[3];) S
+HL
+(  GLfloat xVelocity, yVelocity, zVelocity;) S
+HL
+(  int active;) S
+HL
+(} bubble;) S
+HL
+HL
+(/* Constants */) S
+HL
+(#define NUMBER_OF_TEXTURES 3) S
+HL
+(#define SAND 0) S
+HL
+(#define GROUND 1) S
+HL
+(#define WOOD 2) S
+HL
+(#define CONE_SEGMENTS 10) S
+HL
+(#define MAX_BUBBLES 60) S
+HL
+(#define TIME_BETWEEN_BUBBLES 0.3) S
+HL
+(#define BOUYANCY 10) S
+HL
+(#define BUBBLE_BOUNCE 0.3) S
+HL
+(#define SUBMARINE_SEGMENTS 16) S
+HL
+(#define OUTSIDE 0) S
+HL
+(#define IN_SUB 1) S
+HL
+(#define SUB_ACCELERATION 0.4) S
+HL
+(#define WATER_RESISTANCE 0.7) S
+HL
+(#define SUB_BOUNCE 0.5) S
+HL
+(#define WATER_SIDES_SUBDIVISION 3) S
+HL
+(#define WATER_TOP_SUBDIVISION 10) S
+HL
+(#define SPOTLIGHT_WIDTH 30) S
+HL
+HL
+(/* Variables */) S
+HL
+(GLuint textures[NUMBER_OF_TEXTURES];) S
+HL
+(char textureFiles[NUMBER_OF_TEXTURES][20] = {"sand.rgb", "surface.rgb", "tex0-28420"};) S
+HL
+(int light0 = 1;) S
+HL
+(int light1 = 1;) S
+HL
+(int light2 = 1;) S
+HL
+(int light3 = 1;) S
+HL
+(int light4 = 1;) S
+HL
+(int light5 = 1;) S
+HL
+(int light6 = 1;) S
+HL
+(bubble bubbles[MAX_BUBBLES];) S
+HL
+(int viewPosition = OUTSIDE;) S
+HL
+(struct {) S
+HL
+(  GLfloat x, y, z;) S
+HL
+(  GLfloat xVelocity, yVelocity, zVelocity;) S
+HL
+(  GLfloat dive;) S
+HL
+(  GLfloat turn;) S
+HL
+(} sub;) S
+HL
+HL
+HL
+(/* Display lists */) S
+HL
+(GLuint ground;) S
+HL
+(GLuint tank;) S
+HL
+(GLuint waterBack;) S
+EndPage
+EndDSCPage
+
+%%Page: 2 2
+/Lines 1326 def
+/PageCount 19 def
+BeginDSCPage
+/LineNumber 73 def
+/PageNumber 2 def
+/HeaderLinesLeft [
+  [ /h0 (main.c) ]
+  [ /h1 (/can-28420/) ]
+] def
+/HeaderLinesRight [
+  [ /h0 /pagenumberstring load ]
+  [ /h1 (May 24 2001) ]
+] def
+2 SetHeaderLines
+BeginPage
+/f0 F
+false BG
+0.000 0.000 0.000 FG
+(GLuint waterFront;) S
+HL
+(GLuint lights;) S
+HL
+(GLuint aerator;) S
+HL
+(GLuint submarine;) S
+HL
+HL
+(/* Callbacks */) S
+HL
+(void Display\(void\);) S
+HL
+(void Reshape\(int, int\);) S
+HL
+(void Special\(int, int, int\);) S
+HL
+(void Keyboard\(unsigned char, int, int\);) S
+HL
+(void Idle\(void\);) S
+HL
+(void Menu\(int\);) S
+HL
+HL
+(/* Initialisation */) S
+HL
+(void InitMenu\(void\);) S
+HL
+(void InitGround\(void\);) S
+HL
+(void InitTank\(void\);) S
+HL
+(void InitTextures\(void\);) S
+HL
+(void InitWater\(void\);) S
+HL
+(void InitLights\(void\);) S
+HL
+(void InitAerator\(void\);) S
+HL
+(void InitBubbles\(void\);) S
+HL
+(void InitSubmarine\(void\);) S
+HL
+HL
+(/* Drawing functions */) S
+HL
+(void DrawLights\(void\);) S
+HL
+(void DrawBubbles\(void\);) S
+HL
+(void DrawSubmarine\(void\);) S
+HL
+HL
+(/* Helper functions */) S
+HL
+(int HitShelf\(bubble\);) S
+HL
+(int HitWall\(bubble\);) S
+HL
+(void AccelerateSubmarine\(GLfloat\);) S
+HL
+(void CollisionDetection\(void\);) S
+HL
+(void SubdivideXY\(GLfloat[3], GLfloat[3], GLfloat*, int\);) S
+HL
+(void SubdivideYZ\(GLfloat[3], GLfloat[3], GLfloat*, int\);) S
+HL
+(void SubdivideXZ\(GLfloat[3], GLfloat[3], GLfloat*, int\);) S
+HL
+(float RandF\(void\);) S
+HL
+(void Normalise\(GLfloat[3]\);) S
+HL
+HL
+(int main\(int argc, char *argv[]\) {) S
+HL
+(  glutInit\(&argc, argv\);) S
+HL
+(  glutInitDisplayMode\(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH\);) S
+HL
+(  glutInitWindowSize\(WIN_X, WIN_Y\);) S
+HL
+(  glutCreateWindow\("CGV Assessment 2001 - Candidate 28420"\);) S
+HL
+HL
+(  printf\("\\n\\n**************************************************\\n"\);) S
+HL
+(  printf\("*     CGV Assessment 2001 - Candidate 28420      *\\n"\);) S
+HL
+(  printf\("**************************************************\\n"\);) S
+HL
+(  printf\("\\nKEYS:\\n\\n"\);) S
+HL
+(  printf\("1-6\\t\\tTurn lights 1-6 on and off\\n"\);) S
+HL
+(  printf\("f\\t\\tMove submarine forwards\\n"\);) S
+HL
+(  printf\("j\\t\\tMove submarine backwards\\n"\);) S
+HL
+(  printf\("UP ARROW\\tTilt submarine up\\n"\);) S
+HL
+(  printf\("DOWN ARROW\\tTilt submarine down\\n"\);) S
+HL
+(  printf\("LEFT ARROW\\tRotate submarine to port\\n"\);) S
+HL
+(  printf\("RIGHT ARROW\\tRotate submarine to starboard\\n"\);) S
+HL
+(  printf\("i\\t\\tSwitch view to inside submarine \(also in MMB menu\)\\n"\);) S
+HL
+(  printf\("o\\t\\tSwitch view to outside submarine \(also in MMB menu\)\\n"\);) S
+HL
+(  printf\("ESC\\t\\tExit program \(also in MMB menu\)\\n\\n"\);) S
+HL
+HL
+(  glClearColor\(0.3, 0.3, 0.3, 1.0\); /* Grey background */) S
+HL
+(  /* smooth shading */) S
+HL
+(  glShadeModel\(GL_SMOOTH\);) S
+HL
+(  glEnable\(GL_DEPTH_TEST\);) S
+HL
+(  /* enable lighting */) S
+HL
+(  glEnable\(GL_LIGHTING\);) S
+HL
+(  /* enable blending */) S
+HL
+(  glBlendFunc\(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA\);) S
+HL
+(  glEnable\(GL_BLEND\);) S
+HL
+HL
+(  /* initialise random numbers */) S
+EndPage
+EndDSCPage
+
+%%Page: 3 3
+/Lines 1326 def
+/PageCount 19 def
+BeginDSCPage
+/LineNumber 145 def
+/PageNumber 3 def
+/HeaderLinesLeft [
+  [ /h0 (main.c) ]
+  [ /h1 (/can-28420/) ]
+] def
+/HeaderLinesRight [
+  [ /h0 /pagenumberstring load ]
+  [ /h1 (May 24 2001) ]
+] def
+2 SetHeaderLines
+BeginPage
+/f0 F
+false BG
+0.000 0.000 0.000 FG
+(  srand\(\(unsigned int\) time\(NULL\)\);) S
+HL
+HL
+(  /* Initialise */) S
+HL
+(  InitMenu\(\);) S
+HL
+(  InitTextures\(\);) S
+HL
+(  InitGround\(\);) S
+HL
+(  InitTank\(\);) S
+HL
+(  InitWater\(\);) S
+HL
+(  InitLights\(\);) S
+HL
+(  InitAerator\(\);) S
+HL
+(  InitBubbles\(\);) S
+HL
+(  InitSubmarine\(\);) S
+HL
+HL
+(  /* register callbacks */) S
+HL
+(  glutDisplayFunc\(Display\);) S
+HL
+(  glutReshapeFunc\(Reshape\);) S
+HL
+(  glutSpecialFunc\(Special\);) S
+HL
+(  glutKeyboardFunc\(Keyboard\);) S
+HL
+(  glutIdleFunc\(Idle\);) S
+HL
+HL
+(  glutMainLoop\(\);) S
+HL
+HL
+(  return 0;) S
+HL
+(}) S
+HL
+HL
+(/**************************************************/) S
+HL
+(/* CALLBACKS                                      */) S
+HL
+(/**************************************************/) S
+HL
+HL
+(void Display\(\) {) S
+HL
+(  GLfloat ambientUnderwaterLight[] = {0.5, 0.5, 1.0, 1.0};) S
+HL
+(  GLfloat ambientLight[] = {0.7, 0.7, 0.7, 1.0};) S
+HL
+HL
+(  glClear\(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT\);) S
+HL
+HL
+(  /* Set up the viewpoint */) S
+HL
+(  glLoadIdentity\(\);) S
+HL
+(  if\(viewPosition == OUTSIDE\) {) S
+HL
+(    /* set the viewpoint outside the tank looking in */) S
+HL
+(    gluLookAt\(100.0, 50.0, 150.0,) S
+HL
+14 W
+(0.0, 25.0, 0.0,) S
+HL
+14 W
+(0.0, 1.0, 0.0\);) S
+HL
+(    glLightModelfv\(GL_LIGHT_MODEL_AMBIENT, ambientLight\);) S
+HL
+(  }) S
+HL
+(  else {) S
+HL
+(    /* set the viewpoint to point in the direction of the sub */) S
+HL
+(    glRotatef\(sub.dive, 1.0, 0.0, 0.0\);) S
+HL
+(    glRotatef\(-sub.turn-90.0, 0.0, 1.0, 0.0\);) S
+HL
+(    /* translate to the position of the sub */) S
+HL
+(    glTranslatef\(-sub.x, -sub.y, -sub.z\);) S
+HL
+(    /* underwater lighting effect */) S
+HL
+(    glLightModelfv\(GL_LIGHT_MODEL_AMBIENT, ambientUnderwaterLight\);) S
+HL
+(  }) S
+HL
+HL
+(  /* Draw the scene */) S
+HL
+(  DrawLights\(\);) S
+HL
+(  if\(light0\) glEnable\(GL_LIGHT0\); else glDisable\(GL_LIGHT0\);) S
+HL
+(  if\(light1\) glEnable\(GL_LIGHT1\); else glDisable\(GL_LIGHT1\);) S
+HL
+(  if\(light2\) glEnable\(GL_LIGHT2\); else glDisable\(GL_LIGHT2\);) S
+HL
+(  if\(light3\) glEnable\(GL_LIGHT3\); else glDisable\(GL_LIGHT3\);) S
+HL
+(  if\(light4\) glEnable\(GL_LIGHT4\); else glDisable\(GL_LIGHT4\);) S
+HL
+(  if\(light5\) glEnable\(GL_LIGHT5\); else glDisable\(GL_LIGHT5\);) S
+HL
+(  if\(light6\) glEnable\(GL_LIGHT6\); else glDisable\(GL_LIGHT6\);) S
+HL
+(  glCallList\(ground\);) S
+HL
+(  glCallList\(tank\);) S
+HL
+(  glCallList\(waterBack\);) S
+HL
+(  glCallList\(aerator\);) S
+HL
+(  DrawBubbles\(\);) S
+HL
+(  if\(viewPosition != IN_SUB\) DrawSubmarine\(\);) S
+HL
+(  glCallList\(waterFront\);) S
+HL
+HL
+(  glFlush\(\);) S
+EndPage
+EndDSCPage
+
+%%Page: 4 4
+/Lines 1326 def
+/PageCount 19 def
+BeginDSCPage
+/LineNumber 217 def
+/PageNumber 4 def
+/HeaderLinesLeft [
+  [ /h0 (main.c) ]
+  [ /h1 (/can-28420/) ]
+] def
+/HeaderLinesRight [
+  [ /h0 /pagenumberstring load ]
+  [ /h1 (May 24 2001) ]
+] def
+2 SetHeaderLines
+BeginPage
+/f0 F
+false BG
+0.000 0.000 0.000 FG
+(  glutSwapBuffers\(\);) S
+HL
+(  return;) S
+HL
+(}) S
+HL
+HL
+(void Reshape\(int w, int h\) {) S
+HL
+(  glMatrixMode\(GL_PROJECTION\);) S
+HL
+(  glLoadIdentity\(\);) S
+HL
+(  gluPerspective\(45.0, \(float\)w/\(float\)h, 1.0, 400.0\);) S
+HL
+(  glMatrixMode\(GL_MODELVIEW\);) S
+HL
+(  glLoadIdentity\(\);) S
+HL
+(  glViewport\(0, 0, w, h\);) S
+HL
+(}) S
+HL
+HL
+(void Menu\(int id\) {) S
+HL
+(  if\(id < 0\) {) S
+HL
+(    /* user selected exit */) S
+HL
+(    printf\("\\n"\);) S
+HL
+(    exit\(0\);) S
+HL
+(  }) S
+HL
+(  /* set the view position according to the selection */) S
+HL
+(  viewPosition = id;) S
+HL
+(}) S
+HL
+HL
+(void Keyboard\(unsigned char key, int x, int y\) {) S
+HL
+(  switch\(key\) {) S
+HL
+(  case '1':) S
+HL
+(    light1 = 1 - light1;) S
+HL
+(    break;) S
+HL
+(  case '2':) S
+HL
+(    light2 = 1 - light2;) S
+HL
+(    break;) S
+HL
+(  case '3':) S
+HL
+(    light3 = 1 - light3;) S
+HL
+(    break;) S
+HL
+(  case '4':) S
+HL
+(    light4 = 1 - light4;) S
+HL
+(    break;) S
+HL
+(  case '5':) S
+HL
+(    light5 = 1 - light5;) S
+HL
+(    break;) S
+HL
+(  case '6':) S
+HL
+(    light6 = 1 - light6;) S
+HL
+(    break;) S
+HL
+(  case 'f':) S
+HL
+(    /* Move the sub forwards */) S
+HL
+(    AccelerateSubmarine\(SUB_ACCELERATION\);) S
+HL
+(    break;) S
+HL
+(  case 'j':) S
+HL
+(    /* Move the sub backwards */) S
+HL
+(    AccelerateSubmarine\(-SUB_ACCELERATION\);) S
+HL
+(    break;) S
+HL
+(  case 'i':) S
+HL
+(    viewPosition = IN_SUB;) S
+HL
+(    break;) S
+HL
+(  case 'o':) S
+HL
+(    viewPosition = OUTSIDE;) S
+HL
+(    break;) S
+HL
+(  case 27:) S
+HL
+(    /* exit */) S
+HL
+(    printf\("\\n"\);) S
+HL
+(    exit\(0\);) S
+HL
+(    break;) S
+HL
+(  }) S
+HL
+(  return;) S
+HL
+(}) S
+HL
+HL
+(void Special\(int key, int x, int y\) {) S
+HL
+(  switch\(key\) {) S
+HL
+(  case GLUT_KEY_UP:) S
+HL
+(    /* Tilt submarine up */) S
+HL
+(    sub.dive -= 1.0;) S
+HL
+(    if\(sub.dive < -60.0\) sub.dive = -60.0;) S
+EndPage
+EndDSCPage
+
+%%Page: 5 5
+/Lines 1326 def
+/PageCount 19 def
+BeginDSCPage
+/LineNumber 289 def
+/PageNumber 5 def
+/HeaderLinesLeft [
+  [ /h0 (main.c) ]
+  [ /h1 (/can-28420/) ]
+] def
+/HeaderLinesRight [
+  [ /h0 /pagenumberstring load ]
+  [ /h1 (May 24 2001) ]
+] def
+2 SetHeaderLines
+BeginPage
+/f0 F
+false BG
+0.000 0.000 0.000 FG
+(    break;) S
+HL
+(  case GLUT_KEY_DOWN:) S
+HL
+(    /* Tilt submarine down */) S
+HL
+(    sub.dive += 1.0;) S
+HL
+(    if\(sub.dive > 60.0\) sub.dive = 60.0;) S
+HL
+(    break;) S
+HL
+(  case GLUT_KEY_LEFT:) S
+HL
+(    /* Rotate submarine to port */) S
+HL
+(    sub.turn += 2.0;) S
+HL
+(    if\(sub.turn > 360.0\) sub.turn -= 360.0;) S
+HL
+(    break;) S
+HL
+(  case GLUT_KEY_RIGHT:) S
+HL
+(    /* Rotate submarine to starboard */) S
+HL
+(    sub.turn -= 2.0;) S
+HL
+(    if\(sub.turn < 0.0\) sub.turn += 360.0;) S
+HL
+(    break;) S
+HL
+(  }) S
+HL
+(}) S
+HL
+HL
+(void Idle\(\) {) S
+HL
+(  static clock_t old = 0, last = 0;) S
+HL
+(  static int ticks = 0;) S
+HL
+(  clock_t new, elapsed;) S
+HL
+(  float elapsedSecs;) S
+HL
+(  GLfloat velAdj;) S
+HL
+(  static float t = 0;) S
+HL
+HL
+(  ticks++;) S
+HL
+(  new=clock\(\);) S
+HL
+HL
+(  /* if 0.5 seconds passed, calculate average frame rate */) S
+HL
+(  if\(\(new - old\)/CLOCKS_PER_SEC > 0.5\) {) S
+HL
+(    elapsed=\(new - old\);) S
+HL
+(    old = new;) S
+HL
+(    fprintf\(stderr, "FPS: %.1f   \\r",  ticks * \(float\) CLOCKS_PER_SEC / \(float\) elapsed\);) S
+HL
+(    ticks = 0;) S
+HL
+(  }) S
+HL
+(  ) S
+HL
+(  /* update submarine position */) S
+HL
+(  elapsedSecs = \(new - last\)/\(float\)CLOCKS_PER_SEC;) S
+HL
+(  velAdj = WATER_RESISTANCE * elapsedSecs;) S
+HL
+(  sub.x += sub.xVelocity * elapsedSecs;) S
+HL
+(  sub.y += sub.yVelocity * elapsedSecs;) S
+HL
+(  sub.z += sub.zVelocity * elapsedSecs;) S
+HL
+(  CollisionDetection\(\);) S
+HL
+(  /* water resistance */) S
+HL
+(  sub.xVelocity -= velAdj * sub.xVelocity;) S
+HL
+(  sub.yVelocity -= velAdj * sub.yVelocity;) S
+HL
+(  sub.zVelocity -= velAdj * sub.zVelocity;) S
+HL
+(  ) S
+HL
+(  last = new;) S
+HL
+(  glutPostRedisplay\(\);) S
+HL
+(}) S
+HL
+HL
+(/**************************************************/) S
+HL
+(/* INITIALISATION                                 */) S
+HL
+(/**************************************************/) S
+HL
+HL
+(void InitMenu\(void\) {) S
+HL
+(  glutCreateMenu\(Menu\);) S
+HL
+(  glutAddMenuEntry\("Fixed View", OUTSIDE\);) S
+HL
+(  glutAddMenuEntry\("Submarine View", IN_SUB\);) S
+HL
+(  glutAddMenuEntry\("Exit", -1\);) S
+HL
+(  glutAttachMenu\(GLUT_MIDDLE_BUTTON\);) S
+HL
+(}) S
+HL
+HL
+(void InitTextures\(void\) {) S
+HL
+(  GLubyte textureBuffer[256][256][4];) S
+HL
+(  int i;) S
+HL
+HL
+(  glGenTextures\(NUMBER_OF_TEXTURES, textures\);) S
+HL
+EndPage
+EndDSCPage
+
+%%Page: 6 6
+/Lines 1326 def
+/PageCount 19 def
+BeginDSCPage
+/LineNumber 361 def
+/PageNumber 6 def
+/HeaderLinesLeft [
+  [ /h0 (main.c) ]
+  [ /h1 (/can-28420/) ]
+] def
+/HeaderLinesRight [
+  [ /h0 /pagenumberstring load ]
+  [ /h1 (May 24 2001) ]
+] def
+2 SetHeaderLines
+BeginPage
+/f0 F
+false BG
+0.000 0.000 0.000 FG
+(  for\(i = 0; i < NUMBER_OF_TEXTURES; i++\) {) S
+HL
+(    /* load the texture */) S
+HL
+(    open_image_file\(textureFiles[i], textureBuffer\);) S
+HL
+(    ) S
+HL
+(    /* apply the texture */) S
+HL
+(    glBindTexture\(GL_TEXTURE_2D, textures[i]\);) S
+HL
+(    glTexParameteri\(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT\);) S
+HL
+(    glTexParameteri\(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT\);) S
+HL
+(    glTexParameteri\(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST\);) S
+HL
+(    glTexParameteri\(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST\);) S
+HL
+(    glTexImage2D\(GL_TEXTURE_2D, 0, GL_RGBA, 256, 256,) S
+HL
+17 W
+(0, GL_RGBA, GL_UNSIGNED_BYTE, textureBuffer\);) S
+HL
+(  }) S
+HL
+(}) S
+HL
+HL
+(void InitGround\(void\) {) S
+HL
+(  GLfloat groundVertices[][3] = {{-75.0, -5.0, 50.0}, {-75.0, -5.0, -50.0},) S
+HL
+31 W
+({75.0, -5.0, -50.0}, {75.0, -5.0, 50.0}};) S
+HL
+(  GLfloat groundColor[] = {1.0, 1.0, 1.0, 1.0};) S
+HL
+(  ) S
+HL
+(  ground = glGenLists\(1\);) S
+HL
+(  if\(ground != 0\) {) S
+HL
+(    glNewList\(ground, GL_COMPILE\);) S
+HL
+(    ) S
+HL
+(      /* set the material properties of the ground */) S
+HL
+(      glMaterialfv\(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, groundColor\);) S
+HL
+(      glMaterialfv\(GL_FRONT, GL_SPECULAR, groundColor\);) S
+HL
+(      glMaterialf\(GL_FRONT, GL_SHININESS, 0\);) S
+HL
+(      /* Select the ground texture and enable it */) S
+HL
+(      glTexEnvf\(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE\);) S
+HL
+(      glBindTexture\(GL_TEXTURE_2D, textures[GROUND]\);) S
+HL
+(      glEnable\(GL_TEXTURE_2D\);) S
+HL
+(      /* draw the ground */) S
+HL
+(      glBegin\(GL_QUADS\);) S
+HL
+(        glNormal3f\(0.0, 1.0, 0.0\);) S
+HL
+8 W
+(glTexCoord2i\(0,1\); glVertex3fv\(groundVertices[0]\);) S
+HL
+8 W
+(glTexCoord2i\(1,1\); glVertex3fv\(groundVertices[1]\);) S
+HL
+8 W
+(glTexCoord2i\(1,0\); glVertex3fv\(groundVertices[2]\);) S
+HL
+8 W
+(glTexCoord2i\(0,0\); glVertex3fv\(groundVertices[3]\);) S
+HL
+(      glEnd\(\);) S
+HL
+(      ) S
+HL
+(      glDisable\(GL_TEXTURE_2D\);) S
+HL
+(    glEndList\(\);) S
+HL
+(  }) S
+HL
+(  else {) S
+HL
+(    fprintf\(stderr, "ERROR: Unable to create display list for ground"\);) S
+HL
+(    exit\(1\);) S
+HL
+(  }) S
+HL
+(}) S
+HL
+HL
+(void InitTank\(void\) {) S
+HL
+(  GLfloat tankColor[] = {0.4, 0.8, 0.8, 0.5};) S
+HL
+(  GLfloat baseColor[] = {0.8, 0.8, 0.8, 1.0};) S
+HL
+(  GLfloat lidColor[] = {0.5, 0.5, 0.5, 1.0};) S
+HL
+(  GLfloat shelfColor[] = {0.2, 0.2, 0.2, 1.0};) S
+HL
+(  GLfloat sandColor[] = {0.4, 0.4, 1.0, 1.0};) S
+HL
+(  GLfloat glassVertices[][3] = {{-50.0, 0.0, 25.0}, {-50.0, 0.0, -25.0},) S
+HL
+32 W
+({50.0, 0.0, -25.0}, {50.0, 0.0, 25.0},) S
+HL
+32 W
+({-50.0, 50.0, 25.0}, {-50.0, 50.0, -25.0},) S
+HL
+32 W
+({50.0, 50.0, -25.0}, {50.0, 50.0, 25.0}};) S
+HL
+(  GLfloat glassNormals[][3] = {{-1.0, 0.0, 0.0}, {0.0, 0.0, -1.0},) S
+HL
+31 W
+({1.0, 0.0, 0.0}, {0.0, 0.0, 1.0}};) S
+HL
+(  GLfloat baseVertices[][3] = {{-55.0, -5.0, 30.0}, {-55.0, -5.0, -30.0},) S
+HL
+31 W
+({55.0, -5.0, -30.0}, {55.0, -5.0, 30.0}};) S
+HL
+(  GLfloat baseNormals[][3] = {{-0.707, 0.707, 0.0}, {0.0, 0.707, -0.707},) S
+HL
+30 W
+({0.707, 0.707, 0.0}, {0.0, 0.707, 0.707}};) S
+HL
+(  GLfloat lidVertices[][3] = {{-40.0, 60.0, 15.0}, {-40.0, 60.0, -15.0},) S
+HL
+30 W
+({40.0, 60.0, -15.0}, {40.0, 60.0, 15.0}};) S
+HL
+(  GLfloat lidNormals[][3] = {{-0.707, 0.707, 0.0}, {0.0, 0.707, -0.707},) S
+HL
+29 W
+({0.707, 0.707, 0.0}, {0.0, 0.707, 0.707}};) S
+HL
+(  int i, j;) S
+HL
+EndPage
+EndDSCPage
+
+%%Page: 7 7
+/Lines 1326 def
+/PageCount 19 def
+BeginDSCPage
+/LineNumber 433 def
+/PageNumber 7 def
+/HeaderLinesLeft [
+  [ /h0 (main.c) ]
+  [ /h1 (/can-28420/) ]
+] def
+/HeaderLinesRight [
+  [ /h0 /pagenumberstring load ]
+  [ /h1 (May 24 2001) ]
+] def
+2 SetHeaderLines
+BeginPage
+/f0 F
+false BG
+0.000 0.000 0.000 FG
+(  tank = glGenLists\(1\);) S
+HL
+(  if\(tank != 0\) {) S
+HL
+(    glNewList\(tank, GL_COMPILE\);) S
+HL
+HL
+(    /* Set the material properties of the glass */) S
+HL
+(    glMaterialfv\(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, tankColor\);) S
+HL
+(    glMaterialfv\(GL_FRONT_AND_BACK, GL_SPECULAR, tankColor\);) S
+HL
+(    glMaterialf\(GL_FRONT_AND_BACK, GL_SHININESS, 100\);) S
+HL
+(    /* Draw the glass */) S
+HL
+(      for\(i = 0; i < 4; i++\) {) S
+HL
+8 W
+(glBegin\(GL_LINE_LOOP\);) S
+HL
+10 W
+(glNormal3fv\(glassNormals[i]\);) S
+HL
+10 W
+(glVertex3fv\(glassVertices[i]\);) S
+HL
+10 W
+(glVertex3fv\(glassVertices[i+4]\);) S
+HL
+10 W
+(if\(i == 3\) { /* last edge */) S
+HL
+12 W
+(glVertex3fv\(glassVertices[4]\);) S
+HL
+12 W
+(glVertex3fv\(glassVertices[0]\);) S
+HL
+10 W
+(}) S
+HL
+10 W
+(else { /* other edges */) S
+HL
+12 W
+(glVertex3fv\(glassVertices[i+5]\);) S
+HL
+12 W
+(glVertex3fv\(glassVertices[i+1]\);) S
+HL
+10 W
+(}) S
+HL
+8 W
+(glEnd\(\);) S
+HL
+(      }) S
+HL
+HL
+(      /* set the material properties of the sand */) S
+HL
+(      glMaterialfv\(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, sandColor\);) S
+HL
+(      glMaterialfv\(GL_FRONT, GL_SPECULAR, sandColor\);) S
+HL
+(      glMaterialf\(GL_FRONT, GL_SHININESS, 0\);) S
+HL
+(      /* Select the sand texture and enable it */) S
+HL
+(      glTexEnvf\(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE\);) S
+HL
+(      glBindTexture\(GL_TEXTURE_2D, textures[SAND]\);) S
+HL
+(      glEnable\(GL_TEXTURE_2D\);) S
+HL
+(      /* Draw the bottom of the tank */) S
+HL
+(      glBegin\(GL_QUADS\);) S
+HL
+(        glNormal3f\(0.0, 1.0, 0.0\);) S
+HL
+10 W
+(glTexCoord2f\(0.0, 0.0\);) S
+HL
+10 W
+(glVertex3fv\(glassVertices[0]\);) S
+HL
+10 W
+(glTexCoord2f\(0.0, 1.0\);) S
+HL
+10 W
+(glVertex3fv\(glassVertices[1]\);) S
+HL
+10 W
+(glTexCoord2f\(1.0, 1.0\);) S
+HL
+10 W
+(glVertex3fv\(glassVertices[2]\);) S
+HL
+10 W
+(glTexCoord2f\(1.0, 0.0\);) S
+HL
+10 W
+(glVertex3fv\(glassVertices[3]\);) S
+HL
+(      glEnd\(\);) S
+HL
+HL
+(      /* Select the wood texture for the base and the lid */) S
+HL
+(      glTexEnvf\(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE\);) S
+HL
+(      glBindTexture\(GL_TEXTURE_2D, textures[WOOD]\);) S
+HL
+(      glEnable\(GL_TEXTURE_2D\);) S
+HL
+HL
+(      /* Set the material properties of the base */) S
+HL
+(      glMaterialfv\(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, baseColor\);) S
+HL
+(      glMaterialfv\(GL_FRONT, GL_SPECULAR, baseColor\);) S
+HL
+(      glMaterialf\(GL_FRONT, GL_SHININESS, 64\);) S
+HL
+(     ) S
+HL
+(      /* Draw the base */) S
+HL
+(      glBegin\(GL_QUADS\);) S
+HL
+(      for\(i = 0; i < 4; i++\) {) S
+HL
+8 W
+(glNormal3fv\(baseNormals[i]\);) S
+HL
+(        glTexCoord2i\(1,0\);) S
+HL
+8 W
+(glVertex3fv\(glassVertices[i]\);) S
+HL
+(        glTexCoord2i\(0,0\);) S
+HL
+8 W
+(glVertex3fv\(baseVertices[i]\);) S
+HL
+8 W
+(if\(i == 3\) { /* last side */) S
+HL
+10 W
+(glTexCoord2i\(0,1\);) S
+HL
+10 W
+(glVertex3fv\(baseVertices[0]\);) S
+HL
+10 W
+(glTexCoord2i\(1,1\);) S
+HL
+10 W
+(glVertex3fv\(glassVertices[0]\);) S
+HL
+8 W
+(}) S
+HL
+8 W
+(else { /* other sides */) S
+HL
+10 W
+(glTexCoord2i\(0,1\);) S
+EndPage
+EndDSCPage
+
+%%Page: 8 8
+/Lines 1326 def
+/PageCount 19 def
+BeginDSCPage
+/LineNumber 505 def
+/PageNumber 8 def
+/HeaderLinesLeft [
+  [ /h0 (main.c) ]
+  [ /h1 (/can-28420/) ]
+] def
+/HeaderLinesRight [
+  [ /h0 /pagenumberstring load ]
+  [ /h1 (May 24 2001) ]
+] def
+2 SetHeaderLines
+BeginPage
+/f0 F
+false BG
+0.000 0.000 0.000 FG
+10 W
+(glVertex3fv\(baseVertices[i+1]\);) S
+HL
+10 W
+(glTexCoord2i\(1,1\);) S
+HL
+10 W
+(glVertex3fv\(glassVertices[i+1]\);) S
+HL
+8 W
+(}) S
+HL
+(      }) S
+HL
+(      glEnd\(\);) S
+HL
+HL
+(      /* Set the material properties of the lid */) S
+HL
+(      glMaterialfv\(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, lidColor\);) S
+HL
+(      glMaterialfv\(GL_FRONT_AND_BACK, GL_SPECULAR, lidColor\);) S
+HL
+(      glMaterialf\(GL_FRONT_AND_BACK, GL_SHININESS, 64\);) S
+HL
+HL
+(      /* Draw the sides of the lid */) S
+HL
+(      glBegin\(GL_QUADS\);) S
+HL
+(        for\(i = 0; i< 4; i++\) {) S
+HL
+10 W
+(glNormal3fv\(lidNormals[i]\);) S
+HL
+10 W
+(glTexCoord2i\(1, 0\);) S
+HL
+10 W
+(glVertex3fv\(glassVertices[i+4]\);) S
+HL
+10 W
+(glTexCoord2i\(0, 0\);) S
+HL
+10 W
+(glVertex3fv\(lidVertices[i]\);) S
+HL
+10 W
+(if\(i == 3\) { /* last side */) S
+HL
+12 W
+(glTexCoord2i\(0, 1\);) S
+HL
+12 W
+(glVertex3fv\(lidVertices[0]\);) S
+HL
+12 W
+(glTexCoord2i\(1, 1\);) S
+HL
+12 W
+(glVertex3fv\(glassVertices[4]\);) S
+HL
+10 W
+(}) S
+HL
+10 W
+(else { /* other sides */) S
+HL
+12 W
+(glTexCoord2i\(0, 1\);) S
+HL
+12 W
+(glVertex3fv\(lidVertices[i+1]\);) S
+HL
+12 W
+(glTexCoord2i\(1, 1\);) S
+HL
+12 W
+(glVertex3fv\(glassVertices[i+5]\);) S
+HL
+10 W
+(}) S
+HL
+8 W
+(}) S
+HL
+HL
+8 W
+(/* Draw the top of the lid */) S
+HL
+8 W
+(/* REF ? */) S
+HL
+8 W
+(glNormal3f\(0.0, 1.0, 0.0\);) S
+HL
+8 W
+(glTexCoord2i\(1, 0\); glVertex3fv\(lidVertices[0]\);) S
+HL
+8 W
+(glTexCoord2i\(0, 0\); glVertex3fv\(lidVertices[1]\);) S
+HL
+8 W
+(glTexCoord2i\(0, 1\); glVertex3fv\(lidVertices[2]\);) S
+HL
+8 W
+(glTexCoord2i\(1, 1\); glVertex3fv\(lidVertices[3]\);) S
+HL
+(      glEnd\(\);) S
+HL
+HL
+(      glDisable\(GL_TEXTURE_2D\);) S
+HL
+HL
+(      /* Set the material properties of the shelf */) S
+HL
+(      glMaterialfv\(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, shelfColor\);) S
+HL
+(      glMaterialfv\(GL_FRONT_AND_BACK, GL_SPECULAR, shelfColor\);) S
+HL
+(      glMaterialf\(GL_FRONT_AND_BACK, GL_SHININESS, 64\);) S
+HL
+HL
+(      /* Draw the shelf */) S
+HL
+(      glPushMatrix\(\);) S
+HL
+8 W
+(glTranslatef\(0.0, 20.5, -20.0\); ) S
+HL
+(        glScalef\(20.0, 1.0, 10.0\);) S
+HL
+(        glutSolidCube\(1.0\);) S
+HL
+(      glPopMatrix\(\);) S
+HL
+HL
+(    glEndList\(\);) S
+HL
+(  }) S
+HL
+(  else {) S
+HL
+(    fprintf\(stderr, "ERROR: Unable to create display list for tank\\n"\);) S
+HL
+(    exit\(1\);) S
+HL
+(  }) S
+HL
+(  ) S
+HL
+(}) S
+HL
+HL
+(void InitWater\(void\) {) S
+HL
+(  int i, j;) S
+HL
+(  GLfloat waterColor[] = {0.2, 0.2, 0.8, 0.3};) S
+HL
+(  GLfloat waterVertices[][3] = {{-50.0, 0.0, -25.0}, {50.0, 0.0, -25.0},) S
+HL
+33 W
+({50.0, 0.0, 25.0}, {-50.0, 0.0, 25.0},) S
+HL
+33 W
+({-50.0, 40.0, -25.0}, {50.0, 40.0, -25.0},) S
+EndPage
+EndDSCPage
+
+%%Page: 9 9
+/Lines 1326 def
+/PageCount 19 def
+BeginDSCPage
+/LineNumber 577 def
+/PageNumber 9 def
+/HeaderLinesLeft [
+  [ /h0 (main.c) ]
+  [ /h1 (/can-28420/) ]
+] def
+/HeaderLinesRight [
+  [ /h0 /pagenumberstring load ]
+  [ /h1 (May 24 2001) ]
+] def
+2 SetHeaderLines
+BeginPage
+/f0 F
+false BG
+0.000 0.000 0.000 FG
+33 W
+({50.0, 40.0, 25.0}, {-50.0, 40.0, 25.0}};) S
+HL
+(  GLfloat topVertices[WATER_TOP_SUBDIVISION+1][WATER_TOP_SUBDIVISION+1][3];) S
+HL
+(  GLfloat sideVertices[WATER_SIDES_SUBDIVISION+1][WATER_SIDES_SUBDIVISION+1][3];) S
+HL
+HL
+(  waterBack = glGenLists\(1\);) S
+HL
+(  if\(waterBack != 0\) {) S
+HL
+(    waterFront = waterBack + 1;) S
+HL
+HL
+(    /* Create the back of the water */) S
+HL
+(    glNewList\(waterBack, GL_COMPILE\);) S
+HL
+(      /* Set the material properties to water */) S
+HL
+(      glMaterialfv\(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, waterColor\);) S
+HL
+(      glMaterialfv\(GL_FRONT_AND_BACK, GL_SPECULAR, waterColor\);) S
+HL
+(      glMaterialf\(GL_FRONT_AND_BACK, GL_SHININESS, 100\);) S
+HL
+HL
+(      /* subdivide the plane */) S
+HL
+(      SubdivideXY\(waterVertices[0], ) S
+HL
+18 W
+(waterVertices[5], ) S
+HL
+18 W
+(\(GLfloat *\)sideVertices, ) S
+HL
+18 W
+(WATER_SIDES_SUBDIVISION\);) S
+HL
+HL
+(      /* draw the back of the water */) S
+HL
+(      glBegin\(GL_QUADS\);) S
+HL
+(        glNormal3f\(0.0, 0.0, -1.0\);) S
+HL
+(        for\(i = 0; i < WATER_SIDES_SUBDIVISION; i++\) {) S
+HL
+10 W
+(for\(j = 0; j < WATER_SIDES_SUBDIVISION; j++\) {) S
+HL
+12 W
+(glVertex3fv\(sideVertices[i][j]\);) S
+HL
+12 W
+(glVertex3fv\(sideVertices[i+1][j]\);) S
+HL
+12 W
+(glVertex3fv\(sideVertices[i+1][j+1]\);) S
+HL
+12 W
+(glVertex3fv\(sideVertices[i][j+1]\);) S
+6 W
+HL
+10 W
+(}) S
+HL
+8 W
+(}) S
+HL
+(      glEnd\(\);) S
+HL
+(    glEndList\(\);) S
+HL
+HL
+(    /* Create the front of the water */) S
+HL
+(    glNewList\(waterFront, GL_COMPILE\);) S
+HL
+(      /* Set the material properties to water */) S
+HL
+(      glMaterialfv\(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, waterColor\);) S
+HL
+(      glMaterialfv\(GL_FRONT_AND_BACK, GL_SPECULAR, waterColor\);) S
+HL
+(      glMaterialf\(GL_FRONT_AND_BACK, GL_SHININESS, 100\);    ) S
+HL
+HL
+(      /***** draw the top *****/) S
+HL
+(      /* subdivide the plane */) S
+HL
+(      SubdivideXZ\(waterVertices[4], ) S
+HL
+18 W
+(waterVertices[6],) S
+HL
+18 W
+(\(GLfloat *\)topVertices,) S
+HL
+18 W
+(WATER_TOP_SUBDIVISION\);) S
+HL
+HL
+(      /* draw the water */) S
+HL
+(      glBegin\(GL_QUADS\);) S
+HL
+(        glNormal3f\(0.0, 1.0, 0.0\);) S
+HL
+(        for\(i = 0; i < WATER_TOP_SUBDIVISION; i++\) {) S
+HL
+10 W
+(for\(j = 0; j < WATER_TOP_SUBDIVISION; j++\) {) S
+HL
+12 W
+(glVertex3fv\(topVertices[i][j]\);) S
+HL
+12 W
+(glVertex3fv\(topVertices[i+1][j]\);) S
+HL
+12 W
+(glVertex3fv\(topVertices[i+1][j+1]\);) S
+HL
+12 W
+(glVertex3fv\(topVertices[i][j+1]\);) S
+7 W
+HL
+10 W
+(}) S
+HL
+8 W
+(}) S
+HL
+(      glEnd\(\);) S
+HL
+HL
+(      /***** draw the RHS *****/) S
+HL
+(      /* subdivide the plane */) S
+HL
+(      SubdivideYZ\(waterVertices[1], ) S
+HL
+18 W
+(waterVertices[6], ) S
+HL
+18 W
+(\(GLfloat *\)sideVertices,) S
+HL
+18 W
+(WATER_SIDES_SUBDIVISION\);) S
+HL
+HL
+(      /* draw the water */) S
+HL
+(      glBegin\(GL_QUADS\);) S
+HL
+(        glNormal3f\(1.0, 0.0, 0.0\);) S
+EndPage
+EndDSCPage
+
+%%Page: 10 10
+/Lines 1326 def
+/PageCount 19 def
+BeginDSCPage
+/LineNumber 649 def
+/PageNumber 10 def
+/HeaderLinesLeft [
+  [ /h0 (main.c) ]
+  [ /h1 (/can-28420/) ]
+] def
+/HeaderLinesRight [
+  [ /h0 /pagenumberstring load ]
+  [ /h1 (May 24 2001) ]
+] def
+2 SetHeaderLines
+BeginPage
+/f0 F
+false BG
+0.000 0.000 0.000 FG
+(        for\(i = 0; i < WATER_SIDES_SUBDIVISION; i++\) {) S
+HL
+10 W
+(for\(j = 0; j < WATER_SIDES_SUBDIVISION; j++\) {) S
+HL
+12 W
+(glVertex3fv\(sideVertices[i][j]\);) S
+HL
+12 W
+(glVertex3fv\(sideVertices[i+1][j]\);) S
+HL
+12 W
+(glVertex3fv\(sideVertices[i+1][j+1]\);) S
+HL
+12 W
+(glVertex3fv\(sideVertices[i][j+1]\);) S
+6 W
+HL
+10 W
+(}) S
+HL
+8 W
+(}) S
+HL
+(      glEnd\(\);) S
+HL
+HL
+(      /***** draw the front *****/) S
+HL
+(      /* subdivide the plane */) S
+HL
+(      SubdivideXY\(waterVertices[2], ) S
+HL
+18 W
+(waterVertices[7], ) S
+HL
+18 W
+(\(GLfloat *\)sideVertices,) S
+HL
+18 W
+(WATER_SIDES_SUBDIVISION\);) S
+HL
+(      ) S
+HL
+(      /* draw the water */) S
+HL
+(      glBegin\(GL_QUADS\);) S
+HL
+(        glNormal3f\(0.0, 0.0, 1.0\);) S
+HL
+(        for\(i = 0; i < WATER_SIDES_SUBDIVISION; i++\) {) S
+HL
+10 W
+(for\(j = 0; j < WATER_SIDES_SUBDIVISION; j++\) {) S
+HL
+12 W
+(glVertex3fv\(sideVertices[i][j]\);) S
+HL
+12 W
+(glVertex3fv\(sideVertices[i+1][j]\);) S
+HL
+12 W
+(glVertex3fv\(sideVertices[i+1][j+1]\);) S
+HL
+12 W
+(glVertex3fv\(sideVertices[i][j+1]\);) S
+6 W
+HL
+10 W
+(}) S
+HL
+8 W
+(}) S
+HL
+(      glEnd\(\);) S
+HL
+HL
+(      /***** draw the LHS *****/) S
+HL
+(      /* subdivide the plane */) S
+HL
+(      SubdivideYZ\(waterVertices[3],) S
+HL
+18 W
+(waterVertices[4],) S
+HL
+18 W
+(\(GLfloat *\)sideVertices,) S
+HL
+18 W
+(WATER_SIDES_SUBDIVISION\);) S
+HL
+HL
+(      /* draw the water */) S
+HL
+(      glBegin\(GL_QUADS\);) S
+HL
+(        glNormal3f\(-1.0, 0.0, 0.0\);) S
+HL
+(        for\(i = 0; i < WATER_SIDES_SUBDIVISION; i++\) {) S
+HL
+10 W
+(for\(j = 0; j < WATER_SIDES_SUBDIVISION; j++\) {) S
+HL
+12 W
+(glVertex3fv\(sideVertices[i][j]\);) S
+HL
+12 W
+(glVertex3fv\(sideVertices[i+1][j]\);) S
+HL
+12 W
+(glVertex3fv\(sideVertices[i+1][j+1]\);) S
+HL
+12 W
+(glVertex3fv\(sideVertices[i][j+1]\);) S
+6 W
+HL
+10 W
+(}) S
+HL
+8 W
+(}) S
+HL
+(      glEnd\(\);) S
+HL
+HL
+(    glEndList\(\);) S
+HL
+(  }) S
+HL
+(  else {) S
+HL
+(    fprintf\(stderr, "ERROR: Unable to create display list for the water\\n"\);) S
+HL
+(    exit\(1\);) S
+HL
+(  }) S
+HL
+(}) S
+HL
+HL
+(void InitLights\(void\) {) S
+HL
+(  int i, j;) S
+HL
+(  GLfloat roomLightColor[] = {0.04, 0.04, 0.03, 1.0};) S
+HL
+(  GLfloat realLightPositions[][4] = {{0.0, 400.0, 100.0, 1.0}, ) S
+HL
+37 W
+({-30.0, 50.0, 12.0, 1.0}, {-30.0, 50.0, -12.0, 1.0}, ) S
+HL
+37 W
+({0.0, 50.0, 12.0, 1.0}, {0.0, 50.0, -12.0, 1.0}, ) S
+HL
+37 W
+({30.0, 50.0, 12.0, 1.0}, {30.0, 50.0, -12.0, 1.0}};) S
+HL
+33 W
+HL
+(  GLfloat lightDirection[3] = {0.0, -1.0, 0.0};) S
+HL
+(  GLfloat fakeLightColor[] = {1.0, 1.0, 0.8, 1.0};) S
+HL
+(  GLfloat lightEmission[] = {1.0, 1.0, 1.0, 1.0};) S
+HL
+(  GLfloat black[] = {0.0, 0.0, 0.0, 1.0};) S
+HL
+(  GLfloat fakeLightPositions[][3] = {{-30.0, 54.0, 12.0}, {-30.0, 54.0, -12.0},) S
+HL
+37 W
+({0.0, 54.0, 12.0}, {0.0, 54.0, -12.0},) S
+EndPage
+EndDSCPage
+
+%%Page: 11 11
+/Lines 1326 def
+/PageCount 19 def
+BeginDSCPage
+/LineNumber 721 def
+/PageNumber 11 def
+/HeaderLinesLeft [
+  [ /h0 (main.c) ]
+  [ /h1 (/can-28420/) ]
+] def
+/HeaderLinesRight [
+  [ /h0 /pagenumberstring load ]
+  [ /h1 (May 24 2001) ]
+] def
+2 SetHeaderLines
+BeginPage
+/f0 F
+false BG
+0.000 0.000 0.000 FG
+37 W
+({30.0, 54.0, 12.0}, {30.0, 54.0, -12.0}};) S
+HL
+(  GLfloat lightShadeVertices[CONE_SEGMENTS*2][3];) S
+HL
+(  GLfloat lightShadeNormals[CONE_SEGMENTS][3];) S
+HL
+(  GLfloat lightRadius = 3;) S
+HL
+HL
+HL
+(  /* Calculate the light shade */) S
+HL
+(  for\(i = 0; i < CONE_SEGMENTS; i++\) {) S
+HL
+(    lightShadeNormals[i][0] = sin\(\(2*PI/CONE_SEGMENTS\)*i\);) S
+HL
+(    lightShadeNormals[i][1] = 0.0;) S
+HL
+(    lightShadeNormals[i][2] = cos\(\(2*PI/CONE_SEGMENTS\)*i\);) S
+HL
+(    lightShadeVertices[i][0] = \(lightRadius + 0.2\) * lightShadeNormals[i][0];) S
+HL
+(    lightShadeVertices[i][1] = -lightRadius;) S
+HL
+(    lightShadeVertices[i][2] = \(lightRadius + 0.2\) * lightShadeNormals[i][2];) S
+HL
+(    lightShadeVertices[i+CONE_SEGMENTS][0] = lightShadeVertices[i][0];) S
+HL
+(    lightShadeVertices[i+CONE_SEGMENTS][1] = lightRadius;) S
+HL
+(    lightShadeVertices[i+CONE_SEGMENTS][2] = lightShadeVertices[i][2];) S
+HL
+(  }) S
+HL
+HL
+(  lights = glGenLists\(1\);) S
+HL
+(  if\(lights != 0\) {) S
+HL
+(    glNewList\(lights, GL_COMPILE\);) S
+HL
+HL
+(      /* Set the light properties */) S
+HL
+(      glMaterialfv\(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, fakeLightColor\);) S
+HL
+(      glMaterialfv\(GL_FRONT, GL_SPECULAR, fakeLightColor\);) S
+HL
+(      glMaterialfv\(GL_FRONT, GL_EMISSION, lightEmission\);) S
+HL
+(      glMaterialf\(GL_FRONT, GL_SHININESS, 128\);) S
+HL
+(      /* draw the lights */) S
+HL
+(      for\(i = 0; i < 6; i++\) {) S
+HL
+8 W
+(glPushMatrix\(\);) S
+HL
+10 W
+(glTranslatef\(fakeLightPositions[i][0],) S
+HL
+23 W
+(fakeLightPositions[i][1],) S
+HL
+23 W
+(fakeLightPositions[i][2]\);) S
+HL
+10 W
+(glutSolidSphere\(lightRadius, 15, 15\);) S
+HL
+8 W
+(glPopMatrix\(\);) S
+HL
+(      }) S
+HL
+(      /* draw the shades */) S
+HL
+(      glMaterialfv\(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, black\);) S
+HL
+(      glMaterialfv\(GL_FRONT, GL_SPECULAR, black\);) S
+HL
+(      glMaterialfv\(GL_FRONT, GL_EMISSION, black\);) S
+HL
+(      glMaterialf\(GL_FRONT, GL_SHININESS, 128\);) S
+HL
+(      for\(i = 0; i < 6; i++\) {) S
+HL
+8 W
+(glPushMatrix\(\);) S
+HL
+10 W
+(glTranslatef\(fakeLightPositions[i][0],) S
+HL
+23 W
+(fakeLightPositions[i][1],) S
+HL
+23 W
+(fakeLightPositions[i][2]\);) S
+HL
+10 W
+(glBegin\(GL_QUAD_STRIP\);) S
+HL
+12 W
+(for\(j = 0; j < CONE_SEGMENTS; j++\) {) S
+HL
+14 W
+(glNormal3fv\(lightShadeNormals[j]\);) S
+HL
+14 W
+(glVertex3fv\(lightShadeVertices[j]\);) S
+HL
+14 W
+(glVertex3fv\(lightShadeVertices[j+CONE_SEGMENTS]\);) S
+HL
+12 W
+(}) S
+HL
+12 W
+(glNormal3fv\(lightShadeNormals[0]\);) S
+HL
+12 W
+(glVertex3fv\(lightShadeVertices[0]\);) S
+HL
+12 W
+(glVertex3fv\(lightShadeVertices[CONE_SEGMENTS]\);) S
+HL
+10 W
+(glEnd\(\);) S
+HL
+8 W
+(glPopMatrix\(\);) S
+HL
+(      }) S
+HL
+HL
+HL
+(      /* Place the real lights */) S
+HL
+(      /* room light */) S
+HL
+(      glLightfv\(GL_LIGHT0, GL_AMBIENT, roomLightColor\);) S
+HL
+(      glLightfv\(GL_LIGHT0, GL_DIFFUSE, roomLightColor\);) S
+HL
+(      glLightfv\(GL_LIGHT0, GL_SPECULAR, roomLightColor\);) S
+HL
+(      glLightfv\(GL_LIGHT0, GL_POSITION, realLightPositions[0]\);) S
+HL
+(      glLightf\(GL_LIGHT0, GL_SPOT_CUTOFF, 180.0\);) S
+HL
+(      ) S
+HL
+(      /* spot lights */) S
+HL
+(      glLightfv\(GL_LIGHT1, GL_POSITION, realLightPositions[1]\);) S
+HL
+(      glLightfv\(GL_LIGHT1, GL_SPOT_DIRECTION, lightDirection\);) S
+EndPage
+EndDSCPage
+
+%%Page: 12 12
+/Lines 1326 def
+/PageCount 19 def
+BeginDSCPage
+/LineNumber 793 def
+/PageNumber 12 def
+/HeaderLinesLeft [
+  [ /h0 (main.c) ]
+  [ /h1 (/can-28420/) ]
+] def
+/HeaderLinesRight [
+  [ /h0 /pagenumberstring load ]
+  [ /h1 (May 24 2001) ]
+] def
+2 SetHeaderLines
+BeginPage
+/f0 F
+false BG
+0.000 0.000 0.000 FG
+(      glLightf\(GL_LIGHT1, GL_SPOT_CUTOFF, SPOTLIGHT_WIDTH\);) S
+HL
+(      ) S
+HL
+(      glLightfv\(GL_LIGHT2, GL_POSITION, realLightPositions[2]\);) S
+HL
+(      glLightfv\(GL_LIGHT2, GL_SPOT_DIRECTION, lightDirection\);) S
+HL
+(      glLightf\(GL_LIGHT2, GL_SPOT_CUTOFF, SPOTLIGHT_WIDTH\);) S
+HL
+HL
+(      glLightfv\(GL_LIGHT3, GL_POSITION, realLightPositions[3]\);) S
+HL
+(      glLightfv\(GL_LIGHT3, GL_SPOT_DIRECTION, lightDirection\);) S
+HL
+(      glLightf\(GL_LIGHT3, GL_SPOT_CUTOFF, SPOTLIGHT_WIDTH\);) S
+HL
+(      ) S
+HL
+(      glLightfv\(GL_LIGHT4, GL_POSITION, realLightPositions[4]\);) S
+HL
+(      glLightfv\(GL_LIGHT4, GL_SPOT_DIRECTION, lightDirection\);) S
+HL
+(      glLightf\(GL_LIGHT4, GL_SPOT_CUTOFF, SPOTLIGHT_WIDTH\);) S
+HL
+HL
+(      glLightfv\(GL_LIGHT5, GL_POSITION, realLightPositions[5]\);) S
+HL
+(      glLightfv\(GL_LIGHT5, GL_SPOT_DIRECTION, lightDirection\);) S
+HL
+(      glLightf\(GL_LIGHT5, GL_SPOT_CUTOFF, SPOTLIGHT_WIDTH\);) S
+HL
+(      ) S
+HL
+(      glLightfv\(GL_LIGHT6, GL_POSITION, realLightPositions[6]\);) S
+HL
+(      glLightfv\(GL_LIGHT6, GL_SPOT_DIRECTION, lightDirection\);) S
+HL
+(      glLightf\(GL_LIGHT6, GL_SPOT_CUTOFF, SPOTLIGHT_WIDTH\);) S
+HL
+HL
+(    glEndList\(\);) S
+HL
+(  }) S
+HL
+(  else {) S
+HL
+(    fprintf\(stderr, "ERROR: Unable to create display list for lights\\n"\);) S
+HL
+(    exit\(1\);) S
+HL
+(  }) S
+HL
+(}) S
+HL
+HL
+(void InitAerator\(void\) {) S
+HL
+(  int i;) S
+HL
+(  GLfloat topRadius = 1.0;) S
+HL
+(  GLfloat bottomRadius = 4.0;) S
+HL
+(  GLfloat height = 7.0;) S
+HL
+(  GLfloat aeratorVertices[CONE_SEGMENTS*2][3];) S
+HL
+(  GLfloat aeratorNormals[CONE_SEGMENTS][3];) S
+HL
+(  GLfloat aeratorInsideColor[] = {0.0, 0.0, 1.0, 1.0};) S
+HL
+(  GLfloat aeratorOutsideColor[] = {0.2, 0.07, 0.02, 1.0};) S
+HL
+HL
+(  aerator = glGenLists\(1\);) S
+HL
+(  if\(aerator != 0\) {) S
+HL
+HL
+(    /* Calculate the aerator */) S
+HL
+(    for\(i = 0; i < CONE_SEGMENTS; i++\) {) S
+HL
+(      aeratorVertices[i][0] = bottomRadius * sin\(\(2*PI/CONE_SEGMENTS\)*i\);) S
+HL
+(      aeratorVertices[i][1] = 0.0;) S
+HL
+(      aeratorVertices[i][2] = bottomRadius * cos\(\(2*PI/CONE_SEGMENTS\)*i\);) S
+HL
+(      aeratorVertices[i+CONE_SEGMENTS][0] = topRadius * sin\(\(2*PI/CONE_SEGMENTS\)*i\);) S
+HL
+(      aeratorVertices[i+CONE_SEGMENTS][1] = height;) S
+HL
+(      aeratorVertices[i+CONE_SEGMENTS][2] = topRadius * cos\(\(2*PI/CONE_SEGMENTS\)*i\);) S
+HL
+(      aeratorNormals[i][0] = height * sin\(\(2*PI/CONE_SEGMENTS\)*i\);) S
+HL
+(      aeratorNormals[i][1] = bottomRadius - topRadius;) S
+HL
+(      aeratorNormals[i][2] = height * cos\(\(2*PI/CONE_SEGMENTS\)*i\);) S
+HL
+(      Normalise\(aeratorNormals[i]\);) S
+HL
+(    }) S
+HL
+HL
+(    glNewList\(aerator, GL_COMPILE\);) S
+HL
+(      glPushMatrix\(\);) S
+HL
+(        glTranslatef\(0.0, 0.0, -20.0\);) S
+HL
+8 W
+(glLightModeli\(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE\);) S
+HL
+8 W
+(/* set the material properties for the outdide... */) S
+HL
+8 W
+(glMaterialfv\(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, aeratorOutsideColor\);) S
+HL
+8 W
+(glMaterialfv\(GL_FRONT, GL_SPECULAR, aeratorOutsideColor\);) S
+HL
+8 W
+(glMaterialf\(GL_FRONT, GL_SHININESS, 0\);) S
+HL
+8 W
+(/* ...and for the inside */) S
+HL
+8 W
+(glMaterialfv\(GL_BACK, GL_AMBIENT_AND_DIFFUSE, aeratorInsideColor\);) S
+HL
+8 W
+(glMaterialfv\(GL_BACK, GL_SPECULAR, aeratorInsideColor\);) S
+HL
+8 W
+(glMaterialf\(GL_BACK, GL_SHININESS, 128\);) S
+HL
+8 W
+HL
+8 W
+(/* Draw the aerator */) S
+HL
+8 W
+(glBegin\(GL_QUAD_STRIP\);) S
+EndPage
+EndDSCPage
+
+%%Page: 13 13
+/Lines 1326 def
+/PageCount 19 def
+BeginDSCPage
+/LineNumber 865 def
+/PageNumber 13 def
+/HeaderLinesLeft [
+  [ /h0 (main.c) ]
+  [ /h1 (/can-28420/) ]
+] def
+/HeaderLinesRight [
+  [ /h0 /pagenumberstring load ]
+  [ /h1 (May 24 2001) ]
+] def
+2 SetHeaderLines
+BeginPage
+/f0 F
+false BG
+0.000 0.000 0.000 FG
+10 W
+(for\(i = 0; i < CONE_SEGMENTS; i++\) {) S
+HL
+12 W
+(glNormal3fv\(aeratorNormals[i]\);) S
+HL
+12 W
+(glVertex3fv\(aeratorVertices[i+CONE_SEGMENTS]\);) S
+HL
+12 W
+(glVertex3fv\(aeratorVertices[i]\);) S
+HL
+10 W
+(}) S
+HL
+10 W
+(glNormal3fv\(aeratorNormals[0]\);) S
+HL
+10 W
+(glVertex3fv\(aeratorVertices[CONE_SEGMENTS]\);) S
+HL
+10 W
+(glVertex3fv\(aeratorVertices[0]\);) S
+HL
+8 W
+(glEnd\(\);) S
+HL
+HL
+8 W
+(glLightModeli\(GL_LIGHT_MODEL_TWO_SIDE, GL_FALSE\);) S
+HL
+(      ) S
+HL
+(      glPopMatrix\(\);) S
+HL
+(    glEndList\(\);) S
+HL
+(  }) S
+HL
+(  else {) S
+HL
+(    fprintf\(stderr, "ERROR: Unable to create display list for aerator\\n"\);) S
+HL
+(    exit\(1\);) S
+HL
+(  }) S
+HL
+(}) S
+HL
+HL
+(void InitBubbles\(void\) {) S
+HL
+(  int i;) S
+HL
+HL
+(  /* Disable all the bubbles */) S
+HL
+(  for\(i = 0; i < MAX_BUBBLES; i++\) bubbles[i].active = 0;) S
+HL
+(  /* set point characteristics */) S
+HL
+(  glPointSize\(4\);) S
+HL
+(  glEnable\(GL_POINT_SMOOTH\);) S
+HL
+(  glHint\(GL_POINT_SMOOTH_HINT, GL_FASTEST\);) S
+HL
+(}) S
+HL
+HL
+(void InitSubmarine\(void\) {) S
+HL
+(  int i;) S
+HL
+(  const GLfloat radius = 1.5;) S
+HL
+(  GLfloat submarineColor[] = {0.0124, 0.1288, 0.1992, 1.0};) S
+HL
+(  GLfloat propellerGuardVertices[SUBMARINE_SEGMENTS*2][3];) S
+HL
+(  GLfloat propellerGuardNormals[SUBMARINE_SEGMENTS][3];) S
+HL
+HL
+(  submarine = glGenLists\(1\);) S
+HL
+(  if\(submarine != 0\) {) S
+HL
+(    glNewList\(submarine, GL_COMPILE\);) S
+HL
+HL
+(      /* Set the material properties of the submarine */) S
+HL
+(      glMaterialfv\(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, submarineColor\);) S
+HL
+(      glMaterialfv\(GL_FRONT, GL_SPECULAR, submarineColor\);) S
+HL
+(      glMaterialf\(GL_FRONT, GL_SHININESS, 100\);) S
+HL
+(      ) S
+HL
+(      /* Draw the body */) S
+HL
+(      glPushMatrix\(\);) S
+HL
+(        glScalef\(4.0, 1.0, 1.0\);) S
+HL
+8 W
+(glutSolidSphere\(1.5, SUBMARINE_SEGMENTS, SUBMARINE_SEGMENTS\);) S
+HL
+(      glPopMatrix\(\);) S
+HL
+HL
+(      /* calculate the propeller_guard */) S
+HL
+(      for\(i = 0; i < SUBMARINE_SEGMENTS; i++\) {) S
+HL
+8 W
+(propellerGuardNormals[i][0] = 0.0;) S
+HL
+8 W
+(propellerGuardNormals[i][1] = sin\(\(2*PI/SUBMARINE_SEGMENTS\)*i\);) S
+HL
+8 W
+(propellerGuardNormals[i][2] = cos\(\(2*PI/SUBMARINE_SEGMENTS\)*i\);) S
+HL
+8 W
+(propellerGuardVertices[i][0] = 5.5;) S
+HL
+8 W
+(propellerGuardVertices[i][1] = radius * propellerGuardNormals[i][1]; ) S
+HL
+8 W
+(propellerGuardVertices[i][2] = radius * propellerGuardNormals[i][2];) S
+HL
+8 W
+(propellerGuardVertices[i+SUBMARINE_SEGMENTS][0] = 6.5;) S
+HL
+8 W
+(propellerGuardVertices[i+SUBMARINE_SEGMENTS][1] = propellerGuardVertices[i][1];) S
+HL
+8 W
+(propellerGuardVertices[i+SUBMARINE_SEGMENTS][2] = propellerGuardVertices[i][2];) S
+HL
+(      }) S
+HL
+HL
+(      /* draw the propeller guard */) S
+HL
+(      glBegin\(GL_QUAD_STRIP\);) S
+HL
+(        for\(i = 0; i < SUBMARINE_SEGMENTS; i++\) {) S
+HL
+10 W
+(glNormal3fv\(propellerGuardNormals[i]\);) S
+HL
+10 W
+(glVertex3fv\(propellerGuardVertices[i]\);) S
+EndPage
+EndDSCPage
+
+%%Page: 14 14
+/Lines 1326 def
+/PageCount 19 def
+BeginDSCPage
+/LineNumber 937 def
+/PageNumber 14 def
+/HeaderLinesLeft [
+  [ /h0 (main.c) ]
+  [ /h1 (/can-28420/) ]
+] def
+/HeaderLinesRight [
+  [ /h0 /pagenumberstring load ]
+  [ /h1 (May 24 2001) ]
+] def
+2 SetHeaderLines
+BeginPage
+/f0 F
+false BG
+0.000 0.000 0.000 FG
+10 W
+(glVertex3fv\(propellerGuardVertices[i+SUBMARINE_SEGMENTS]\);) S
+HL
+8 W
+(}) S
+HL
+8 W
+(glNormal3fv\(propellerGuardNormals[0]\);) S
+HL
+8 W
+(glVertex3fv\(propellerGuardVertices[0]\);) S
+HL
+8 W
+(glVertex3fv\(propellerGuardVertices[SUBMARINE_SEGMENTS]\);) S
+10 W
+HL
+(      glEnd\(\);) S
+HL
+HL
+(      /* draw the tower */) S
+HL
+(      glPushMatrix\(\);) S
+HL
+(        glTranslatef\(0.0, 1.5, 0.0\);) S
+HL
+8 W
+(glScalef\(3.0, 1.0, 1.0\);) S
+HL
+8 W
+(glutSolidCube\(1.0\);) S
+HL
+(      glPopMatrix\(\);) S
+HL
+HL
+(      /* draw the fins */) S
+HL
+(      /* elevators */) S
+HL
+(      glPushMatrix\(\);) S
+HL
+(        glTranslatef\(-2.5, 0.0, 0.0\);) S
+HL
+8 W
+(glScalef\(3, 1.0, 8.0\);) S
+HL
+8 W
+(glutSolidCube\(0.5\);) S
+HL
+(      glPopMatrix\(\);) S
+HL
+(      /* steering */) S
+HL
+(      glPushMatrix\(\);) S
+HL
+(        glTranslatef\(6.75, 0.0, 0.0\);) S
+HL
+8 W
+(glScalef\(2.0, 8*radius, 1.0\);) S
+HL
+8 W
+(glutSolidCube\(0.25\);) S
+HL
+(      glPopMatrix\(\);) S
+HL
+HL
+(    glEndList\(\);) S
+HL
+(  }) S
+HL
+(  else {) S
+HL
+(    fprintf\(stderr, "ERROR: Unable to create display list for submarine\\n"\);) S
+HL
+(    exit\(1\);) S
+HL
+(  }) S
+HL
+HL
+(  sub.x = 0.0;) S
+HL
+(  sub.y = 20.0;) S
+HL
+(  sub.z = 0.0;) S
+HL
+(  sub.xVelocity = 0.0;) S
+HL
+(  sub.yVelocity = 0.0;) S
+HL
+(  sub.zVelocity = 0.0;) S
+HL
+(  sub.dive = 0.0;) S
+HL
+(  sub.turn = 0.0;) S
+HL
+(}) S
+HL
+HL
+(/**************************************************/) S
+HL
+(/* DRAWING FUNCTIONS                              */) S
+HL
+(/**************************************************/) S
+HL
+(void DrawLights\(\) {) S
+HL
+(  GLfloat lightColor[] = {1.0, 1.0, 1.0, 1.0};) S
+HL
+HL
+(  /* Make the lights blue to give an underwater effect */) S
+HL
+(  if\(viewPosition == IN_SUB\) {) S
+HL
+(    lightColor[0] = 0.4;) S
+HL
+(    lightColor[1] = 0.4;) S
+HL
+(    light0 = 0;) S
+HL
+(  }) S
+HL
+(  else light0 = 1;) S
+HL
+HL
+(  /* Draw the lights */) S
+HL
+(  glCallList\(lights\);) S
+HL
+HL
+(  /* Set the properties of the lights */) S
+HL
+(  glLightfv\(GL_LIGHT1, GL_AMBIENT, lightColor\);) S
+HL
+(  glLightfv\(GL_LIGHT1, GL_DIFFUSE, lightColor\);) S
+HL
+(  glLightfv\(GL_LIGHT1, GL_SPECULAR, lightColor\);) S
+HL
+HL
+(  glLightfv\(GL_LIGHT2, GL_AMBIENT, lightColor\);) S
+HL
+(  glLightfv\(GL_LIGHT2, GL_DIFFUSE, lightColor\);) S
+HL
+(  glLightfv\(GL_LIGHT2, GL_SPECULAR, lightColor\);) S
+HL
+HL
+(  glLightfv\(GL_LIGHT3, GL_AMBIENT, lightColor\);) S
+EndPage
+EndDSCPage
+
+%%Page: 15 15
+/Lines 1326 def
+/PageCount 19 def
+BeginDSCPage
+/LineNumber 1009 def
+/PageNumber 15 def
+/HeaderLinesLeft [
+  [ /h0 (main.c) ]
+  [ /h1 (/can-28420/) ]
+] def
+/HeaderLinesRight [
+  [ /h0 /pagenumberstring load ]
+  [ /h1 (May 24 2001) ]
+] def
+2 SetHeaderLines
+BeginPage
+/f0 F
+false BG
+0.000 0.000 0.000 FG
+(  glLightfv\(GL_LIGHT3, GL_DIFFUSE, lightColor\);) S
+HL
+(  glLightfv\(GL_LIGHT3, GL_SPECULAR, lightColor\);) S
+HL
+HL
+(  glLightfv\(GL_LIGHT4, GL_AMBIENT, lightColor\);) S
+HL
+(  glLightfv\(GL_LIGHT4, GL_DIFFUSE, lightColor\);) S
+HL
+(  glLightfv\(GL_LIGHT4, GL_SPECULAR, lightColor\);) S
+HL
+HL
+(  glLightfv\(GL_LIGHT5, GL_AMBIENT, lightColor\);) S
+HL
+(  glLightfv\(GL_LIGHT5, GL_DIFFUSE, lightColor\);) S
+HL
+(  glLightfv\(GL_LIGHT5, GL_SPECULAR, lightColor\);) S
+HL
+HL
+(  glLightfv\(GL_LIGHT6, GL_AMBIENT, lightColor\);) S
+HL
+(  glLightfv\(GL_LIGHT6, GL_DIFFUSE, lightColor\);) S
+HL
+(  glLightfv\(GL_LIGHT6, GL_SPECULAR, lightColor\);) S
+HL
+HL
+(}) S
+HL
+HL
+(void DrawBubbles\(void\) {) S
+HL
+(  int i;) S
+HL
+(  GLfloat bubbleColor[] = {0.8, 0.8, 1.0, 0.2};) S
+HL
+(  static float timeSinceBubble = 0;) S
+HL
+(  static clock_t oldTime = 0;) S
+HL
+(  clock_t newTime;) S
+HL
+(  float elapsed;) S
+HL
+(  GLfloat acceleration;) S
+HL
+(  int active = 0;) S
+HL
+HL
+(  newTime = clock\(\);) S
+HL
+(  elapsed = \(float\) \(newTime - oldTime\)/\(float\) CLOCKS_PER_SEC;) S
+HL
+(  oldTime = newTime;) S
+HL
+(  timeSinceBubble += elapsed;) S
+HL
+(  acceleration = elapsed * BOUYANCY;) S
+HL
+HL
+(  /* Set the material properties of the bubbles */) S
+HL
+(  glMaterialfv\(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, bubbleColor\);) S
+HL
+(  glMaterialfv\(GL_FRONT, GL_SPECULAR, bubbleColor\);) S
+HL
+(  glMaterialf\(GL_FRONT, GL_SHININESS, 50\);) S
+HL
+HL
+(  for\(i = 0; i < MAX_BUBBLES; i++\) {) S
+HL
+(    if\(bubbles[i].active\) {) S
+HL
+(      active++;) S
+HL
+(      /* Calculate new bubble position */) S
+HL
+(      bubbles[i].position[0] += bubbles[i].xVelocity * elapsed;) S
+HL
+(      bubbles[i].position[1] += bubbles[i].yVelocity * elapsed;) S
+HL
+(      bubbles[i].position[2] += bubbles[i].zVelocity * elapsed;) S
+HL
+(      /* accelerate bubble upwards */) S
+HL
+(      bubbles[i].yVelocity += acceleration * \(1 + 0.5*\(RandF\(\) - 0.5\)\);) S
+HL
+(      /* collision detection */) S
+HL
+(      if\(bubbles[i].position[1] > 40.0\) bubbles[i].active = 0; /* burst at water surface */) S
+HL
+(      else {) S
+HL
+8 W
+(if\(HitShelf\(bubbles[i]\)\) {) S
+HL
+10 W
+(/* Move the bubble under the shelf */) S
+HL
+10 W
+(bubbles[i].position[1] -= bubbles[i].position[1] - 19.2;) S
+HL
+10 W
+(bubbles[i].yVelocity = -bubbles[i].yVelocity * BUBBLE_BOUNCE;) S
+HL
+8 W
+(}) S
+HL
+8 W
+(if\(HitWall\(bubbles[i]\)\) {) S
+HL
+10 W
+(/* bounce of wall */) S
+HL
+10 W
+(bubbles[i].position[2] -= bubbles[i].position[2] + 24.2;) S
+HL
+10 W
+(bubbles[i].zVelocity = -bubbles[i].zVelocity * BUBBLE_BOUNCE;) S
+HL
+8 W
+(}) S
+HL
+8 W
+(/* Draw the bubble */) S
+HL
+8 W
+(if\(viewPosition == IN_SUB\) {) S
+HL
+10 W
+(/* Draw bubbles as spheres when inside the tank */) S
+HL
+10 W
+(glPushMatrix\(\);) S
+HL
+12 W
+(glTranslatef\(bubbles[i].position[0],) S
+HL
+25 W
+(bubbles[i].position[1],) S
+HL
+25 W
+(bubbles[i].position[2]\);) S
+HL
+12 W
+(glutSolidSphere\(0.8, 10, 10\);) S
+HL
+10 W
+(glPopMatrix\(\);) S
+HL
+8 W
+(}) S
+HL
+8 W
+(else {) S
+HL
+10 W
+(/* Draw bubbles as points when outside the tank */) S
+EndPage
+EndDSCPage
+
+%%Page: 16 16
+/Lines 1326 def
+/PageCount 19 def
+BeginDSCPage
+/LineNumber 1081 def
+/PageNumber 16 def
+/HeaderLinesLeft [
+  [ /h0 (main.c) ]
+  [ /h1 (/can-28420/) ]
+] def
+/HeaderLinesRight [
+  [ /h0 /pagenumberstring load ]
+  [ /h1 (May 24 2001) ]
+] def
+2 SetHeaderLines
+BeginPage
+/f0 F
+false BG
+0.000 0.000 0.000 FG
+10 W
+(glBegin\(GL_POINTS\);) S
+HL
+12 W
+(glVertex3fv\(bubbles[i].position\);) S
+HL
+10 W
+(glEnd\(\);) S
+HL
+8 W
+(}) S
+HL
+(      }) S
+HL
+(    }) S
+HL
+(    else if\(timeSinceBubble > TIME_BETWEEN_BUBBLES\) { /* time to draw a new bubble */) S
+HL
+(      /* release a new bubble */) S
+HL
+(      bubbles[i].position[0] = 0.0;) S
+HL
+(      bubbles[i].position[1] = 7.0;) S
+HL
+(      bubbles[i].position[2] = -20.0;) S
+HL
+(      bubbles[i].xVelocity = 4 * \(RandF\(\) - 0.5\);) S
+HL
+(      bubbles[i].yVelocity = 0.0;) S
+HL
+(      bubbles[i].zVelocity = 4 * \(RandF\(\) - 0.5\);) S
+HL
+(      bubbles[i].active = 1;) S
+HL
+(      timeSinceBubble -= TIME_BETWEEN_BUBBLES;) S
+HL
+(    }) S
+HL
+(  }) S
+HL
+(  if\(active == MAX_BUBBLES\) fprintf\(stderr, "WARNING: MAX BUBBLES REACHED               \\n"\);) S
+HL
+(  fprintf\(stderr, "\\t\\tActive bubbles: %2i\\r", active\);) S
+HL
+(}) S
+HL
+HL
+(void DrawSubmarine\(void\) {) S
+HL
+(  glPushMatrix\(\);) S
+HL
+(    /* move submarine into position */) S
+HL
+(    glTranslatef\(sub.x, sub.y, sub.z\);) S
+HL
+(    glRotatef\(sub.turn, 0.0, 1.0, 0.0\);) S
+HL
+(    glRotatef\(sub.dive, 0.0, 0.0, 1.0\);) S
+HL
+(    /* Draw submarine */) S
+HL
+(    glCallList\(submarine\);) S
+HL
+(  glPopMatrix\(\);) S
+HL
+(}) S
+HL
+HL
+(/**************************************************/) S
+HL
+(/* MISC FUNCTIONS                                 */) S
+HL
+(/**************************************************/) S
+HL
+(float RandF\(\) {) S
+HL
+(  return \(float\)rand\(\)/\(float\)RAND_MAX;) S
+HL
+(}) S
+HL
+HL
+(int HitShelf\(bubble b\) {) S
+HL
+(  if\(b.position[1] >= 19.2 && b.position[2] < -15.0 &&) S
+HL
+(     b.position[0] > -10.0 && b.position[0] < 10.0\) return 1;) S
+HL
+(  return 0;) S
+HL
+(}) S
+HL
+HL
+(int HitWall\(bubble b\) {) S
+HL
+(  if\(b.position[2] < -24.2\) return 1;) S
+HL
+(  return 0;) S
+HL
+(}) S
+HL
+HL
+(void AccelerateSubmarine\(GLfloat acceleration\) {) S
+HL
+(  GLfloat x1, y1, z1;) S
+HL
+(  GLfloat x2, y2, z2;) S
+HL
+(  double theta;) S
+HL
+HL
+(  /* acceleration vector before rotation is:) S
+HL
+(     x = -acceleration) S
+HL
+(     y = 0) S
+HL
+(     z = 0) S
+HL
+(  */) S
+HL
+HL
+(  /* rotate around z axis */) S
+HL
+(  theta = sub.dive * \(PI/180\);) S
+HL
+(  x1 = -acceleration*cos\(theta\);) S
+HL
+(  y1 = -acceleration*sin\(theta\);) S
+HL
+(  z1 = 0.0;) S
+HL
+HL
+(  /* rotate around y axis */) S
+HL
+(  theta = sub.turn * \(PI/180\);) S
+HL
+(  x2 = x1*cos\(theta\) + z1*sin\(theta\);) S
+HL
+(  y2 = y1;) S
+EndPage
+EndDSCPage
+
+%%Page: 17 17
+/Lines 1326 def
+/PageCount 19 def
+BeginDSCPage
+/LineNumber 1153 def
+/PageNumber 17 def
+/HeaderLinesLeft [
+  [ /h0 (main.c) ]
+  [ /h1 (/can-28420/) ]
+] def
+/HeaderLinesRight [
+  [ /h0 /pagenumberstring load ]
+  [ /h1 (May 24 2001) ]
+] def
+2 SetHeaderLines
+BeginPage
+/f0 F
+false BG
+0.000 0.000 0.000 FG
+(  z2 = -x1*sin\(theta\) + z1*cos\(theta\);) S
+HL
+HL
+(  /* add to velocity vector */) S
+HL
+(  sub.xVelocity += x2;) S
+HL
+(  sub.yVelocity += y2;) S
+HL
+(  sub.zVelocity += z2;) S
+HL
+(  ) S
+HL
+(}) S
+HL
+HL
+(void CollisionDetection\(void\) {) S
+HL
+(  int i;) S
+HL
+(  GLfloat boundingBox[][3] = {{-6.0, -1.5, -2.0}, {-6.0, -1.5, 2.0},) S
+HL
+31 W
+({-6.0, 2.0, -2.0}, {-6.0, 2.0, 2.0},) S
+HL
+30 W
+({7.25, 2.0, 2.0}, {7.25, 2.0, -2.0},) S
+HL
+30 W
+({7.25, -1.5, 2.0}, {7.25, -1.5, -2.0}};) S
+HL
+(  GLfloat xAdj = 0.0, yAdj = 0.0, zAdj = 0.0;) S
+HL
+(  GLfloat tmpX, tmpY, tmpZ;) S
+HL
+(  GLfloat diveR, turnR;) S
+HL
+(  ) S
+HL
+(  diveR = sub.dive * \(PI/180\);) S
+HL
+(  turnR = sub.turn * \(PI/180\);) S
+HL
+(  /* rotate and translate the bounding box */) S
+HL
+(  for\(i = 0; i < 8; i++\) {) S
+HL
+(    /* rotate bounding box around z */) S
+HL
+(    tmpX = boundingBox[i][0]*cos\(diveR\) - boundingBox[i][1]*sin\(diveR\);) S
+HL
+(    tmpY = boundingBox[i][0]*sin\(diveR\) + boundingBox[i][1]*cos\(diveR\);) S
+HL
+(    tmpZ = boundingBox[i][2];) S
+HL
+(    /* rotate bounding box around y */) S
+HL
+(    boundingBox[i][0] = tmpX*cos\(turnR\) + tmpZ*sin\(turnR\);) S
+HL
+(    boundingBox[i][1] = tmpY;) S
+HL
+(    boundingBox[i][2] = -tmpX*sin\(turnR\) + tmpZ*cos\(turnR\);) S
+HL
+(    /* translate bounding box */) S
+HL
+(    boundingBox[i][0] += sub.x;) S
+HL
+(    boundingBox[i][1] += sub.y;) S
+HL
+(    boundingBox[i][2] += sub.z;) S
+HL
+(  }) S
+HL
+HL
+(  /* check if any of the bounding box vertices have hit anything */) S
+HL
+(  for\(i = 0; i < 8; i++\) {) S
+HL
+(    /* x */) S
+HL
+(    if\(boundingBox[i][0] < -50.0 && -50.0 - boundingBox[i][0] > xAdj\)) S
+HL
+(      xAdj = -50.0 - boundingBox[i][0];) S
+HL
+(    if\(boundingBox[i][0] > 50.0 && 50.0 - boundingBox[i][0] < xAdj\)) S
+HL
+(      xAdj = 50.0 - boundingBox[i][0];) S
+HL
+(    /* y */) S
+HL
+(    if\(boundingBox[i][1] < 0.0 && 0.0 - boundingBox[i][1] > yAdj\)) S
+HL
+(      yAdj = 0.0 - boundingBox[i][1];) S
+HL
+(    if\(i > 5 && boundingBox[i][1] > 40.0 && 40.0 - boundingBox[i][1] < yAdj\)) S
+HL
+(      yAdj = 40.0 - boundingBox[i][1];) S
+HL
+(    /* z */) S
+HL
+(    if\(boundingBox[i][2] < -25.0 && -25.0 - boundingBox[i][2] > zAdj\)) S
+HL
+(      zAdj = -25.0 - boundingBox[i][2];) S
+HL
+(    if\(boundingBox[i][2] > 25.0 && 25.0 - boundingBox[i][2] < zAdj\)) S
+HL
+(      zAdj = 25.0 - boundingBox[i][2];) S
+HL
+(  }) S
+HL
+(  if\(sub.y > 40.0\) yAdj = 40.0 - sub.y;) S
+HL
+HL
+(  /* Adjust submarine position and velocity if we have hit anything */) S
+HL
+(  if\(xAdj != 0.0\) {) S
+HL
+(    sub.x += xAdj;) S
+HL
+(    sub.xVelocity = -sub.xVelocity * SUB_BOUNCE;) S
+HL
+(  }) S
+HL
+(  if\(yAdj != 0.0\) {) S
+HL
+(    sub.y += yAdj;) S
+HL
+(    sub.yVelocity = -sub.yVelocity * SUB_BOUNCE;) S
+HL
+(  }) S
+HL
+(  if\(zAdj != 0.0\) {) S
+HL
+(    sub.z += zAdj;) S
+HL
+(    sub.zVelocity = -sub.zVelocity * SUB_BOUNCE;) S
+HL
+(  }) S
+HL
+(}) S
+HL
+EndPage
+EndDSCPage
+
+%%Page: 18 18
+/Lines 1326 def
+/PageCount 19 def
+BeginDSCPage
+/LineNumber 1225 def
+/PageNumber 18 def
+/HeaderLinesLeft [
+  [ /h0 (main.c) ]
+  [ /h1 (/can-28420/) ]
+] def
+/HeaderLinesRight [
+  [ /h0 /pagenumberstring load ]
+  [ /h1 (May 24 2001) ]
+] def
+2 SetHeaderLines
+BeginPage
+/f0 F
+false BG
+0.000 0.000 0.000 FG
+(void SubdivideXY\(GLfloat v1[3], GLfloat v2[3], GLfloat* vertices, int div\) {) S
+HL
+(  int i, j, index;) S
+HL
+HL
+(  for\(i = 0; i < div+1; i++\) {) S
+HL
+(    for\(j = 0; j < div+1; j++\) {) S
+HL
+(      index = i*\(div+1\)*3 + j*3;) S
+HL
+(      /* x */) S
+HL
+(      if\(i == 0\)) S
+HL
+8 W
+(vertices[index] = v1[0];) S
+HL
+(      else if\(i == div\)) S
+HL
+8 W
+(vertices[index] = v2[0];) S
+HL
+(      else) S
+HL
+8 W
+(vertices[index] = v1[0] + i/\(float\)div * \(v2[0] - v1[0]\);) S
+HL
+(      /* y */) S
+HL
+(      if\(j == 0\)) S
+HL
+8 W
+(vertices[index+1] = v1[1];) S
+HL
+(      else if\(j == div\)) S
+HL
+8 W
+(vertices[index+1] = v2[1];) S
+HL
+(      else) S
+HL
+8 W
+(vertices[index+1] = v1[1] + j/\(float\)div * \(v2[1] - v1[1]\);) S
+HL
+(      /* z */) S
+HL
+(      vertices[index+2] = v1[2];) S
+HL
+(    }) S
+HL
+(  }) S
+HL
+(}) S
+HL
+( ) S
+HL
+(void SubdivideYZ\(GLfloat v1[3], GLfloat v2[3], GLfloat* vertices, int div\) {) S
+HL
+(  int i, j, index;) S
+HL
+HL
+(  for\(i = 0; i < div+1; i++\) {) S
+HL
+(    for\(j = 0; j < div+1; j++\) {) S
+HL
+(      index = i*\(div+1\)*3 + j*3;) S
+HL
+(      /* x */) S
+HL
+(      vertices[index] = v1[0];) S
+HL
+(      /* y */) S
+HL
+(      if\(i == 0\)) S
+HL
+8 W
+(vertices[index+1] = v1[1];) S
+HL
+(      else if\(i == div\)) S
+HL
+8 W
+(vertices[index+1] = v2[1];) S
+HL
+(      else) S
+HL
+8 W
+(vertices[index+1] = v1[1] + i/\(float\)div * \(v2[1] - v1[1]\);) S
+HL
+(      /* z */) S
+HL
+(      if\(j == 0\)) S
+HL
+8 W
+(vertices[index+2] = v1[2];) S
+HL
+(      else if\(j == div\)) S
+HL
+8 W
+(vertices[index+2] = v2[2];) S
+HL
+(      else) S
+HL
+8 W
+(vertices[index+2] = v1[2] + j/\(float\)div * \(v2[2] - v1[2]\);) S
+HL
+(    }) S
+HL
+(  }) S
+HL
+(} ) S
+HL
+HL
+(void SubdivideXZ\(GLfloat v1[3], GLfloat v2[3], GLfloat* vertices, int div\) {) S
+HL
+(  int i, j, index;) S
+HL
+HL
+(  for\(i = 0; i < div+1; i++\) {) S
+HL
+(    for\(j = 0; j < div+1; j++\) {) S
+HL
+(      index = i*\(div+1\)*3 + j*3;) S
+HL
+(      /* x */) S
+HL
+(      if\(i == 0\)) S
+HL
+8 W
+(vertices[index] = v1[0];) S
+HL
+(      else if\(i == div\)) S
+HL
+8 W
+(vertices[index] = v2[0];) S
+HL
+(      else) S
+HL
+8 W
+(vertices[index] = v1[0] + i/\(float\)div * \(v2[0] - v1[0]\);) S
+HL
+(      /* y */) S
+HL
+(      vertices[index+1] = v1[1];) S
+HL
+(      /* z */) S
+HL
+(      if\(j == 0\)) S
+HL
+8 W
+(vertices[index+2] = v1[2];) S
+HL
+(      else if\(j == div\)) S
+HL
+8 W
+(vertices[index+2] = v2[2];) S
+EndPage
+EndDSCPage
+
+%%Page: 19 19
+/Lines 1326 def
+/PageCount 19 def
+BeginDSCPage
+/LineNumber 1297 def
+/PageNumber 19 def
+/HeaderLinesLeft [
+  [ /h0 (main.c) ]
+  [ /h1 (/can-28420/) ]
+] def
+/HeaderLinesRight [
+  [ /h0 /pagenumberstring load ]
+  [ /h1 (May 24 2001) ]
+] def
+2 SetHeaderLines
+BeginPage
+/f0 F
+false BG
+0.000 0.000 0.000 FG
+(      else) S
+HL
+8 W
+(vertices[index+2] = v1[2] + j/\(float\)div * \(v2[2] - v1[2]\);) S
+HL
+(    }) S
+HL
+(  }) S
+HL
+(} ) S
+HL
+HL
+(GLfloat *CrossProduct\(GLfloat m1[3], GLfloat m2[3], GLfloat result[3]\) {) S
+HL
+(  result[0] = m1[1]*m2[2] - m2[1]*m1[2];) S
+HL
+(  result[1] = m2[0]*m1[2] - m1[0]*m2[2];) S
+HL
+(  result[2] = m1[0]*m2[1] - m2[0]*m1[1];) S
+HL
+(  return result;) S
+HL
+(}) S
+HL
+HL
+(void Normalise\(GLfloat v[3]\) {) S
+HL
+(  GLfloat length;) S
+HL
+HL
+(  length = sqrt\(v[0]*v[0] + v[1]*v[1] + v[2]*v[2]\);) S
+HL
+(  v[0] = v[0]/length;) S
+HL
+(  v[1] = v[1]/length;) S
+HL
+(  v[2] = v[2]/length;) S
+HL
+(  return;) S
+HL
+(}) S
+HL
+HL
+(GLfloat *Difference\(GLfloat m1[3], GLfloat m2[3], GLfloat result[3]\) {) S
+HL
+(  result[0] = m1[0] - m2[0];) S
+HL
+(  result[1] = m1[1] - m2[1];) S
+HL
+(  result[2] = m1[2] - m2[2];) S
+HL
+(  return result;) S
+HL
+(}) S
+HL
+EndPage
+EndDSCPage
+
+%%Trailer
+%%Pages: 19
+
+EndDoc
+
+%%EOF
